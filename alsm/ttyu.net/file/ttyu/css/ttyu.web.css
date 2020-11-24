@@ -1,0 +1,2307 @@
+/* -------------------------------------------------------------------- */
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+textarea,
+p,
+blockquote,
+th,
+td,
+input,
+select,
+textarea,
+button {
+  margin: 0;
+  padding: 0
+}
+
+/* 初始化标签在所有浏览器中的margin、padding值 */
+fieldset,
+img {
+  border: 0 none
+}
+
+/* 重置fieldset（表单分组）、图片的边框为0*/
+dl,
+ul,
+ol,
+menu,
+li {
+  list-style: none
+}
+
+/* 重置类表前导符号为onne,menu在HTML5中有效 */
+blockquote,
+q {
+  quotes: none
+}
+
+/* 重置嵌套引用的引号类型 */
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none
+}
+
+/* 重置嵌套引用*/
+input,
+select,
+textarea,
+button {
+  vertical-align: middle
+}
+
+/* 重置表单控件垂直居中*/
+
+body {
+  background: #fff;
+  overflow: auto
+}
+
+/* 重置body 页面背景为白色 */
+body,
+th,
+td,
+input,
+select,
+textarea,
+button {
+  font-size: 14px;
+  line-height: 1;
+  font-family: "微软雅黑";
+}
+
+/* 重置页面文字属性 */
+a {
+  color: #666;
+  text-decoration: none
+}
+
+/* 重置链接a标签 */
+a:active,
+a:hover {
+  text-decoration: none
+}
+
+/* 重置链接a标签的鼠标滑动效果 */
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+var {
+  font-style: normal;
+  font-weight: normal
+}
+
+/* 重置样式标签的样式 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+/* 重置table属性 */
+img {
+  vertical-align: top
+}
+
+/* 图片在当前行内的垂直位置 */
+a {
+  outline: none;
+}
+
+/* 取消a标签点击后的虚线框 */
+a:active {
+  star: expression(this.onFocus=this.blur());
+}
+
+::selection {
+  color: #fff;
+  background-color: #4C6E78;
+}
+
+/* 设置页面文字等在拖动鼠标选中情况下的背景色与文字颜色 */
+::-moz-selection {
+  color: #fff;
+  background-color: #4C6E78;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+.t-body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.t-find {
+  width: 100%;
+  height: auto;
+  /*padding-left: 7px;*/
+  padding: 5px;
+}
+
+file>div {
+  position: relative !important;
+}
+
+.imageOne {
+  display: inline-block;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background-size: 100% 100%;
+  border-radius: 3px;
+  margin-left: 5px !important;
+  box-sizing: border-box;
+  text-align: left;
+  width: 100px;
+  height: 100px;
+  border: solid 1px #e8e8e8;
+  cursor: pointer;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGBAMAAAB7teJuAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAFVBMVEUAAAD9/v79/v79/v79/v6dnZwAAACFdSh5AAAABHRSTlMAfX5/nrylTAAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxIAAAsSAdLdfvwAAANXSURBVHjavdzbdeIwFIVhhnQwiwLmQQXwMBXIbmH6b2UIt9jG1tn7XDbv8K8vCWQh6eh0Yh+/6WfQj1/zn/LGZe71jLkccrk1iiHfjGrI5d4ohTwYtZDLs1EIeTEqIe3dKIOc57kc0haNIsiSUQVpq0YJZM2ogbRNowCyZVRA2kcjHfLJyIe0nUYyZI+RDWm7jVTIPiMX0g4aiZAjRiakHTbSIMeMPEgbNJIgI0YWpA0bKZAxIwfSjEYCxGJkQCxGAsRmxCE2IwxBGFEIwghCMEYMgjFCEJQRgaCMAARn+CE4ww1hGF4Iw3BCOIYPwjFcEJbhgbAMB4Rn8BCeQUM8DBbiYZAQH4OD+BgUZMz4lwJp7gYMMX4bowYMaYEGCLH+qIYNENJCDQhivjfGDQhiMawGALHf4kYDgJgMs2FCgE8qq2FCbIbd6GGG3TAgAANo9CgDaAwhCANp9CADaQwgEANq9BgDahxCMAbW6CEG1jiAgAyw0SMMsLELQRloowcYaGMHAjPgRvcz4MYHBGfgje5m4I0NhGAQje5lEI0VhGEwje5kMI0FhGJQje5jUI03hGNwje5icI0nhGSQje5hkI07hGWwje5ZUiAbNwjNoBv99Hf4cvjj+EWm01d543oaQxJ+VtPt7+qLewrduH6/QVgI15ju73MWwjWujw8sEkI1pufnLgmhGtfXPxAOwjSm9/9BDsI03gwSQjR+GCSEaCwYHARvLBkcBG+sGBQEbqwZFARubBgMBG1sGQzE/10Nh/i/c+KQwHdnGBJYA4AhkbUMFBJZk0EhobUlEBJaIwMhsbU+DBJbs8QgwbVXCBJcQ4Yg0bVwBBJd00cg4b0JABLeYwEg8b0iGxLf85Ls3Sn2ICV7qYo9YcnetmKPXnLWYAwZNJjDH2dng2BIzrBIzuIozhRJzkYpznhJzqopztxJzg4qzkBKznIqzqRKztYqzghLzjorzmxLzp4rztBLZgEUMw2S2QzFjIlkVkYx8yOZXVLMYElmyRQzcZLZPsWMomTWUjEzKpl9VczwSmaRFTPVktlwxYy7ZFZfceeA5O4ExR0QkrssFHdySO4WUdyRsoCUMX4glZfvnOsZL0jtZUjnesYDUn05leJuKsUdW5K7whx3nv0HGB84iPytCGwAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTUtMDktMTZUMDk6MjY6MjYrMDg6MDANIk6zAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE1LTA5LTE2VDA5OjI2OjI2KzA4OjAwfH/2DwAAAABJRU5ErkJggg==)
+}
+
+.imageOne>input[type=file] {
+  width: 100%;
+  height: 100%;
+  filter: alpha(opacity=0);
+  z-index: 1;
+  cursor: pointer;
+  opacity: 0;
+  -moz-opacity: 0;
+}
+
+.imageClose {
+  position: absolute;
+  right: 0;
+  margin-top: -6px !important;
+  margin-right: -6px !important;
+  float: right;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  border-radius: 12px;
+  background-color: #FF5053;
+  color: #f3f3f3;
+  border: solid 1px #FF5053;
+  font-size: 9px;
+  font-weight: 200;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+.importExcel {
+  width: 70px;
+  height: 35px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  background: url(http://www.ttyu.net/file/image/import.gif) no-repeat;
+
+}
+
+.importExcel form {
+  z-index: 1;
+  width: 80px;
+  height: 35px;
+  filter: alpha(opacity=0);
+  -moz-opacity: 0;
+  opacity: 0;
+  padding-left: -5px;
+  margin-left: -5px;
+}
+
+.modal-cir {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #fff;
+  font-weight: bold;
+  text-align: center;
+  line-height: 50px;
+  font-size: 12px;
+  color: #ff8500;
+  border: 1px solid #ff8500;
+}
+
+.modal-rect {
+  width: 90px !important;
+  border-radius: 5px;
+  height: 40px;
+  background-color: #ffffff;
+  border: 1px solid #ff8500;
+  font-weight: bold;
+  text-align: center;
+  line-height: 40px;
+  color: #ff8500;
+  font-size: 12px !important;
+}
+
+.modal-square {
+  width: 90px !important;
+  border-radius: 0;
+  height: 40px;
+  background-color: #ffffff;
+  border: 1px solid #ff8500;
+  font-weight: bold;
+  text-align: center;
+  line-height: 40px;
+  color: #ff8500;
+  font-size: 12px !important;
+}
+
+.t-full {
+  width: 100%;
+  height: 100%;
+}
+
+.t-img {
+  width: 200px;
+  height: 200px;
+  background: url(../../file/image.png) no-repeat;
+  -webkit-background-size: 100% 100%;
+  background-size: 100% 100%;
+  z-index: 10;
+}
+
+.t-headImg {
+  width: 200px;
+  height: 200px;
+  background: url(../../file/headImage.png)no-repeat;
+  -webkit-background-size: 100% 100%;
+  background-size: 100% 100%;
+}
+
+.block {
+  border: 1px solid #4C6E78;
+  overflow: hidden
+}
+
+.absolute {
+  position: absolute;
+}
+
+/*.................................2017年11月7日拖拽定位.........................................................*/
+.t-btns {
+  /* 按钮组 */
+  background-color: #f0f0f0;
+  width: 100%;
+  height: 35px;
+  z-index: 100;
+
+  padding-left: 15px;
+}
+
+.t-btnsDiv {
+  /* 按钮组 */
+  background-color: #f0f0f0;
+  width: 100%;
+  height: 3px;
+  z-index: 100;
+}
+
+.modalTree {
+  width: 300px;
+}
+
+.modalTree .modal-body {
+  height: 365px;
+  padding: 5px;
+  overflow-x: hidden;
+}
+
+.modalTree .ztree {
+  height: 310px;
+  overflow: auto;
+  border: 1px solid #cccccc;
+}
+
+.modalTree .t-btns {
+  top: 320px;
+  height: 40px;
+}
+
+/*.modalTree button:nth-child(1){left:21% !important;}*/
+/*.modalTree button:nth-child(2){left:51% !important;}*/
+
+.t-btns>button {
+  /* 按钮样式 */
+  margin-top: 2px;
+  width: 70px;
+  height: 30px;
+  padding: 2px 10px;
+  line-height: 26px;
+  background-color: #6392e4;
+  color: #fff;
+  cursor: pointer;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 0;
+}
+
+button:hover {
+  /* 按钮滑过样式 */
+  background-color: #5882cc;
+}
+
+/*21018-3-28*/
+/*上传按钮*/
+.fileinput-button {
+  position: relative;
+  display: inline-block;
+  /*overflow: hidden;*/
+  z-index: 1000;
+  width: 70px;
+  height: 30px;
+  padding: 0 10px;
+  line-height: 26px;
+  text-align: center;
+  background-color: #6392e4;
+  color: #fff;
+  outline: none;
+  cursor: pointer;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+  border: 0;
+}
+
+.fileinput-button>input {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  opacity: 0;
+  -ms-filter: 'alpha(opacity=0)';
+}
+
+.fileinput-button:hover {
+  background-color: #5882CC;
+}
+
+.t-btn {
+  /* 按钮样式 */
+  z-index: 1000;
+  width: 70px;
+  height: 30px;
+  font-size: 12px;
+  font-family: "宋体";
+  padding: 0 10px;
+  text-align: center;
+  background-color: #6392e4;
+  color: #fff;
+  outline: none;
+  cursor: pointer;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+  border: 0;
+}
+
+.t-btn:hover {
+  /* 按钮滑过样式 */
+  background-color: #5882cc;
+}
+
+.t-icon {
+  /* 按钮图标右边距 */
+  margin-right: 5px;
+}
+
+.btn-center {
+  /* 按钮组 垂直居中 */
+  position: relative;
+  height: 100%;
+  width: 200px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+}
+
+.t-group {
+  border: 1px dotted #cccccc;
+}
+
+.t-span {
+  font-size: 14px;
+  font-family: "宋体";
+  font-weight: normal;
+  padding: 0 5px;
+  height: 40px;
+  background-color: transparent;
+  color: Black;
+  line-height: 40px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ul列表 */
+.t-list {
+  padding: 5px;
+  font-size: 12px;
+  color: white;
+  z-index: 2;
+  border: 1px solid #cccccc;
+  background-color: white;
+  width: 50%;
+}
+
+.t-list>li {
+  width: 100%;
+  height: 25px;
+  line-height: 25px;
+  margin: 5px 0;
+  padding: 0 5px;
+  background-color: rgb(76, 120, 186);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.t-list>li:hover {
+  background-color: #406fb6;
+}
+
+/* 网格列表 */
+.t-grid {
+  padding: 5px;
+  font-size: 0;
+  color: white;
+  z-index: 2;
+  border: 1px solid #cccccc;
+  background-color: white;
+  width: 350px;
+}
+
+.t-grid>li {
+  margin: 3px;
+  padding: 3px;
+  display: inline-block;
+  width: 106px;
+  overflow: hidden;
+  height: 80px;
+  font-size: 12px;
+  text-align: justify;
+  line-height: 1.5;
+  background: #4c78ba;
+}
+
+.t-grid>li:hover {
+  background-color: #406fb6;
+}
+
+/* 段落 */
+.t-p {
+  padding: 3px;
+  text-indent: 12px;
+  position: absolute;
+  text-align: justify;
+  width: 200px;
+  line-height: 1.5;
+  height: 100px;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+/*.t-p{
+    padding: 3px;
+    text-indent: 12px;
+    position: absolute;
+    text-align: justify;
+    width: 200px;
+    line-height: 1.5;
+    height: 100px;
+    overflow: hidden;
+    word-wrap:break-word;
+}*/
+
+/* 头像 */
+.t-portrait {
+  height: 100px;
+  width: 100px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+}
+
+/* 面板边框 */
+.t-border {
+  border: 1px solid #cccccc;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  width: 400px;
+  height: 400px;
+  background: "#ffffff";
+  box-sizing: border-box;
+}
+
+/* 标题 */
+.t-title {
+  height: 40px;
+  text-align: left;
+  line-height: 40px;
+  background-color: #4c78ba;
+  color: white;
+  width: 100%;
+}
+
+
+.t-title>span {
+  top: 0;
+  bottom: 0;
+  left: 10px;
+  font-weight: bold;
+  font-size:16px ;
+  margin: auto;
+  text-align: right;
+  position: relative;
+  padding-left: 5px;
+}
+
+/* 角标 */
+.t-corner {
+  padding: 5px;
+  min-width: 40px;
+  text-align: center;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background-color: rgba(255, 145, 36, 0.72);
+  color: white;
+  font-weight: bold;
+}
+
+/* 直线 */
+.t-line {
+  width: 300px;
+  margin: 0;
+  border-top: 1px solid #cccccc;
+}
+
+/* input */
+.t-input {
+  font-family: "宋体";
+  height: 35px;
+  font-size: 14px;
+  text-indent: 5px;
+  width: 200px;
+  outline: none;
+  border: 1px solid #cccccc;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.t-inputs {
+  width: 300px;
+  height: 35px;
+}
+
+.t-inputs>.t-input {
+  left: 50px;
+}
+
+input {
+  -moz-appearance: textfield;
+}
+
+/* 日期控件去掉上下箭头 */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+
+/* 表单组 */
+.t-form {
+  width: 100%;
+  height: 250px;
+}
+
+.t-form div {
+  margin: 5px 0;
+  padding-left: 10px;
+  display: inline-block;
+  box-sizing: content-box;
+}
+
+.t-form span {
+  margin: 0;
+  padding: 0 2px;
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+  /*  text-overflow:ellipsis; */
+  white-space: nowrap;
+  /* background-color: white; */
+  text-align: left;
+  line-height: 35px;
+  width: auto;
+}
+
+.t-form input,
+.t-form textarea,
+.t-form select {
+  display: inline-block;
+  margin: 0;
+  height: 35px;
+  /* line-height: 35px; */
+  outline: none;
+  border: 1px solid #cccccc;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  box-sizing: border-box;
+  text-indent: 12px;
+}
+
+.t-form textarea {
+  text-indent: 0;
+}
+
+.t-form input+i {
+  display: inline-block;
+  height: 30px;
+  width: 40px;
+  position: relative;
+  top: -3px;
+  text-align: center;
+  line-height: 20px;
+  right: 45px;
+  border-left: 1px solid #cccccc;
+  cursor: pointer;
+}
+
+/* 缩略图 */
+.t-thumbnail {
+  position: absolute;
+  top: 350px;
+  left: 50px;
+  border: 1px solid #cccccc;
+  padding: 5px;
+  width: 50%;
+}
+
+.t-thumbnail>li {
+  background-color: coral;
+  margin: 5px 0;
+  padding: 5px 0;
+}
+
+.t-thumbnail>li>img {
+  width: 50px;
+  height: 50px;
+  vertical-align: super;
+  margin-left: 5px;
+}
+
+.t-thumbnail>li>div {
+  display: inline-block;
+  width: 75%;
+  line-height: 1.5;
+  font-size: 16px;
+  margin-left: 10px;
+  color: white;
+}
+
+.t-thumbnail>li>div>h5 {
+  height: 20px;
+  text-align: center;
+  overflow: hidden;
+  line-height: 20px;
+}
+
+.t-thumbnail>li>div>p {
+  font-size: 12px;
+  margin: 5px 12px;
+  height: 36px;
+  overflow: hidden;
+}
+
+/* 标签页切换 */
+.t-tabs {
+  width: 100%;
+  height: 300px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.t-tabs>ul {
+  width: 100%;
+  font-size: 0;
+  background-color: #4c78ba;
+  color: white;
+}
+
+.t-tabs>ul>li {
+  display: inline-block;
+  width: 100px;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.t-tabs>.tabs-item {
+  border: 1px solid #cccccc;
+  height: 260px;
+}
+
+.t-tabs>.tabs-item>div:nth-child(1) {
+  display: block
+}
+
+.t-tabs>.tabs-item>div {
+  display: none;
+  position: relative;
+  padding: 10px
+}
+
+.li-active {
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  border: 1px solid #cccccc;
+  border-bottom: none
+}
+
+/* 视频 */
+#video1 {
+  width: 450px;
+  height: 300px;
+}
+
+/* 编辑表单 */
+
+/*.paddingLeft20{padding-left: 20px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;}*/
+
+.editPage>.t-form,
+.t-body>.t-form {
+  padding-left: 40px;
+  display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.t-form+.t-btns {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.t-form>.col01,
+.t-form>.col11,
+.t-form>.col21,
+.t-form>.col31,
+.t-form>.col41,
+.t-form>.col51,
+.t-form>.col61,
+.t-form>.col71，.t-form>.col81，.t-form>.col91，.t-form>.col101 {
+  width: 95.2%
+}
+
+.modal-body>.t-form>.col01,
+.modal-body>.t-form>.col11,
+.modal-body>.t-form>.col21,
+.modal-body>.t-form>.col31,
+.modal-body>.t-form>.col41,
+.modal-body>.t-form>.col51,
+.modal-body>.t-form>.col61,
+.modal-body>.t-form>.col71,
+.modal-body>.t-form>.col81,
+.modal-body>.t-form>.col91,
+.modal-body>.t-form>.col101 {
+  width: 99.6%
+}
+
+.t-form>.col02,
+.t-form>.col02+div,
+.t-form>.col12,
+.t-form>.col12+div,
+.t-form>.col22,
+.t-form>.col22+div,
+.t-form>.col32,
+.t-form>.col32+div,
+.t-form>.col42,
+.t-form>.col42+div,
+.t-form>.col52,
+.t-form>.col52+div,
+.t-form>.col62,
+.t-form>.col62+div,
+.t-form>.col72,
+.t-form>.col72+div,
+.t-form>.col82,
+.t-form>.col82+div,
+.t-form>.col92,
+.t-form>.col92+div,
+.t-form>.col102,
+.t-form>.col102+div {
+  width: 48.3%;
+}
+
+.t-form>.col03,
+.t-form>.col03+div,
+.t-form>.col03+div+div,
+.t-form>.col13,
+.t-form>.col13+div,
+.t-form>.col13+div+div,
+.t-form>.col23,
+.t-form>.col23+div,
+.t-form>.col23+div+div,
+.t-form>.col33,
+.t-form>.col33+div,
+.t-form>.col33+div+div,
+.t-form>.col43,
+.t-form>.col43+div,
+.t-form>.col43+div+div,
+.t-form>.col53,
+.t-form>.col53+div,
+.t-form>.col53+div+div,
+.t-form>.col63,
+.t-form>.col63+div,
+.t-form>.col63+div+div,
+.t-form>.col73,
+.t-form>.col73+div,
+.t-form>.col73+div+div,
+.t-form>.col83,
+.t-form>.col83+div,
+.t-form>.col83+div+div,
+.t-form>.col93,
+.t-form>.col93+div,
+.t-form>.col93+div+div,
+.t-form>.col103,
+.t-form>.col103+div,
+.t-form>.col103+div+div {
+  width: 31.7%
+}
+
+.t-form>.col04,
+.t-form>.col04+div,
+.t-form>.col04+div+div,
+.t-form>.col04+div+div+div,
+.t-form>.col14,
+.t-form>.col14+div,
+.t-form>.col14+div+div,
+.t-form>.col14+div+div+div,
+.t-form>.col24,
+.t-form>.col24+div,
+.t-form>.col24+div+div,
+.t-form>.col24+div+div+div,
+.t-form>.col34,
+.t-form>.col34+div,
+.t-form>.col34+div+div,
+.t-form>.col34+div+div+div,
+.t-form>.col44,
+.t-form>.col44+div,
+.t-form>.col44+div+div,
+.t-form>.col44+div+div+div,
+.t-form>.col54,
+.t-form>.col54+div,
+.t-form>.col54+div+div,
+.t-form>.col54+div+div+div,
+.t-form>.col64,
+.t-form>.col64+div,
+.t-form>.col64+div+div,
+.t-form>.col64+div+div+div,
+.t-form>.col74,
+.t-form>.col74+div,
+.t-form>.col74+div+div,
+.t-form>.col74+div+div+div,
+.t-form>.col84,
+.t-form>.col84+div,
+.t-form>.col84+div+div,
+.t-form>.col84+div+div+div,
+.t-form>.col94,
+.t-form>.col94+div,
+.t-form>.col94+div+div,
+.t-form>.col94+div+div+div,
+.t-form>.col104,
+.t-form>.col104+div,
+.t-form>.col104+div+div,
+.t-form>.col104+div+div+div {
+  width: 22%
+}
+
+
+.t-form>.col01 input,
+.t-form>.col01 select,
+.t-form>.col01 textarea,
+.t-form>.col11 input,
+.t-form>.col11 select,
+.t-form>.col11 textarea,
+.t-form>.col21 input,
+.t-form>.col21 select,
+.t-form>.col21 textarea,
+.t-form>.col31 input,
+.t-form>.col31 select,
+.t-form>.col31 textarea,
+.t-form>.col41 input,
+.t-form>.col41 select,
+.t-form>.col41 textarea,
+.t-form>.col51 input,
+.t-form>.col51 select,
+.t-form>.col51 textarea,
+.t-form>.col61 input,
+.t-form>.col61 select,
+.t-form>.col61 textarea,
+.t-form>.col71 input,
+.t-form>.col71 select,
+.t-form>.col71 textarea,
+.t-form>.col81 input,
+.t-form>.col81 select,
+.t-form>.col81 textarea,
+.t-form>.col91 input,
+.t-form>.col91 select,
+.t-form>.col91 textarea,
+.t-form>.col101 input,
+.t-form>.col101 select,
+.t-form>.col101 textarea {
+  width: 85%
+}
+
+.t-form>.col02 input,
+.t-form>.col02+div input,
+.t-form>.col02 select,
+.t-form>.col02+div select,
+.t-form>.col02 textarea,
+.t-form>.col02+div textarea,
+.t-form>.col12 input,
+.t-form>.col12+div input,
+.t-form>.col12 select,
+.t-form>.col12+div select,
+.t-form>.col12 textarea,
+.t-form>.col12+div textarea,
+.t-form>.col22 input,
+.t-form>.col22+div input,
+.t-form>.col22 select,
+.t-form>.col22+div select,
+.t-form>.col22 textarea,
+.t-form>.col22+div textarea,
+.t-form>.col32 input,
+.t-form>.col32+div input,
+.t-form>.col32 select,
+.t-form>.col32+div select,
+.t-form>.col32 textarea,
+.t-form>.col32+div textarea,
+.t-form>.col42 input,
+.t-form>.col42+div input,
+.t-form>.col42 select,
+.t-form>.col42+div select,
+.t-form>.col42 textarea,
+.t-form>.col42+div textarea,
+.t-form>.col52 input,
+.t-form>.col52+div input,
+.t-form>.col52 select,
+.t-form>.col52+div select,
+.t-form>.col52 textarea,
+.t-form>.col52+div textarea,
+.t-form>.col62 input,
+.t-form>.col62+div input,
+.t-form>.col62 select,
+.t-form>.col62+div select,
+.t-form>.col62 textarea,
+.t-form>.col62+div textarea,
+.t-form>.col72 input,
+.t-form>.col72+div input,
+.t-form>.col72 select,
+.t-form>.col72+div select,
+.t-form>.col72 textarea,
+.t-form>.col72+div textarea,
+.t-form>.col82 input,
+.t-form>.col82+div input,
+.t-form>.col82 select,
+.t-form>.col82+div select,
+.t-form>.col82 textarea,
+.t-form>.col82+div textarea,
+.t-form>.col92 input,
+.t-form>.col92+div input,
+.t-form>.col92 select,
+.t-form>.col92+div select,
+.t-form>.col92 textarea,
+.t-form>.col92+div textarea,
+.t-form>.col102 input,
+.t-form>.col102+div input,
+.t-form>.col102 select,
+.t-form>.col102+div select,
+.t-form>.col102 textarea,
+.t-form>.col102+div textarea {
+  width: 74%
+}
+
+.t-form>.col03 input,
+.t-form>.col03+div input,
+.t-form>.col03+div+div input,
+.t-form>.col03 select,
+.t-form>.col03+div select,
+.t-form>.col03+div+div select,
+.t-form>.col03 textarea,
+.t-form>.col03+div textarea,
+.t-form>.col03+div+div textarea,
+.t-form>.col13 input,
+.t-form>.col13+div input,
+.t-form>.col13+div+div input,
+.t-form>.col13 select,
+.t-form>.col13+div select,
+.t-form>.col13+div+div select,
+.t-form>.col13 textarea,
+.t-form>.col13+div textarea,
+.t-form>.col13+div+div textarea,
+.t-form>.col23 input,
+.t-form>.col23+div input,
+.t-form>.col23+div+div input,
+.t-form>.col23 select,
+.t-form>.col23+div select,
+.t-form>.col23+div+div select,
+.t-form>.col23 textarea,
+.t-form>.col23+div textarea,
+.t-form>.col23+div+div textarea,
+.t-form>.col33 input,
+.t-form>.col33+div input,
+.t-form>.col33+div+div input,
+.t-form>.col33 select,
+.t-form>.col33+div select,
+.t-form>.col33+div+div select,
+.t-form>.col33 textarea,
+.t-form>.col33+div textarea,
+.t-form>.col33+div+div textarea,
+.t-form>.col43 input,
+.t-form>.col43+div input,
+.t-form>.col43+div+div input,
+.t-form>.col43 select,
+.t-form>.col43+div select,
+.t-form>.col43+div+div select,
+.t-form>.col43 textarea,
+.t-form>.col43+div textarea,
+.t-form>.col43+div+div textarea,
+.t-form>.col53 input,
+.t-form>.col53+div input,
+.t-form>.col53+div+div input,
+.t-form>.col53 select,
+.t-form>.col53+div select,
+.t-form>.col53+div+div select,
+.t-form>.col53 textarea,
+.t-form>.col53+div textarea,
+.t-form>.col53+div+div textarea,
+.t-form>.col63 input,
+.t-form>.col63+div input,
+.t-form>.col63+div+div input,
+.t-form>.col63 select,
+.t-form>.col63+div select,
+.t-form>.col63+div+div select,
+.t-form>.col63 textarea,
+.t-form>.col63+div textarea,
+.t-form>.col63+div+div textarea,
+.t-form>.col73 input,
+.t-form>.col73+div input,
+.t-form>.col73+div+div input,
+.t-form>.col73 select,
+.t-form>.col73+div select,
+.t-form>.col73+div+div select,
+.t-form>.col73 textarea,
+.t-form>.col73+div textarea,
+.t-form>.col73+div+div textarea,
+.t-form>.col83 input,
+.t-form>.col83+div input,
+.t-form>.col83+div+div input,
+.t-form>.col83 select,
+.t-form>.col83+div select,
+.t-form>.col83+div+div select,
+.t-form>.col83 textarea,
+.t-form>.col83+div textarea,
+.t-form>.col83+div+div textarea,
+.t-form>.col93 input,
+.t-form>.col93+div input,
+.t-form>.col93+div+div input,
+.t-form>.col93 select,
+.t-form>.col93+div select,
+.t-form>.col93+div+div select,
+.t-form>.col93 textarea,
+.t-form>.col93+div textarea,
+.t-form>.col93+div+div textarea,
+.t-form>.col103 input,
+.t-form>.col103+div input,
+.t-form>.col103+div+div input,
+.t-form>.col103 select,
+.t-form>.col103+div select,
+.t-form>.col103+div+div select,
+.t-form>.col103 textarea,
+.t-form>.col103+div textarea,
+.t-form>.col103+div+div textarea {
+  width: 59%
+}
+
+
+
+.t-form>.col04 input,
+.t-form>.col04+div input,
+.t-form>.col04+div+div input,
+.t-form>.col04+div+div+div input,
+.t-form>.col04 select,
+.t-form>.col04+div select,
+.t-form>.col04+div+div select,
+.t-form>.col04+div+div+div select,
+.t-form>.col04 textarea,
+.t-form>.col04+div textarea,
+.t-form>.col04+div+div textarea,
+.t-form>.col04+div+div+div textarea,
+.t-form>.col14 input,
+.t-form>.col14+div input,
+.t-form>.col14+div+div input,
+.t-form>.col14+div+div+div input,
+.t-form>.col14 select,
+.t-form>.col14+div select,
+.t-form>.col14+div+div select,
+.t-form>.col14+div+div+div select,
+.t-form>.col14 textarea,
+.t-form>.col14+div textarea,
+.t-form>.col14+div+div textarea,
+.t-form>.col14+div+div+div textarea,
+.t-form>.col24 input,
+.t-form>.col24+div input,
+.t-form>.col24+div+div input,
+.t-form>.col24+div+div+div input,
+.t-form>.col24 select,
+.t-form>.col24+div select,
+.t-form>.col24+div+div select,
+.t-form>.col24+div+div+div select,
+.t-form>.col24 textarea,
+.t-form>.col24+div textarea,
+.t-form>.col24+div+div textarea,
+.t-form>.col24+div+div+div textarea,
+.t-form>.col34 input,
+.t-form>.col34+div input,
+.t-form>.col34+div+div input,
+.t-form>.col34+div+div+div input,
+.t-form>.col34 select,
+.t-form>.col34+div select,
+.t-form>.col34+div+div select,
+.t-form>.col34+div+div+div select,
+.t-form>.col34 textarea,
+.t-form>.col34+div textarea,
+.t-form>.col34+div+div textarea,
+.t-form>.col34+div+div+div textarea,
+.t-form>.col44 input,
+.t-form>.col44+div input,
+.t-form>.col44+div+div input,
+.t-form>.col44+div+div+div input,
+.t-form>.col44 select,
+.t-form>.col44+div select,
+.t-form>.col44+div+div select,
+.t-form>.col44+div+div+div select,
+.t-form>.col44 textarea,
+.t-form>.col44+div textarea,
+.t-form>.col44+div+div textarea,
+.t-form>.col44+div+div+div textarea,
+.t-form>.col54 input,
+.t-form>.col54+div input,
+.t-form>.col54+div+div input,
+.t-form>.col54+div+div+div input,
+.t-form>.col54 select,
+.t-form>.col54+div select,
+.t-form>.col54+div+div select,
+.t-form>.col54+div+div+div select,
+.t-form>.col54 textarea,
+.t-form>.col54+div textarea,
+.t-form>.col54+div+div textarea,
+.t-form>.col54+div+div+div textarea,
+.t-form>.col64 input,
+.t-form>.col64+div input,
+.t-form>.col64+div+div input,
+.t-form>.col64+div+div+div input,
+.t-form>.col64 select,
+.t-form>.col64+div select,
+.t-form>.col64+div+div select,
+.t-form>.col64+div+div+div select,
+.t-form>.col64 textarea,
+.t-form>.col64+div textarea,
+.t-form>.col64+div+div textarea,
+.t-form>.col64+div+div+div textarea,
+.t-form>.col74 input,
+.t-form>.col74+div input,
+.t-form>.col74+div+div input,
+.t-form>.col74+div+div+div input,
+.t-form>.col74 select,
+.t-form>.col74+div select,
+.t-form>.col74+div+div select,
+.t-form>.col74+div+div+div select,
+.t-form>.col74 textarea,
+.t-form>.col74+div textarea,
+.t-form>.col74+div+div textarea,
+.t-form>.col74+div+div+div textarea,
+.t-form>.col84 input,
+.t-form>.col84+div input,
+.t-form>.col84+div+div input,
+.t-form>.col84+div+div+div input,
+.t-form>.col84 select,
+.t-form>.col84+div select,
+.t-form>.col84+div+div select,
+.t-form>.col84+div+div+div select,
+.t-form>.col84 textarea,
+.t-form>.col84+div textarea,
+.t-form>.col84+div+div textarea,
+.t-form>.col84+div+div+div textarea,
+.t-form>.col94 input,
+.t-form>.col94+div input,
+.t-form>.col94+div+div input,
+.t-form>.col94+div+div+div input,
+.t-form>.col94 select,
+.t-form>.col94+div select,
+.t-form>.col94+div+div select,
+.t-form>.col94+div+div+div select,
+.t-form>.col94 textarea,
+.t-form>.col94+div textarea,
+.t-form>.col94+div+div textarea,
+.t-form>.col94+div+div+div textarea,
+.t-form>.col104 input,
+.t-form>.col104+div input,
+.t-form>.col104+div+div input,
+.t-form>.col104+div+div+div input,
+.t-form>.col104 select,
+.t-form>.col104+div select,
+.t-form>.col104+div+div select,
+.t-form>.col104+div+div+div select,
+.t-form>.col104 textarea,
+.t-form>.col104+div textarea,
+.t-form>.col104+div+div textarea,
+.t-form>.col104+div+div+div textarea {
+  width: 57%
+}
+
+
+.t-form>.col01,
+.t-form>.col02,
+.t-form>.col02+div,
+.t-form>.col03,
+.t-form>.col03+div,
+.t-form>.col03+div+div,
+.t-form>.col04,
+.t-form>.col04+div,
+.t-form>.col04+div+div,
+.t-form>.col04+div+div+div {
+  top: 0
+}
+
+.t-form>.col11,
+.t-form>.col12,
+.t-form>.col12+div,
+.t-form>.col13,
+.t-form>.col13+div,
+.t-form>.col13+div+div,
+.t-form>.col14,
+.t-form>.col14+div,
+.t-form>.col14+div+div,
+.t-form>.col14+div+div+div {
+  top: 40px
+}
+
+.t-form>.col21,
+.t-form>.col22,
+.t-form>.col22+div,
+.t-form>.col23,
+.t-form>.col23+div,
+.t-form>.col23+div+div,
+.t-form>.col24,
+.t-form>.col24+div,
+.t-form>.col24+div+div,
+.t-form>.col24+div+div+div {
+  top: 80px
+}
+
+.t-form>.col31,
+.t-form>.col32,
+.t-form>.col32+div,
+.t-form>.col33,
+.t-form>.col33+div,
+.t-form>.col33+div+div,
+.t-form>.col34,
+.t-form>.col34+div,
+.t-form>.col34+div+div,
+.t-form>.col34+div+div+div {
+  top: 120px
+}
+
+.t-form>.col41,
+.t-form>.col42,
+.t-form>.col42+div,
+.t-form>.col43,
+.t-form>.col43+div,
+.t-form>.col43+div+div,
+.t-form>.col44,
+.t-form>.col44+div,
+.t-form>.col44+div+div,
+.t-form>.col44+div+div+div {
+  top: 160px
+}
+
+.t-form>.col51,
+.t-form>.col52,
+.t-form>.col52+div,
+.t-form>.col53,
+.t-form>.col53+div,
+.t-form>.col53+div+div,
+.t-form>.col54,
+.t-form>.col54+div,
+.t-form>.col54+div+div,
+.t-form>.col54+div+div+div {
+  top: 200px
+}
+
+.t-form>.col61,
+.t-form>.col62,
+.t-form>.col62+div,
+.t-form>.col63,
+.t-form>.col63+div,
+.t-form>.col63+div+div,
+.t-form>.col64,
+.t-form>.col64+div,
+.t-form>.col64+div+div,
+.t-form>.col64+div+div+div {
+  top: 240px
+}
+
+.t-form>.col71,
+.t-form>.col72,
+.t-form>.col72+div,
+.t-form>.col73,
+.t-form>.col73+div,
+.t-form>.col73+div+div,
+.t-form>.col74,
+.t-form>.col74+div,
+.t-form>.col74+div+div,
+.t-form>.col74+div+div+div {
+  top: 280px
+}
+
+.t-form>.col81,
+.t-form>.col82,
+.t-form>.col82+div,
+.t-form>.col83,
+.t-form>.col83+div,
+.t-form>.col83+div+div,
+.t-form>.col84,
+.t-form>.col84+div,
+.t-form>.col84+div+div,
+.t-form>.col84+div+div+div {
+  top: 320px
+}
+
+.t-form>.col91,
+.t-form>.col92,
+.t-form>.col92+div,
+.t-form>.col93,
+.t-form>.col93+div,
+.t-form>.col93+div+div,
+.t-form>.col94,
+.t-form>.col94+div,
+.t-form>.col94+div+div,
+.t-form>.col94+div+div+div {
+  top: 360px
+}
+
+.t-form>.col101,
+.t-form>.col102,
+.t-form>.col102+div,
+.t-form>.col103,
+.t-form>.col103+div,
+.t-form>.col103+div+div,
+.t-form>.col104,
+.t-form>.col104+div,
+.t-form>.col104+div+div,
+.t-form>.col104+div+div+div {
+  top: 400px
+}
+
+/*.t-form>.col01,.t-form>.col11,.t-form>.col21.t-form>.col31,.t-form>.col41,.t-form>.col51{left: 0;}*/
+
+.t-form>div[class='col02']+div,
+.t-form>div[class='col12']+div,
+.t-form>div[class='col22']+div,
+.t-form>div[class='col32']+div,
+.t-form>div[class='col42']+div,
+.t-form>div[class='col52']+div,
+.t-form>div[class='col62']+div,
+.t-form>div[class='col72']+div,
+.t-form>div[class='col82']+div,
+.t-form>div[class='col92']+div,
+.t-form>div[class='col102']+div {
+  left: 49%
+}
+
+.t-form>div[class='col03']+div,
+.t-form>div[class='col13']+div,
+.t-form>div[class='col23']+div,
+.t-form>div[class='col33']+div,
+.t-form>div[class='col43']+div,
+.t-form>div[class='col53']+div,
+.t-form>div[class='col63']+div,
+.t-form>div[class='col73']+div,
+.t-form>div[class='col83']+div,
+.t-form>div[class='col93']+div,
+.t-form>div[class='col103']+div {
+  left: 33%
+}
+
+.t-form>div[class='col03']+div+div,
+.t-form>div[class='col13']+div+div,
+.t-form>div[class='col23']+div+div,
+.t-form>div[class='col33']+div+div,
+.t-form>div[class='col43']+div+div,
+.t-form>div[class='col53']+div+div,
+.t-form>div[class='col63']+div+div,
+.t-form>div[class='col73']+div+div,
+.t-form>div[class='col83']+div+div,
+.t-form>div[class='col93']+div+div,
+.t-form>div[class='col103']+div+div {
+  left: 66%
+}
+
+.t-form>div[class='col04']+div,
+.t-form>div[class='col14']+div,
+.t-form>div[class='col24']+div,
+.t-form>div[class='col34']+div,
+.t-form>div[class='col44']+div,
+.t-form>div[class='col54']+div,
+.t-form>div[class='col64']+div,
+.t-form>div[class='col74']+div,
+.t-form>div[class='col84']+div,
+.t-form>div[class='col94']+div,
+.t-form>div[class='col104']+div {
+  left: 24%
+}
+
+.t-form>div[class='col04']+div+div,
+.t-form>div[class='col14']+div+div,
+.t-form>div[class='col24']+div+div,
+.t-form>div[class='col34']+div+div,
+.t-form>div[class='col44']+div+div,
+.t-form>div[class='col54']+div+div,
+.t-form>div[class='col64']+div+div,
+.t-form>div[class='col74']+div+div,
+.t-form>div[class='col84']+div+div,
+.t-form>div[class='col94']+div+div,
+.t-form>div[class='col104']+div+div {
+  left: 48%
+}
+
+.t-form>div[class='col04']+div+div+div,
+.t-form>div[class='col14']+div+div+div,
+.t-form>div[class='col24']+div+div+div,
+.t-form>div[class='col34']+div+div+div,
+.t-form>div[class='col44']+div+div+div,
+.t-form>div[class='col54']+div+div+div,
+.t-form>div[class='col64']+div+div+div,
+.t-form>div[class='col74']+div+div+div,
+.t-form>div[class='col84']+div+div+div,
+.t-form>div[class='col94']+div+div+div,
+.t-form>div[class='col104']+div+div+div {
+  left: 72%
+}
+
+.t-form>div input[type=checkbox],
+.t-form>div input[type=checkbox],
+.t-form>div+div input[type=checkbox],
+.t-form>div+div+div input[type=checkbox] {
+  width: 15px
+}
+
+.t-form>div>textarea {
+  line-height: 1.5;
+  height: 100px
+}
+
+.t-check {
+  width: 35px;
+  margin: 0;
+  height: 35px;
+}
+
+input[type=checkbox] {
+  margin: 0;
+}
+
+/* 表格 */
+.t-table {
+  padding: 5px;
+  width: 100%;
+  left: 0;
+  overflow: auto
+}
+
+.t-table thead {
+  background-color: #e0ecff;
+}
+
+.table>tbody>tr>td,
+.table>thead>tr>th {
+  padding: 0;
+  height: 35px;
+  vertical-align: middle;
+}
+
+.td-two {
+  text-align: center;
+  width: 70px !important;
+  cursor: pointer;
+}
+
+.td-two>span {
+  margin: 0 3px;
+}
+
+.td-center {
+  text-align: center;
+  width: 35px;
+}
+
+.t-edid {
+  text-align: center;
+  width: 50px;
+  cursor: pointer;
+}
+
+.t-edid:hover,
+.td-two>span:hover {
+  color: blue;
+}
+
+td input,
+td select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  text-indent: 12px;
+}
+
+td input[type=checkbox] {
+  width: 13px;
+}
+
+td button {
+  position: static;
+}
+
+/* 分页 */
+.page {
+  background-color: #f0f0f0;
+  position: fixed;
+  right: 0;
+  width: 100%;
+  height: 35px;
+  bottom: 0;
+}
+
+.page>ul {
+  padding: 10px 5px 5px 10px;
+  cursor: pointer;
+}
+
+.page>ul>li {
+  display: inline-block;
+  margin: 0 3px;
+  vertical-align: middle;
+  color: #6291e3;
+}
+
+.page>ul>li>select {
+  width: 50px;
+  height: 20px;
+  border: 1px solid #3978d5;
+}
+
+.page>ul>li>input,
+select {
+  width: 40px;
+  height: 20px;
+  border: 1px solid #3978d5;
+  text-align: center;
+}
+
+.page>ul>li[name] {
+  color: #666666;
+}
+
+.page>ul>li:last-child {
+  float: right;
+}
+
+/* 模态窗 */
+.modal {
+  background-color: rgba(0, 0, 0, .4);
+  width: 100%;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+  display: none;
+  position: absolute;
+}
+
+.modal-content {
+  -webkit-border-radius: 11px;
+  -moz-border-radius: 11px;
+  border-radius: 11px;
+}
+
+.t-modal-header {
+  height: 35px;
+  background-color: #6291e3;
+  border: none;
+  color: white;
+  -webkit-border-radius: 10px 10px 0 0;
+  -moz-border-radius: 10px 10px 0 0;
+  border-radius: 10px 10px 0 0;
+}
+
+.t-modal-header>h4 {
+  font-size: 15px;
+}
+
+.t-modal-header>span {
+  float: right;
+  color: red;
+  font-size: 15px;
+  transition: 1S;
+}
+
+.t-modal-header>span:hover {
+  -webkit-transform: rotate(360deg);
+  -moz-transform: rotate(360deg);
+  -ms-transform: rotate(360deg);
+  -o-transform: rotate(360deg);
+  transform: rotate(360deg);
+}
+
+/*���𶯻�����ת180�ȣ�*/
+.t-modal-body {
+  position: relative;
+  background-color: #6291e3;
+  padding: 10px;
+  -webkit-border-radius: 0 0 10px 10px;
+  -moz-border-radius: 0 0 10px 10px;
+  border-radius: 0 0 10px 10px;
+}
+
+.modal-body {
+  background-color: white;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+  padding: 5px;
+  height: 400px;
+}
+
+.modal-body .t-btns {
+  bottom: 5px;
+  left: 0;
+  position: absolute;
+  text-align: center
+}
+
+.modal-body>.t-btns>button {
+  position: relative;
+}
+
+.modal-body>.t-title+.t-btns {
+  position: relative;
+  text-align: left;
+}
+
+.modal-footer {
+  border: none
+}
+
+/*搜索框*/
+.t-seach {
+  height: 35px;
+  line-height: 33px;
+  border: 1px solid #cacaca;
+}
+
+.t-seach>input {
+  border: none;
+  height: 33px;
+  width: 85%;
+  line-height: 33px;
+  outline: none;
+  text-indent: 12px;
+}
+
+.t-seach>span {
+  cursor: pointer;
+  float: right;
+  width: 33px !important;
+  height: 33px;
+  border-left: 1px solid #cbd0cc;
+  text-align: center;
+  line-height: 33px;
+  color: #545454;
+  vertical-align: top;
+  background: #eeeeee;
+  margin-right: 0;
+}
+
+.t-seach>span:hover {
+  color: Red;
+}
+
+/*树形菜单*/
+.t-ztree {
+  overflow: auto;
+  border: 1px solid #cccccc;
+  width: 100%;
+  border-bottom: none;
+}
+
+/* 菜单 */
+.t-menu {
+  background-color: white;
+  border: 1px solid #cccccc;
+  width: 120px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.t-menu ul li {
+  padding: 7px 20px;
+}
+
+.t-menu ul li:hover {
+  background-color: #cccccc;
+}
+
+.m-ul {
+  display: none;
+  border: 1px solid #cccccc;
+  left: 100px;
+  z-index: 111;
+  background-color: white;
+  width: 100%;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.m-open:hover>.m-ul {
+  display: block;
+}
+
+.t-disabled {
+  color: #cccccc;
+}
+
+.t-disabled {
+  background-color: white !important;
+}
+
+.t-relative {
+  position: relative;
+}
+
+.icon-sort-transform {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+/*   𶯻     ת180 ȣ */
+/* 编辑页--点击切换编辑页面 */
+
+.t-find>.t-form {
+  height: 45px;
+  left: 10px;
+  /*width: 500px;*/
+  width: auto;
+  display:inline;
+}
+
+.t-btns{
+  position:relative;
+  bottom: 1.5px;
+}
+
+.t-find>.t-btns {
+  /*margin-left: 980px;*/
+  /*margin-top: -40px;*/
+  width: 170px;
+  background-color: transparent;
+  display: inline;
+}
+
+.group12>.t-form {
+  width: 50%;
+}
+
+.group12>.t-form>div {
+  width: 50%;
+}
+
+.group12>.t-form>div:nth-child(2) {
+  left: 50%;
+}
+
+.group12 input,
+.group12 select,
+.group12 textarea {
+  width: 65%
+}
+
+.group12>.t-btns {
+  left: 50%;
+}
+
+.group13 {
+  width: 67.5%;
+}
+
+.group13>.t-form>div {
+  width: 33.3%;
+}
+
+.group13>.t-form>div:nth-child(2) {
+  left: 33.3%;
+}
+
+.group13>.t-form>div:nth-child(3) {
+  left: 67.5%;
+}
+
+.group13>.t-btns {
+  left: 100%;
+}
+
+.group14 {
+  width: 90%;
+}
+
+.group14 input,
+.group14 select,
+.group14 textarea {
+  width: 65%;
+}
+
+.group14>.t-form>div {
+  width: 24%;
+}
+
+.group14>.t-form>div:nth-child(2) {
+  left: 24%;
+}
+
+.group14>.t-form>div:nth-child(3) {
+  left: 48%;
+}
+
+.group14>.t-form>div:nth-child(4) {
+  left: 72%;
+}
+
+.group14>.t-btns {
+  left: 95%;
+}
+
+.group24 {
+  width: 90%;
+}
+
+.group24 input,
+.group24 select,
+.group24 textarea {
+  width: 65%;
+}
+
+.group24>.t-form>div {
+  width: 24%;
+}
+
+.group24>.t-form>div:nth-child(2) {
+  left: 24%;
+}
+
+.group24>.t-form>div:nth-child(3) {
+  left: 48%;
+}
+
+.group24>.t-form>div:nth-child(4) {
+  left: 72%;
+}
+
+.group24>.t-form>div:nth-child(5) {
+  left: 0%;
+  top: 40px
+}
+
+.group24>.t-form>div:nth-child(6) {
+  left: 24%;
+  top: 40px
+}
+
+.group24>.t-form>div:nth-child(7) {
+  left: 48%;
+  top: 40px
+}
+
+.group24>.t-form>div:nth-child(8) {
+  left: 72%;
+  top: 40px
+}
+
+.group24>.t-btns {
+  width: 80px;
+  left: 95%;
+}
+
+.group24>.t-btns>button:nth-child(2) {
+  left: 10px;
+  top: 40px;
+}
+
+/* 左边树页面 */
+.t-tree {
+  width: 30%;
+  height: 100%;
+  float: left;
+  position: relative;
+  border: 1px solid #cccccc;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.t-tree>.t-seach {
+  width: 100%;
+}
+
+.t-tree>.ztree {
+  width: 100%;
+}
+
+.t-tree+div {
+  margin-left: 30%;
+  margin-top: 0px;
+  width: 70%;
+  height: 100%;
+  position: relative;
+}
+
+/* 排序按钮 */
+.icon-sort {
+  color: #cccccc;
+  float: right;
+  cursor: pointer;
+  margin-right: 5px;
+  font-size: 14px;
+  transition: all 0.5s;
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 1),
+    0 -1px 1px rgba(0, 0, 0, .3);
+}
+
+.icon-sort:hover {
+  color: #e6e6e6;
+}
+
+/*  */
+.editPage {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+table .total {
+  font-weight: bold
+}
+
+.modal-body>.t-table {
+  max-height: 60%;
+  overflow: auto
+}
+
+.modal-body>table {
+  overflow: auto
+}
+
+.modal-body>.t-form+.t-title+.t-btns+.t-table {
+  overflow: auto;
+}
+
+.modal-body>.t-table+.page {
+  position: absolute;
+  bottom: 0;
+  top: auto
+}
+
+.modal-body>.t-form:nth-child(1) {
+  top: 0;
+}
+
+.modal-body>.t-form:nth-child(1)+.t-title {
+  top: 170px;
+  left: 0
+}
+
+
+.modal-body>.t-btns:nth-child(1)+.t-table {
+  max-height: 85%;
+}
+
+/* 弹窗中只有按钮组和表格时 ，表格高度 */
+
+
+/* 未读消息样式 */
+.icon-mes {
+  color: red;
+  font-size: 24px;
+  position: fixed;
+  bottom: 10px;
+  right: 20px;
+  cursor: pointer;
+  text-align: center;
+  z-index: 999;
+}
+
+.icon-mes-ul {
+  height: 210px;
+  z-index: 999;
+  background-color: #71bae5;
+  position: relative;
+  bottom: 50px;
+  color: black;
+  border: 1px solid #aae7f5;
+  width: 200px;
+  font-size: 12px;
+  transition: all 1s;
+  overflow: auto;
+}
+
+.icon-mes-div>h3 {
+  position: relative;
+  background-color: #aae7f5;
+  font-size: 14px;
+  padding: 10px;
+  top: -48px;
+  color: black;
+}
+
+.icon-mes-div+span {
+  font-size: 24px;
+}
+
+.icon-mes-close {
+  float: right;
+  color: #747272;
+}
+
+.icon-mes-close:hover {
+  color: red
+}
+
+.icon-mes-ul>li {
+  text-align: left;
+  height: 40px;
+  line-height: 20px;
+  padding: 0 10px;
+  margin: 10px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon-mes-ul>li:hover {
+  background-color: rgba(21, 79, 127, 0.27);
+}
+
+.icon-mes-show {
+  position: absolute;
+  bottom: 10px;
+  right: 5px;
+  font-size: 24px;
+  text-shadow: 0 1px 1px black;
+}
+
+.icon-mes-div {
+  display: none;
+}
+
+.icon-mes:hover>.icon-mes-div {
+  display: block;
+}
+
+/* 强制一个高度，这样标签页就不会随着内容高度的改变而改变 */
+.t-tabs .tabs-spacer {
+  float: left;
+  height: 200px;
+}
+
+.tabs-bottom .ui-tabs-nav {
+  clear: left;
+  padding: 0 .2em .2em .2em;
+}
+
+.tabs-bottom .ui-tabs-nav li {
+  top: auto;
+  bottom: 0;
+  margin: 0 .2em 1px 0;
+  border-top: 0;
+}
+
+.tabs-bottom .ui-tabs-nav li.ui-tabs-active {
+  margin-top: -1px;
+  padding-top: 1px;
+}
+
+/* 垂直的标签页 */
+.ui-tabs-vertical {
+  width: 55em;
+}
+
+.ui-tabs-vertical .ui-tabs-nav {
+  padding: .2em .1em .2em .2em;
+  float: left;
+  width: 12em;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li {
+  clear: left;
+  width: 100%;
+  border-bottom-width: 1px !important;
+  border-right-width: 0 !important;
+  margin: 0 -1px .2em 0;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li a {
+  display: block;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+  padding-bottom: 0;
+  padding-right: .1em;
+  border-right-width: 1px;
+  border-right-width: 1px;
+}
+
+.ui-tabs-vertical .ui-tabs-panel {
+  padding: 1em;
+  float: right;
+  width: 40em;
+}
+
+/**/
+.runs-paginator-flex-container {
+  flex: 1 1 auto;
+  flex-direction: row;
+  display: flex;
+
+}
+
+.runs-paginator-flex-containerTable {
+  flex: 1 1 auto;
+  flex-direction: row;
+  display: flex;
+
+  height: 270px;
+}
+
+.check_title{
+  /*padding: 0px 0 px 20px;*/
+  text-align: left
+}
+
+.check_title_padding{
+  padding: 20px 0px 5px 0px;
+  text-align: left
+}
+
+.check_title_padding span{
+  font-size: 16px;font-weight: bold
+}
+
+.check_title span{
+  font-size: 14px;font-weight: bold
+}
+
+th{
+  text-align: center
+}
+
+/*居中标题*/
+.centerTitle{
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 2%;
+  padding-top:2%
+}
+
+.divBody{
+  border-top: 8px solid rgb(236, 240, 245) !important;
+  border-left: 8px solid rgb(236, 240, 245) !important;
+  border-right: 8px solid rgb(236, 240, 245) !important;
+}
+#body1{
+  border-top: 8px solid rgb(236, 240, 245) !important;
+  border-left: 8px solid rgb(236, 240, 245) !important;
+  border-right: 8px solid rgb(236, 240, 245) !important;
+}
+
+/*---element ui 头像图片框*/
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  width:200px
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 150px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 200px;
+  height: 200px;
+  display: block;
+}
+
+.el-table .cell{
+  white-space:nowrap;
+}

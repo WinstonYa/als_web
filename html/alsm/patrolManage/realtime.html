@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head>
+    <title>巡逻监控</title>
+    <link href="../../../alsm/skin/default/style.css" rel="stylesheet" type="text/css">
+    <link href="../../../alsm/pagination.css" rel="stylesheet" type="text/css">
+    <link href="../../../js/plugins/My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css">
+
+    <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <script src="../../../alsm/vue/vue.js"></script>
+    <script type="text/javascript" src="../../../alsm/Validform_v5.3.2_min.js"></script>
+    <script type="text/javascript" src="../../../js/plugins/lhgdialog/lhgdialog.js?skin=idialog"></script>
+    <script type="text/javascript" src="../../../js/plugins/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="../../../js/plugins/swfupload/swfupload.js"></script>
+    <script type="text/javascript" src="../../../js/plugins/swfupload/swfupload.queue.js"></script>
+    <script type="text/javascript" src="../../../js/plugins/swfupload/swfupload.handlers.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../../../js/plugins/editor/kindeditor-min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../../../js/plugins/editor/lang/zh_CN.js"></script>
+
+    <script src="../../../alsm/layout.js" type="text/javascript"></script>
+    <script src="../../../alsm/api_sub.js" type="text/javascript"></script>
+    <script src="../../../js/config/config.js"></script>
+
+    <!-- element-ui 导入-->
+    <link href="../../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <script src="../../../alsm/element2.12.0/index.js"></script>
+
+    <script src="./../../../js/index.js"></script>
+    <script src="../../../alsm/tianditu/ol.js"></script>
+
+    <link href="../../../css/alsCommon.css" rel="stylesheet">
+
+    <style>
+        .custom-tree-node {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            padding-right: 8px;
+        }
+
+        #body1 {
+            width: 100%;
+            height: 100%;
+        }
+
+
+        #st .el-input__inner, .el-button {
+            padding: 5px;
+        }
+
+        #treeDiv {
+            overflow: auto;
+        }
+
+
+        .el-cascader__dropdown {
+            width: 82%;
+            left: 0 !important;
+            overflow: auto;
+        }
+
+        .el-cascader-menu {
+            min-width: fit-content;
+        }
+
+
+        #tp1 span {
+            width: 150px;
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(function () {
+            top.showPatrol();
+
+            changelist();
+        });
+        $(window).resize(function () {
+            changelist();
+        });
+
+        function changelist() {
+
+        }
+    </script>
+</head>
+<body>
+
+<div id='body1'>
+    <div id="st">
+        <el-select style="width: 48%" v-model="params.dptId" filterable clearable
+                   size="small" @change="changeSelect" placeholder="请选择派出所">
+            <el-option :value="item.id" :label="item.name" v-for="(item, index) in dptOption" :key="index"></el-option>
+        </el-select>
+        <el-select style="width: 48%" v-model="params.fUserId" filterable clearable
+                   size="small" placeholder="请选择堡垒户" @change="refreshTree">
+            <el-option :value="item.userId" :label="item.name" v-for="(item, index) in fOption"
+                       :key="index"></el-option>
+        </el-select>
+
+    </div>
+    <div id="treeDiv">
+        <el-tree :data="strTree" node-key="id"
+                 highlight-current default-expand-all
+                 :expand-on-click-node="false"
+                 @node-click="NodeClicked">
+          <span class="custom-tree-node" slot-scope="scope">
+               <div id="tp1">
+                 <el-tooltip v-if="isShowTP(scope.node.data.name)" effect="light" :content="scope.node.data.name"
+                             placement="top">
+                    <span>{{ scope.node.data.name }}</span>
+               </el-tooltip>
+                   <span v-if="!isShowTP(scope.node.data.name)">{{ scope.node.data.name }}</span>
+              </div>
+        <span v-if="scope.node.data.status == '在线'" style="color: green">
+            {{scope.node.data.status}}&ensp;
+        </span>
+       <span v-else-if="scope.node.data.status == '离线'" style="color: red">
+            {{scope.node.data.status}}
+        </span>
+              <!--              <span v-if="scope.node.data.dptId===undefined">-->
+              <!--                   {{scope.node.data.onlineNum}}/{{scope.node.data.allNum}}-->
+              <!--              </span>-->
+
+          </span>
+        </el-tree>
+    </div>
+
+
+</div>
+</body>
+
+</html>
+
+<script type="text/javascript">
+
+    $(function () {
+        new Vue({
+            el: '#body1',
+            data: {
+                dptOption: [],
+                allFOption: [],
+                fOption: [],
+                params: {
+                    fUserId: '',
+                    dptId: '',
+                },
+                strTree: [],
+                timeId: null,
+                isRequesting: false
+            },
+            created: function () {
+
+                vm = this;
+                vm.refreshTree();
+                vm.fillOption();
+
+                setMyHeight("#treeDiv", 32);
+
+                //随浏览器改变改变高度
+                window.onresize = function () {
+                    if (vm != null) {
+                        setMyHeight("#treeDiv", 32);
+                    }
+                }
+
+            },
+            destroyed: function () {
+                if (this.timeId !== 0) {
+                    clearTimeout(this.timeId)
+                }
+            },
+            methods: {
+                isShowTP: function (val) {
+                    if (val.length > 10) {
+                        return true;
+                    }
+                    return false;
+                },
+                changeSelect: function () {
+
+                    vm.params.fUserId = '';
+                    vm.refreshTree();
+
+                    if (vm.params.dptId == '') {
+                        vm.fOption = vm.allFOption;
+                    } else {
+                        doApi(
+                            function (res) {
+                                if (res.status === 200) {
+                                    vm.fOption = res.data;
+                                } else {
+                                    vm.fOption = [];
+                                }
+                            }, null, null, params.serviceIp + '/FortressInfo/getListByDptId',
+                            "get", {dptId: vm.params.dptId}
+                        )
+                    }
+                },
+                fillOption: function () {
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.allFOption = res.data;
+                                vm.fOption = vm.allFOption;
+
+                            } else {
+                                vm.allFOption = [];
+                                vm.fOption = res.data;
+                            }
+                        }, null, null, params.serviceIp + '/PoliceInfo/getCurrentUserFortressInfo',
+                        "get"
+                    )
+
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.dptOption = res.data;
+                            } else {
+                                vm.dptOption = [];
+                            }
+                        }, null, null, params.serviceIp + '/PoliceInfo/getCurrentUserPoliceStation',
+                        "get"
+                    )
+                },
+                getTree: function () { //获取数据
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.strTree = res.data;
+                            } else {
+                                vm.strTree = [];
+                            }
+                        }, null, null, params.serviceIp + '/PoliceInfo/getCurrentUserFortressInfoTree',
+                        "get", vm.params
+                    )
+                },
+                refreshTree: function () {// 刷新数据
+                    if (vm.isRequesting) {
+                        return;
+                    }
+                    if (vm.timeId) {
+                        clearTimeout(vm.timeId);
+                    }
+                    vm.isRequesting = true;
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                copyTree(res.data, vm.strTree);
+                                calculateNum(vm.strTree);
+                            }
+                        }, null, function () {
+                            vm.timeId = setTimeout(vm.refreshTree, top.syncSpan);
+                            vm.isRequesting = false;
+                        }, params.serviceIp + '/PoliceInfo/getCurrentUserFortressInfoTree',
+                        "get", vm.params
+                    )
+                },
+                NodeClicked: function (obj, node, element) {
+                    console.log(obj);
+                    console.log(node);
+                    if (obj.longitude && obj.latitude) {
+                        //先添加样式 css_animation  ，@keyframes myfirst
+                        //点击对象
+                        //父div的id
+                        //多少毫秒后消失
+                        top.map2dMoveTo([obj.longitude, obj.latitude]);
+                    }
+                }
+
+            }
+        })
+    });
+
+</script>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <title>视频监控</title>
+    <style>
+        #myPlayer {
+            /*max-width: 600px;*/
+            /*height: 100%;*/
+            /*width: 100%;*/
+            background: #0C0C0C;
+            x5-video-player-fullscreen: "true";
+            clear: both;
+            display: block;
+            margin: auto;
+        }
+        #btn{
+            margin: 20px;
+            text-align: center;
+            position: relative;
+        }
+    </style>
+    <script src="https://statics.ys7.com/openweb/assets/ezuikit_v2.6/ezuikit-b77896676e.js"></script>
+    <script src="https://statics.ys7.com/openweb/assets/ezuikit_v2.6/js/jquery-ac3a4cccfb.min.js"></script>
+</head>
+
+<body>
+<video id="myPlayer" autoplay src="" >
+</video>
+<div id="btn">
+ <!--    <button id="start">开始播放</button>
+    <button id="pause">暂停播放</button>
+    <button id="stop">停止播放</button> -->
+</div>
+<script>
+    var sHref=window.location.href;
+    //console.log(sHref);
+    function showHrefData(str){
+        var args=str.split("?");
+        if (args[0]==str){
+            return "";
+        }
+        var arr=args[1].split("&");
+        var obj={};
+        for (var i=0;i<arr.length;i++){
+            var arg=arr[i].split("=");
+            obj[arg[0]]=arg[1];
+        }
+        return obj;
+    }
+    var params = showHrefData(sHref);
+    // var url=localStorage.getItem("url");
+    //测试url
+    // var tempurl = "https://hls01open.ys7.com/openlive/f01018a141094b7fa138b9d0b856507b.m3u8";
+    $('#myPlayer').attr("src", params.url);
+    var player = new EZUIKit.EZUIPlayer('myPlayer');
+
+    $("#start").click(function () {
+        player.play();
+    });
+    $("#pause").click(function () {
+        player.pause();
+    });
+    $("#stop").click(function () {
+        //关闭player,并关闭本页面。
+        player.stop();
+        window.close();
+    });
+</script>
+</body>
+
+</html>

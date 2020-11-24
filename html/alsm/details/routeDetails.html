@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>路线详情</title>
+    <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <script src="../../../alsm/vue/vue.js"></script>
+    <link href="../../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <script src="../../../alsm/element2.12.0/index.js"></script>
+
+    <script src="../../../alsm/api_sub.js" type="text/javascript"></script>
+    <script src="../../../js/config/config.js"></script>
+
+    <link href="../../../css/alsCommon.css" rel="stylesheet">
+    <style>
+
+        .el-scrollbar__wrap {
+            height: 100px;
+            overflow: auto;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .el-message{
+            min-width: 200px;
+        }
+        .el-form-item{
+            width: 99%;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+<div id="vue1">
+    <div style="background-color: white;width: 100%">
+        <div style="text-align: center;font-size: 20px">路线详情</div>
+        <el-form :model="row" label-width="80px"
+                 class="demo-ruleForm" >
+            <el-form-item label="路线名称 :" >
+                <el-input v-model="row.name"></el-input>
+            </el-form-item>
+            <el-form-item label="编号 :">
+                <el-input v-model="row.routeNumber"></el-input>
+            </el-form-item>
+
+            <el-form-item label="起点 :">
+                <el-input v-model="row.start" ></el-input>
+            </el-form-item>
+            <el-form-item label="终点 :">
+                <el-input v-model="row.end"  ></el-input>
+            </el-form-item>
+
+            <el-form-item label="是否可见 :">
+                <el-radio v-model="row.isValid" :label=1>可见</el-radio>
+                <el-radio v-model="row.isValid" :label=0>不可见</el-radio>
+            </el-form-item>
+            <el-form-item label="等级 :">
+                <el-select  v-model="row.grade" filterable  clearable style="width: 100%"
+                            placeholder="请选择等级" @change="fillTypeOption" >
+                    <el-option :value="Number(item.code)" :label="item.name" v-for="(item, index) in GradeOption" :key="index"></el-option>
+
+                </el-select>
+            </el-form-item>
+
+            <el-form-item label="类型 :">
+                <el-select  v-model="row.type" filterable  clearable style="width: 100%"
+                            placeholder="请选择类型" @change="refreshS" >
+                    <el-option :value="item.name" :label="item.name" v-for="(item, index) in Option" :key="index"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="描述 :" >
+                <el-input
+                        type="textarea"
+                        :rows="2"
+                        placeholder=""
+                        v-model="row.routeDescribe">
+                </el-input>
+            </el-form-item>
+            <el-form-item  label="途经点 :"  >
+                <el-input
+                        type="textarea"
+                        :rows="2"
+                        placeholder=""
+                        v-model="row.passingPoint">
+                </el-input>
+            </el-form-item>
+
+
+            <div style="text-align: center;">
+                <el-button type="primary" @click="redraw">绘 制</el-button>
+                <el-button type="primary" @click="publish">确 定</el-button>
+                <el-button type="primary" @click="close">关 闭</el-button>
+            </div>
+
+        </el-form>
+    </div>
+
+
+</div>
+
+</body>
+
+<script>
+    var vm = null;
+
+    $(function () {
+        new Vue({
+            el: '#vue1',
+            data: {
+                oldPassingPoint:null,
+                routeType:null,
+                handleType:null,
+                row: {
+                    name: null,
+                    routeNumber: null,
+                    start: null,
+                    end: null,
+                    grade: null,
+                    type: null,
+                    routeDescribe:null,
+                    passingPoint:null,
+                    relationId:null,
+                    isValid:null
+                },
+                GradeOption:[],
+                Option:[]
+            },
+            created: function () {
+                vm = this;
+                //填充等级下拉框
+                doApi(
+                    function (res) {
+                        if (res.status === 200) {
+                            vm.GradeOption = res.data;
+                        }
+                    }, null, null, params.serviceIp + '/DictionaryInfo/getByType',
+                    "get", {type:"路线等级"}
+                );
+            },
+            methods: {
+                refreshS:function () {
+                    //数据层次太多，没有自动更新，需手动强制刷新
+                    vm.$forceUpdate();
+                },
+                fillTypeOption:function () {
+                    var type=null;
+                    vm.row.type=null;
+                    if(vm.row.grade==1){
+                        type="一级路线";
+                    }else if(vm.row.grade==2){
+                        type="二级路线";
+                    }else if(vm.row.grade==3){
+                        type="三级路线";
+                    }else {
+                        vm.Option =[];
+                    }
+                    if(type!=null){
+                        doApi(
+                            function (res) {
+                                if (res.status === 200) {
+                                    vm.Option = res.data;
+                                }
+                            }, null, null, params.serviceIp + '/DictionaryInfo/getByType',
+                            "get", {type:type}
+                        );
+                    }
+                },
+                publish: function () {
+                 //   console.info(vm.row);
+                    if(vm.handleType=="add"){
+                        doApiByJsonstr(
+                            function (res) {
+                                if (res.status === 200) {
+                                    vm.$message({
+                                        message: '路线添加成功',
+                                        type: 'success',
+                                        center: true,
+                                        duration: 1000,
+                                        onClose: function(){
+                                            //此处写提示关闭后需要执行的函数
+                                            //调用相邻iframe中的方法
+                                            $(window.parent.document).contents().find("#operator")[0].contentWindow.vm.select();
+                                            window.parent.hideRouteDetails();
+                                        }
+                                    });
+
+                                } else {
+                                    vm.$message.error("路线添加失败！");
+                                }
+                            },
+                            null, null, params.serviceIp + '/'+vm.routeType, 'post', vm.row
+                        );
+                    }else if(vm.handleType=="edit"){
+                        if(vm.oldPassingPoint==vm.row.passingPoint){
+                            //途经点未改变则不编辑
+                            vm.row.passingPoint=null;
+                        }
+                        doApiByJsonstr(
+                            function (res) {
+                                if (res.status === 200) {
+                                    vm.$message({
+                                        message: '路线编辑成功',
+                                        type: 'success',
+                                        center: true,
+                                        duration: 1000,
+                                        onClose: function(){
+                                            //此处写提示关闭后需要执行的函数
+                                            $(window.parent.document).contents().find("#operator")[0].contentWindow.vm.select();
+                                            window.parent.hideRouteDetails();
+                                        }
+                                    });
+
+                                } else {
+                                    vm.$message.error("路线编辑失败！");
+                                }
+                            },
+                            null, null, params.serviceIp + '/'+vm.routeType, 'put', vm.row
+                        );
+                    }
+
+                },
+                close: function () {
+                    top.cancelTrail();
+                    $(window.parent.document).contents().find("#operator")[0].contentWindow.vm.select();
+                    window.parent.hideRouteDetails();
+                },
+                redraw: function () {
+
+                    window.parent.document.getElementById("map2dv").contentWindow.drawRoute();
+                }
+            }
+        })
+    })
+</script>
+</html>

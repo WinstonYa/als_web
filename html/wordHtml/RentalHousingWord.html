@@ -1,0 +1,639 @@
+<html>
+
+<head>
+    <meta http-equiv=Content-Type content="text/html; charset=utf-8">
+    <meta name=Generator content="Microsoft Word 15 (filtered)">
+    <title>出租房屋表</title>
+
+    <link href="../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../alsm/vue/vue.js"></script>
+    <link href="../../css/elui/index.css" rel="stylesheet">
+    <script src="../../alsm/elui/index.js"></script>
+
+    <style>
+        <!--
+        /* Font Definitions */
+        @font-face
+        {font-family:宋体;
+            panose-1:2 1 6 0 3 1 1 1 1 1;}
+        @font-face
+        {font-family:"Cambria Math";
+            panose-1:2 4 5 3 5 4 6 3 2 4;}
+        @font-face
+        {font-family:"\@宋体";
+            panose-1:2 1 6 0 3 1 1 1 1 1;}
+        @font-face
+        {font-family:方正小标宋简体;}
+        @font-face
+        {font-family:"\@方正小标宋简体";}
+        /* Style Definitions */
+        p.MsoNormal, li.MsoNormal, div.MsoNormal
+        {margin:0cm;
+            margin-bottom:.0001pt;
+            text-align:justify;
+            text-justify:inter-ideograph;
+            font-size:10.5pt;
+            font-family:"Times New Roman",serif;}
+        p.MsoHeader, li.MsoHeader, div.MsoHeader
+        {margin:0cm;
+            margin-bottom:.0001pt;
+            text-align:center;
+            layout-grid-mode:char;
+            border:none;
+            padding:0cm;
+            font-size:9.0pt;
+            font-family:"Times New Roman",serif;}
+
+        p.MsoFooter, li.MsoFooter, div.MsoFooter {
+            margin: 0cm;
+            margin-bottom: .0001pt;
+            layout-grid-mode: char;
+            font-size: 9.0pt;
+            font-family: "Times New Roman", serif;
+        }
+
+        /* Page Definitions */
+        @page WordSection1 {
+            size: 595.3pt 841.9pt;
+            margin: 72.0pt 90.0pt 72.0pt 90.0pt;
+            layout-grid: 15.6pt;
+        }
+
+        div.WordSection1 {
+            page: WordSection1;
+            height: 550px;
+        }
+
+        .myInput{
+            width: 100%;
+            height: 100%;
+            border: none;
+            float: left;
+            zoom:1;
+            outline: medium;
+        }
+        -->
+    </style>
+
+</head>
+
+<body lang=ZH-CN style='text-justify-trim:punctuation'>
+<div id="TempContant">
+
+<div class=WordSection1 style='layout-grid:15.6pt;overflow: auto'>
+
+    <p class=MsoNormal align=center style='text-align:center'><span
+            style='font-size:22.0pt;font-family:方正小标宋简体'>出租房屋治安管理审批表</span></p>
+
+    <p class=MsoNormal align=center style='text-align:center'></p>
+
+<!--    <div >-->
+
+        <table align=center class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=614
+               style='width:460.3pt;border-collapse:collapse'>
+            <tr style='height:25.35pt'>
+                <td width=94 nowrap style='width:70.5pt;border:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.35pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>出租人</span></b></p>
+                </td>
+                <td width=104 nowrap style='width:77.95pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:25.35pt'>
+                    <input type="text" class="myInput" v-model="lists.czr	" placeholder=""/>
+<!--<input type="text" class="myInput" v-model="lists.name" placeholder=""/>-->
+
+
+                </td>
+                <td width=59 colspan=2 style='width:43.95pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:25.35pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>性 别</span></b></p>
+                </td>
+                <td width=36 style='width:26.95pt;border:solid windowtext 1.0pt;border-left:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:25.35pt'>
+                    <input type="text" class="myInput" v-model="lists.xb" placeholder=""/>
+</td>
+                <td width=94 nowrap colspan=2 style='width:70.85pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:25.35pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>联系电话</span></b></p>
+                </td>
+                <td width=77 nowrap colspan=2 style='width:57.7pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:25.35pt'>
+                    <input type="text" class="myInput" v-model="lists.lxdh" placeholder=""/>
+</td>
+                <td width=150 colspan=2 rowspan=4 valign=top style='width:112.4pt;border-top:
+  solid windowtext 1.0pt;border-left:none;border-bottom:none;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.35pt'>
+              <!--      <p class=MsoNormal align=left style='text-align:left'><span lang=EN-US
+                                                                                style='font-size:10.0pt'>&nbsp;</span></p>-->
+
+                    <img :src="photographFile_url" id="show" alt="..." style="max-height: 180px;height: auto;width: 180px">
+
+                    <input ref="clearFile" accept="image/png, image/jpeg, image/gif, image/jpg" style="width: 180px" class="upload" @change='add_img'  type="file">
+
+
+                </td>
+            </tr>
+            <tr style='height:26.0pt'>
+                <td width=94 style='width:70.5pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>身份证号码</span></b></p>
+                </td>
+                <td width=104 style='width:77.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <input type="text" class="myInput" v-model="lists.sfzhm" placeholder=""/>
+</td>
+                <td width=59 nowrap colspan=2 style='width:43.95pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>民 族</span></b></p>
+                </td>
+                <td width=36 nowrap style='width:26.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <input type="text" class="myInput" v-model="lists.mz" placeholder=""/>
+</td>
+                <td width=94 colspan=2 style='width:70.85pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>文化程度</span></b></p>
+                </td>
+                <td width=77 nowrap colspan=2 style='width:57.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <input type="text" class="myInput" v-model="lists.whcd" placeholder=""/>
+</td>
+            </tr>
+            <tr style='height:24.1pt'>
+                <td width=94 nowrap style='width:70.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:24.1pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>工作单位</span></b></p>
+                </td>
+                <td width=198 nowrap colspan=4 style='width:148.85pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:24.1pt'>
+                    <input type="text" class="myInput" v-model="lists.gzdw" placeholder=""/>
+</td>
+                <td width=94 nowrap colspan=2 style='width:70.85pt;border: 1px black solid;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:24.1pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>委托管理人姓名</span></b></p>
+                </td>
+                <td width=77 nowrap colspan=2 style='width:57.7pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:24.1pt'>
+
+                    <input type="text" class="myInput" v-model="lists.wtglrxm" placeholder=""/>
+</td>
+               <!-- <td width=150 colspan=2 valign=top style='width:112.4pt;border:none;
+  border-right:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:24.1pt'>
+
+
+                </td>-->
+            </tr>
+            <tr style='height:26.0pt'>
+                <td width=94 nowrap style='width:70.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>户口所在地</span></b></p>
+                </td>
+                <td width=198 nowrap colspan=4 style='width:148.85pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <input type="text" class="myInput" v-model="lists.hkszd" placeholder=""/>
+</td>
+                <td width=94 nowrap colspan=2 style='width:70.85pt;border: 1px black solid;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>委托管理人住址及单位</span></b></p>
+                </td>
+
+                <td width=77 nowrap colspan=2 style='width:57.7pt;border: 1px black solid;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <input type="text" class="myInput" v-model="lists.wtglrzzjdw" placeholder=""/>
+</td>
+
+               <!-- <td width=150 colspan=2 valign=top style='width:112.4pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+
+
+                </td>-->
+            </tr>
+            <tr style='height:26.0pt'>
+                <td width=94 nowrap style='width:70.5pt;border:solid windowtext 1.0pt;
+  border-top:1px black solid;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>承租人姓名或单位名称</span></b></p>
+                </td>
+
+                <td width=520 colspan=10 style='width:389.8pt;border:1px black solid;;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <input type="text" class="myInput" v-model="lists.czrxmhdwmc" placeholder=""/>
+                </td>
+
+            </tr>
+            <tr style='height:33.1pt'>
+                <td width=94 style='width:70.5pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:33.1pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>产权所有</span></b></p>
+                </td>
+                <td width=198 nowrap colspan=4 style='width:148.85pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:33.1pt'>
+                    <input type="text" class="myInput" v-model="lists.cqsy" placeholder=""/>
+</td>
+                <td width=57 nowrap style='width:42.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:33.1pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>出租间数</span></b></p>
+                </td>
+                <td width=47 nowrap colspan=2 style='width:35.45pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:33.1pt'>
+                    <input type="number" oninput = "value=value.replace(/[^\d]/g,'')" placeholder="整数" class="myInput" v-model="lists.czjs" placeholder=""/>
+</td>
+                <td width=76 colspan=2 style='width:2.0cm;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:33.1pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>出租面积</span></b></p>
+                </td>
+                <td width=142 style='width:106.3pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:33.1pt'>
+                    <input type="number" oninput = "value=value.replace(/[^\d]/g,'')" placeholder="请输入整数" class="myInput" v-model="lists.czmj" placeholder=""/>
+</td>
+            </tr>
+            <tr style='height:35.7pt'>
+                <td width=94 style='width:70.5pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:35.7pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>出租用途</span></b></p>
+                </td>
+                <td width=302 nowrap colspan=7 style='width:8.0cm;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.7pt'>
+                   <!-- <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>　商业</span></b>
+                    </p>-->
+                    <input type="text" class="myInput" v-model="lists.czyt" placeholder=""/>
+
+                </td>
+                <td width=76 nowrap colspan=2 style='width:2.0cm;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.7pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>准住人数</span></b></p>
+                </td>
+                <td width=142 nowrap style='width:106.3pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.7pt'>
+                    <input type="number" oninput = "value=value.replace(/[^\d]/g,'')" placeholder="请输入整数" class="myInput" v-model="lists.zzrs" placeholder=""/>
+</td>
+            </tr>
+            <tr style='height:34.85pt'>
+                <td width=94 rowspan=2 style='width:70.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:34.85pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>出租形式</span></b></p>
+                </td>
+                <td width=132 nowrap colspan=3 rowspan="2" style='width:99.2pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:34.85pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>　
+<!--              <input type="text"  placeholder="年租&月租" class="myInput" v-model="lists.czxsYz" />-->
+
+                     <el-select v-model="dataOptionsOne" placeholder="请选择">
+                        <el-option
+                                v-for="item in dataOptions"
+                                :key="item.value"
+                                :label="item.name"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+
+                    </span></b></p>
+                </td>
+                <td width=387 colspan=2 style='width:290.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:34.85pt'>
+                    <p class=MsoNormal align=left style='text-align:left'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>消防设施：</span></b></p>
+                </td>
+
+                <td width=387 colspan=6 style='width:290.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:34.85pt'>
+
+                    <input type="text" class="myInput" v-model="lists.xfss" placeholder=""/>
+
+                </td>
+
+            </tr>
+            <tr style='height:34.65pt'>
+               <!-- <td width=132 nowrap colspan=2 style='width:99.2pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:34.65pt'>
+&lt;!&ndash;                    <p class=MsoNormal align=center style='text-align:center'><b><span&ndash;&gt;
+&lt;!&ndash;                            style='font-size:11.0pt;font-family:宋体'>&ndash;&gt;
+&lt;!&ndash;                      <input type="number" oninput = "value=value.replace(/[^\d]/g,'')" placeholder="年(请输入整数)" class="myInput" v-model="lists.czxsNz" placeholder=""/>&ndash;&gt;
+
+&lt;!&ndash;                    </span></b></p>&ndash;&gt;
+                </td>-->
+                <td width=387 colspan=2 style='width:290.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:34.65pt'>
+                    <p class=MsoNormal align=left style='text-align:left'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>分类<span lang=EN-US>:</span></span></b></p>
+                </td>
+                <td width=387 colspan=6 style='width:290.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:34.85pt'>
+
+                    <input type="text" class="myInput" v-model="lists.fl" placeholder=""/>
+
+                </td>
+            </tr>
+            <tr style='height:88.5pt'>
+                <td width=94 nowrap rowspan=1 style=' border: 1px solid black;width:70.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:88.5pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:10.0pt;font-family:宋体'>社区民警意见</span></b></p>
+
+                </td>
+                <td width=520 colspan=10 style='width:389.8pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:88.5pt'>
+
+                    <input type="text" class="myInput" v-model="lists.sqmjyj" placeholder="经审查，出租人xxx的出租房屋符合出租房屋治安管理的条件"/>
+
+                </td>
+            </tr>
+
+
+            <tr style='height:30.35pt'>
+                <td width=94 nowrap style='width:70.5pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:30.35pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:10.0pt;font-family:宋体'>所领导审批意见</span></b></p>
+                </td>
+                <td width=520 colspan=10 style='width:389.8pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:100.35pt'>
+
+                    <textarea type="text" class="myInput" v-model="lists.sldspyj" placeholder=""></textarea>
+            </td>
+            </tr>
+            <tr height=0>
+                <td width=94 style='border:none'></td>
+                <td width=104 style='border:none'></td>
+                <td width=28 style='border:none'></td>
+                <td width=30 style='border:none'></td>
+                <td width=36 style='border:none'></td>
+                <td width=57 style='border:none'></td>
+                <td width=38 style='border:none'></td>
+                <td width=9 style='border:none'></td>
+                <td width=67 style='border:none'></td>
+                <td width=8 style='border:none'></td>
+                <td width=142 style='border:none'></td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div class="t-btns" align="center">
+        <button type="button" class="btn btn-success" @click="submitEdit">提交</button>
+    </div>
+</div>
+
+
+    <script src="../../alsm/api_sub.js" type="text/javascript"></script>
+    <script src="../../js/config/config.js"></script>
+
+    <script>
+        // var data;
+        var vm;
+
+        function setData(operate,res) {
+            /* console.log(res); */
+            vm.setRes(operate,res);
+        }
+        $(function () {
+            vm = new Vue({
+                el:'#TempContant',
+                data:{
+                    lists: {
+                    },
+                    operated:'',
+                    photographFile_url:'#',
+                    img1:null,
+                    dataOptions:[{
+                        value:'0',
+                        name:'月租'
+                    },{
+                        value:'1',
+                        name:'年租'
+                    }],
+                    dataOptionsOne:''
+
+                },
+                mounted: function(){
+                    vm = this;
+                },
+                methods: {
+                    setRes:function(operate,res) {
+                        vm.operated=operate;
+
+                        if (operate=='edit'){
+                            vm.lists=res;
+                            //头像
+                            vm.photographFile_url = vm.lists.zp;
+
+                            vm.dataOptionsOne='';
+
+                            if (vm.lists.czxsYz=='0'){
+                                vm.dataOptionsOne = '月租'
+                            }else if (vm.lists.czxsYz=='1'){
+                                vm.dataOptionsOne = '年租';
+                            }
+                            // vm.dataOptionsOne = vm.lists.czxsYz;
+
+                        }else if (operate=='add') {
+                            vm.lists={
+                                czr:'',
+                                xb:'',
+                                lxdh:'',
+                                //照片
+                                zp:'',
+                                sfzhm:'',
+                                mz:'',
+                                whcd:'',
+                                gzdw:'',
+                                wtglrxm:'',
+                                hkszd:'',
+                                wtglrzzjdw:'',
+                                czrxmhdwmc:'',
+                                cqsy:'',
+                                czjs:'',
+                                czmj:'',
+                                czyt:'',
+                                zzrs:'',
+                                czxsYz:'',
+                                czxsNz:'',
+                                xfss:'',
+                                fl:'',
+                                sqmjyj:'',
+                                sqmjqz:'',
+                                sqmjqzsj:'',
+                                sldspyj:'',
+                                //填表时间
+                                writeTime:'',
+                            };
+
+                            // this.$refs.clearFile.value = ''; // 清空file文件
+
+                            vm.photographFile_url = null;
+                            vm.dataOptionsOne = ''
+                        }
+
+                        /* console.log(vm.lists) */
+                    },
+                    add_img:function(event) {
+                        let reader = new FileReader();
+
+                        vm.img1 = event.target.files[0];
+
+                        let type1 = event.target.files[0].type;
+
+                        var url = null;
+                        // 下面函数执行的效果是一样的，只是需要针对不同的浏览器执行不同的 js 函数而已
+                        if (window.createObjectURL != undefined) { // basic
+                            url = window.createObjectURL(vm.img1);
+                        } else if (window.URL != undefined) { // mozilla(firefox)
+                            url = window.URL.createObjectURL(vm.img1);
+                        } else if (window.webkitURL != undefined) { // webkit or chrome
+                            url = window.webkitURL.createObjectURL(vm.img1);
+                        }
+                        console.log(url);
+                        vm.photographFile_url = url;
+                        document.getElementById('show').src = url;
+
+                    },
+                    //提交修改
+                    submitEdit:function() {
+                        var form = new FormData();
+
+                        if (vm.img1){
+                            form.append('zpFile',vm.img1,vm.img1.name);
+                        }
+
+                        form.append('czr',vm.lists.czr);
+                        form.append('xb',vm.lists.xb);
+                        form.append('lxdh',vm.lists.lxdh);
+
+                        form.append('zp',vm.lists.zp);
+
+                        //生日 Date类型
+                        // form.append('birthday',vm.lists.birthday);
+
+                        form.append('sfzhm',vm.lists.sfzhm);
+                        form.append('mz',vm.lists.mz);
+
+                        form.append('whcd',vm.lists.whcd);
+                        form.append('gzdw',vm.lists.gzdw);
+                        form.append('wtglrxm',vm.lists.wtglrxm);
+
+                        form.append('hkszd',vm.lists.hkszd);
+                        form.append('wtglrzzjdw',vm.lists.wtglrzzjdw);
+
+                        form.append('czrxmhdwmc',vm.lists.czrxmhdwmc);
+                        form.append('cqsy',vm.lists.cqsy);
+                        //出租间数(间) int
+                        form.append('czjs',vm.lists.czjs);
+
+                        //出租面积(平米) BigDecimal
+                        form.append('czmj',vm.lists.czmj);
+
+                        form.append('czyt',vm.lists.czyt);
+                        //准住人数(人)   int
+                        form.append('zzrs',vm.lists.zzrs);
+                        //出租形式_月租(元)    int
+                        form.append('czxsYz',vm.lists.czxsYz);
+                        //出租形式_年租(元)    int
+                        form.append('czxsNz',vm.lists.czxsNz);
+
+                        form.append('xfss',vm.lists.xfss);
+                        form.append('fl',vm.lists.fl);
+                        form.append('sqmjyj',vm.lists.sqmjyj);
+                        form.append('sqmjqz',vm.lists.sqmjqz);
+
+                        //社区民警签字时间
+                        // form.append('sqmjqzsj',vm.lists.destination);
+
+                        form.append('sldspyj',vm.lists.sldspyj);
+                        form.append('pmsyt',vm.lists.pmsyt);
+
+
+                        if (vm.operated=='edit'){
+                            form.append('id',vm.lists.id);
+
+                            doApiByFile(
+                                function(res) {
+                                    vm.photographFile_url = res.data.photograph;
+
+                                    // vm.dialogShow=false;
+                                    parent.vm.loadData();
+
+                                    if (res.status === 200) {
+                                        parent.vm.dialogShow=false;
+                                        parent.vm.showMessage("suc")
+                                        // alert("成功")
+                                    }else{
+                                        parent.vm.showMessage("fail")
+                                    }
+                                },
+                                null, null,params.serviceIp + '/CzfwCzfwzaglspb/updateDataAndFile', 'put',form
+                            );
+                        }else if (vm.operated=='add'){
+
+                            doApiByFile(
+                                function(res) {
+                                    vm.photographFile_url = res.data.photograph;
+
+                                    //清空 防止缓存
+                                    // vm.lists={};
+                                    // vm.dialogShow=false;
+                                    parent.vm.dialogShow=false;
+                                    parent.vm.loadData();
+
+                                    if (res.status === 200) {
+                                        parent.vm.showMessage("suc")
+                                    }else{
+                                        parent.vm.showMessage("fail")
+                                    }
+                                },
+                                null, null,params.serviceIp + '/CzfwCzfwzaglspb/addDataAndFile', 'post',form
+                            );
+                        }
+                    }
+                }
+            });
+
+        });
+
+    </script>
+
+</div>
+
+</body>
+
+</html>

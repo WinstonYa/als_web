@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>走访记录</title><!--
+    <link href="../../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">-->
+    <link href="../../../alsm/ttyu.net/file/ttyu/css/ttyu.web.css" rel="stylesheet" type="text/css">
+
+    <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../../alsm/vue/vue.js"></script>
+
+    <link href="../../../css/elui/index.css" rel="stylesheet">
+    <script src="../../../alsm/elui/index.js"></script>
+
+    <script src="../../../alsm/api_sub.js" type="text/javascript"></script>
+
+    <script src="../../../js/config/config.js"></script>
+
+    <link href="../../../css/alsCommon.css" rel="stylesheet">
+
+    <style>
+        .ol-popup {
+            position: absolute;
+            background-color: white;
+            /* -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2)); */
+            /* filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2)); */
+            /* filter: drop-shadow(0 1px 4px #FFC125); */
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #cccccc;
+
+            bottom: 12px;
+            min-width: 480px;
+        }
+
+        .ol-popup:after, .ol-popup:before {
+            top: 100%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+        }
+
+        .ol-popup-closer {
+            text-decoration: none;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+        }
+
+        .ol-popup-closer:after {
+            content: "✖";
+        }
+
+        #tableDiv{
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+<div id='body1'>
+    <div class="t-body">
+        <div>
+            <div class="t-title">
+                <span>查询条件</span>
+            </div>
+            <div class="t-find">
+                <div class="t-form">
+                    <div>
+                        <!-- <span>部门名称：</span> -->
+                        <el-select v-model="params.dptId" clearable filterable
+                            @change="changePI"
+                            placeholder="请选择派出所">
+                            <el-option
+                                v-for="item in policeStation"
+                                :key="item.name"
+                                :label="item.name"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div>
+                        <!-- <span>民警名称：</span> -->
+                        <el-select v-model="params.fillPersonId" clearable filterable placeholder="请选择民警">
+                            <el-option
+                                v-for="item in policemen"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.userId">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div>
+                        <!-- <span>表名：</span> -->
+                        <el-select v-model="params.formName" clearable filterable placeholder="请选择表单">
+                            <el-option
+                                v-for="item in visitFormName"
+                                :key="item"
+                                :label="item"
+                                :value="item">
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div>
+                        <!-- <span>时间段：</span> -->
+                        <el-date-picker
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            v-model="params.before"
+                            type="datetime"
+                            placeholder="选择起始时间">
+                        </el-date-picker>
+                        <el-date-picker
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            v-model="params.after"
+                            type="datetime"
+                            placeholder="选择结束时间">
+                        </el-date-picker>
+                    </div>
+                </div>
+                <div class="t-btns">
+                    <button title='查询'>
+                        <span class="glyphicon glyphicon-search" ></span>
+                        查询
+                    </button>
+                    <button title='重置'>
+                        <span class="glyphicon glyphicon-repeat" ></span>
+                        重置
+                    </button>
+                    <button
+                        v-loading.fullscreen.lock="fullscreenLoading"
+                        element-loading-text="拼命处理中"
+                        element-loading-spinner="el-icon-loading"
+                        element-loading-background="rgba(0, 0, 0, 0.8)"
+                        @click="exportToExcel()">
+                        <span class="iconfont icondaochu" style="font-size: 15px" >导出</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="t-title" style="background-color: rgb(64, 152, 186);">
+            <span>列表</span>
+        </div>
+
+        <!-- <div class="t-btns">
+            <button title='发布'>
+                <span class="glyphicon glyphicon glyphicon-plus"></span>
+                发布
+            </button>
+            <button title='删除'>
+                <span class="glyphicon glyphicon-trash"></span>
+                删除
+            </button>
+        </div> -->
+
+        <div id="tableDiv">
+            <el-table :data="rows"
+                :row-key="rowKey"
+                ref="myTable"
+                @select='selectRows'
+                @select-all="selectRows"
+                border fit highlight-current-row style="width: 100%;"
+                :row-style="{height:'5px'}" :cell-style="{padding:'5px 0'}">
+
+                <el-table-column align="center" label="序号" width="80">
+                    <template slot-scope="scope">
+                        {{  (pageIndex - 1) * pageSize +scope.$index+1 }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="操作" width="110">
+                    <template slot-scope="scope">
+                        <!-- <span v-on:click="show(scope.row)" style="cursor: pointer;color: #0e78c9">编辑</span> -->
+                        <el-button size="mini"  icon="el-icon-edit" v-on:click="show(scope.row)" style="display:inline">查看详情</el-button>
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="民警姓名" width="150">
+                    <template slot-scope="scope">
+                        {{ scope.row.fillPerson }}
+                    </template>
+                </el-table-column>
+
+                <!-- <el-table-column align="center" label="部门名称" min-width="20">
+                    <template slot-scope="scope">
+                        {{ scope.row.dptName }}
+                    </template>
+                </el-table-column> -->
+
+                <el-table-column align="center" label="走访目标" min-width="20">
+                    <template slot-scope="scope">
+                        {{ scope.row.formName }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="走访名称" min-width="20">
+                    <template slot-scope="scope">
+                        {{ scope.row.formDataName }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="经纬度" min-width="20">
+                    <template slot-scope="scope" v-if="scope.row.longitude">
+                        {{ scope.row.longitude }},{{ scope.row.latitude }}
+                    </template>
+                    <template slot-scope="scope" v-else>
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="填表时间" width="250">
+                    <template slot-scope="scope">
+                        {{ scope.row.fillTime }}
+                    </template>
+                </el-table-column>
+
+            </el-table>
+        </div>
+
+        <el-pagination
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageIndex"
+            :page-sizes="pageRows"
+            :page-size="pageSize"
+            layout="total,jumper,prev, pager, next,sizes"
+            :total="total">
+        </el-pagination>
+
+        <!-- <div id="dataTableDiv" style="display: none;position: absolute;top: 10%;left: 10%;right: 10%;bottom: 10%;z-index: 9999"> -->
+        <div id="dataTableDiv" style="display: none;position: absolute;top: 15%;left: 27%;right: 27%;bottom: 10%;z-index: 9999;width: 952px;">
+            <div class="ol-popup" style="position: relative; width: 100%;height: 100%">
+                <iframe src="" id="dataTableMain" name="dataTableMain" marginwidth="0"
+                    marginheight="0" frameborder="0" scrolling="auto" style="width: 100%;height: 100%"></iframe>
+                <a href="#" class="ol-popup-closer" @click="closeDataTableFrame()"></a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+<script type="text/javascript" src="./../../json/nation.js"></script>
+<script src="../../../js/utils/toExcel.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        new Vue({
+            el: '#body1',
+            data: {
+                params:{
+                    page:null,
+                    limit: null,
+                    dptId:null,
+                    fillPersonId: null,
+                    formName: null,
+                    before: null,
+                    after: null,
+                },
+                checked: false,
+                selectedArray: [],
+                options:[],
+                dialogShow:false,
+
+                rows: [],
+                row: {},
+                saveSelectRows:[],
+
+                total: 0,
+                pageIndex:1,
+                pageSize: 20,
+                pageRows: [5, 10, 20, 30, 40, 50],
+
+                oldMissionPersons:[],
+                operationType:"",
+
+                //常住人口 移植
+                //多选框
+                sexOptions: [],
+                nationOptions: [],
+                religionOptions: [],
+                maritalStatusOptions: [],
+                militaryOptions:[],
+                cultureOptions: [],
+                politicsOptions: [],
+                visitFormName: [],
+
+                imageUrlHourse:'',
+                activeName: 'first',
+
+                //暂住
+                dialogShowTemPopulation:false,
+
+
+                // 派出所名单
+                policeStation: [],
+                // 民警名单
+                policemen: [],
+                allPolicemen: [],
+                fullscreenLoading: null
+            },
+
+            mounted: function () {
+                vm = this;
+                vm.fillOptions();
+                vm.setTableDiv();
+                vm.loadData();
+                initButton(this);
+
+                //多选框
+                vm.sexOptions=sexOptions;
+                vm.nationOptions = nation;
+                vm.religionOptions = religionOptions;
+                vm.maritalStatusOptions = maritalStatusOptions;
+                vm.militaryOptions = military;
+                vm.cultureOptions = cultureOptions;
+                vm.politicsOptions = politicsOptions;
+                vm.visitFormName = visitFormName;
+
+                vm.loadData02();
+                vm.loadData03();
+            },
+            computed: {
+            },
+            methods: {
+                changePI:function () {
+                    vm.params.fillPersonId=null;
+                    if(vm.params.dptId==""){
+                        vm.policemen =vm.allPolicemen;
+                    }else {
+                        doApi(
+                            function (res) {
+                                if (res.status === 200) {
+                                    vm.policemen = res.data;
+                                }else {
+                                    vm.policemen =[];
+                                }
+                            }, null, null, params.serviceIp + '/PoliceInfo/getListByDptId',
+                            "get",{dptId:vm.params.dptId}
+                        )
+                    }
+
+                },
+                closeDialog:function(){
+                    vm.row={}
+                },
+                rowKey :function(row) {
+                    return row.id;
+                },
+                // 清空全部筛选,必须放到方法中，否则加载失败
+                clearFilter:function () {
+                    this.$refs.myTable.clearSelection();
+                },
+                selectAll:function() {
+                    vm.selectedArray = [];
+                    if (vm.checked) {
+                        for ( var i=0;i<vm.options.length;i++ ){
+                            var item=vm.options[i];
+                            vm.selectedArray.push(item.userId)
+                        }
+                    } else {
+                        vm.selectedArray = [];
+                    }
+                },
+                changeSelect:function(val) {
+                    vm.selectedArray=val;
+                },
+                //将选中行数据存入变量
+                selectRows: function(rows){
+                    vm.saveSelectRows=rows;
+                },
+                // 记忆选择核心方法
+
+                //填充下拉框
+                fillOptions: function () {
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.options= res.data;
+                            }
+                        }, null, null, params.serviceIp + '/PoliceInfo/getCurrentUserPoliceInfo', "get"
+                    )
+                },
+                // 初始化表格数据
+                loadData: function () {
+                    vm.params.page=vm.pageIndex;
+                    vm.params.limit=vm.pageSize;
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                // console.log(res.data.rows);
+                                vm.rows= res.data.rows;
+                                vm.total =res.data.total;
+                            }
+                        }, null, null, params.serviceIp + '/PoliceVisitForm/listUserDeptAppData', "get", vm.params
+                    );
+                },
+                setTableDiv:function(){
+                    var height=$(window).height()-200;
+                    $("#tableDiv").css("height",height);
+                },
+                //初始化派出所列表
+                loadData02: function () {
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.policeStation = res.data;
+                            }
+                        },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceStation',"get"
+                    );
+                },
+                //初始化民警列表
+                loadData03: function () {
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.allPolicemen = res.data;
+                                vm.policemen =res.data;
+                            }
+                        },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceInfo',"get"
+                    );
+                },
+                //分页 初始页pageIndex、控制每页几条
+                handleSizeChange:function(size){
+                    this.pageSize = size;
+                    this.loadData();
+                },
+                // 控制页面的切换
+                handleCurrentChange: function(pageIndex) {
+                    this.pageIndex = pageIndex;
+                    this.loadData();
+                },
+                show: function (row) { //获取点击对象
+                    // vm.oldMissionPersons=[];
+                    // vm.selectedArray=[];
+                    // vm.row=row;
+                    // console.log(row);
+
+                    // var partInterface;
+                    //常住人口接口
+                    if (row.formName=="人口管理_常住人口信息"){
+                        var srcHtml = '../../view/populationManager.html?' + row.formId + '&1';
+                    }else if(row.formName=="人口管理_暂住人口登记"){
+                        var srcHtml = '../../view/TempPopulation.html?' + row.formId;
+                    }else if(row.formName=="其它场所"){
+                        var srcHtml = '../../view/generalData.html?' + row.formId;
+                    }else if(row.formName=="出租房屋_出租房屋治安消防管理检查记录"){
+                        var srcHtml = '../../view/RentalHousing.html?' + row.formId + '&2';
+                    }else if(row.formName=="特种行业_旅店业检查记录"){
+                        var srcHtml = '../../view/SpecialIndustry.html?' + row.formId + '&1';
+                    }else if(row.formName=="统计_重点人口走访"){
+                        var srcHtml = '../../view/populationManager.html?' + row.formId + '&2';
+                    }else if(row.formName=="涉爆单位_安全检查"){
+                        var srcHtml = '../../view/BoomCompanyManager.html?' + row.formId + '&2';
+                    }else if(row.formName=="商业网点_检查登记"){
+                        var srcHtml = '../../view/CommercialPoint.html?' + row.formId + '&2';
+                    }else if(row.formName=="企事业单位_安全检查记录"){
+                        var srcHtml = '../../view/companyManager.html?' + row.formId + '&2';
+                    }else if(row.formName=="特种行业_废品金属收购业检查记录"){
+                        var srcHtml = '../../view/SpecialIndustry.html?' + row.formId + '&2';
+                    }
+                    vm.showDataTableFrame(srcHtml);
+                },
+                publish:function () {
+                    if(vm.operationType=="edit"){
+                        doApiByJsonstr(
+                            function(res) {
+                                if (res.status === 200) {
+                                    var data=res.data;
+                                    var delIds=[];
+                                    var addList=[];
+
+                                    var oldMissionPersonUserIds=[];
+                                    for ( var i=0;i<vm.oldMissionPersons.length;i++ ){
+                                        var person = vm.oldMissionPersons[i];
+                                        oldMissionPersonUserIds.push(person.participantId);
+
+                                        if(vm.selectedArray.indexOf(person.participantId)==-1){
+                                            delIds.push(person.id);
+                                        }
+                                    }
+
+                                    for ( var i=0;i<vm.options.length;i++ ){
+                                        var item=vm.options[i];
+                                        if(oldMissionPersonUserIds.indexOf(item.userId)!=-1){
+                                            continue;
+                                        }
+                                        if(vm.selectedArray.indexOf(item.userId)!=-1){
+                                            var param= {
+                                                "missionId": data.id,
+                                                "missionName": data.name,
+                                                "participantId": item.userId,
+                                                "participantsName": item.name
+                                            };
+                                            addList.push(param);
+                                        }
+                                    }
+                                    var paramMap={
+                                        delIds:delIds,
+                                        missionPersonInfos:addList
+                                    }
+
+                                    doApiByJsonstr(
+                                        function(res) {
+                                            vm.loadData();
+                                            if (res.status === 200) {
+                                                vm.dialogShow=false;
+                                                vm.$message.info("任务和任务人员编辑成功！");
+                                            }else{
+                                                vm.$message.error("任务添加成功，但任务人员编辑失败！");
+                                            }
+                                        },
+                                        null, null, params.serviceIp + '/MissionPersonInfo/batchUpdateVisitMissionPerson', 'post', paramMap
+                                    );
+                                }else{
+                                    vm.$message.error("任务编辑失败！");
+                                }
+                            },
+                            null, null, params.serviceIp + '/VisitMissionInfo', 'put', vm.row
+                        );
+                    }else if(vm.operationType=="add"){
+                        doApiByJsonstr(
+                            function(res) {
+                                if (res.status === 200) {
+                                    if(vm.selectedArray.length==0){
+                                        vm.loadData();
+                                        vm.dialogShow=false;
+                                        vm.$message.info("任务添加成功！");
+                                    }else {
+                                        var data=res.data;
+                                        var paramList=[];
+
+                                        for ( var i=0;i<vm.options.length;i++ ){
+                                            var item=vm.options[i];
+                                            if(vm.selectedArray.indexOf(item.userId)!=-1){
+                                                var param= {
+                                                    "missionId": data.id,
+                                                    "missionName": data.name,
+                                                    "participantId": item.userId,
+                                                    "participantsName": item.name
+                                                };
+                                                paramList.push(param);
+                                            }
+                                        }
+
+                                        doApiByJsonstr(
+                                            function(res) {
+                                                vm.loadData();
+                                                if (res.status === 200) {
+                                                    vm.dialogShow=false;
+                                                    vm.$message.info("任务和任务人员添加成功！");
+                                                }else{
+                                                    vm.$message.error("任务添加成功，但任务人员添加失败！");
+                                                }
+                                            },
+                                            null, null, params.serviceIp + '/MissionPersonInfo/batchAddVisitMissionPerson', 'post', paramList
+                                        );
+                                    }
+                                }else{
+                                    vm.$message.error("任务添加失败！");
+                                }
+                            },
+                            null, null, params.serviceIp + '/VisitMissionInfo', 'post', vm.row
+                        );
+                    }
+                },
+                deleteList:function () {
+                    vm.$confirm('是否删除?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        var delIds=[];
+                        for ( var i=0;i<vm.saveSelectRows.length;i++ ){
+                            var row=vm.saveSelectRows[i];
+                            if(row.id!=null){
+                                delIds.push(row.id);
+                            }
+                        }
+                        if(delIds.length==0){
+                            return;
+                        }
+
+                        doApiByJsonstr(
+                            function(res) {
+                                if (res.status === 200) {
+                                    vm.pageIndex=1;
+                                    vm.loadData();
+                                    vm.dialogShow=false;
+                                    vm.clearFilter();
+                                    vm.$message.info("任务和任务人员批量删除成功！");
+                                }else{
+                                    vm.$message.error("任务和任务人员批量删除失败！");
+                                }
+                            }, null, null, params.serviceIp + '/', 'post', delIds
+                        );
+
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                // 显示iframe
+                showDataTableFrame :function (srcHtml) {
+                    $("#dataTableMain").attr("src", srcHtml);
+                    $('#dataTableDiv').show();
+                },
+                // 关闭iframe
+                closeDataTableFrame: function () {
+                    // $("#map2dv")[0].contentWindow.clickIntePos.getFeatures().clear();
+                    $("#dataTableMain").attr("src", "");
+                    $('#dataTableDiv').hide();
+                },
+                // 导出数据
+                exportToExcel:function(){
+                    vm.fullscreenLoading = true;
+                    // vm.loading = true;
+                    // var paramsPage={};
+                    // paramsPage.page=1;
+                    // paramsPage.limit=9999;
+                    vm.params.limit = null;
+
+                    var data3;
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                data3=res.data.rows;
+                                // console.log(data3);
+                                //自定义过滤栏（不需要导出的行）
+                                //identity是什么？
+                                var filter=['id','visitTraceId','formId','fillPersonId','syncTime']
+                                let b = Json2Excel(data3,"走访记录表",visitRecording,filter);
+                                if (b){
+                                    vm.fullscreenLoading = false;
+                                }
+                            }
+                        },null,null,params.serviceIp + '/PoliceVisitForm/listUserDeptData',
+                        "get", vm.params
+                    );
+                },
+            }
+        })
+    })
+</script>
+<script type="text/javascript">
+    function initButton(vm) {
+        $('button').on("click", function (e) {
+            switch (this.innerText.trim()) {
+                case "重置":
+                    vm.params.fillPersonId=null;
+                    vm.params.dptId=null;
+                    vm.params.formName=null;
+                    vm.params.before=null;
+                    vm.params.after=null;
+                    break;
+                case "查询":
+                    vm.pageIndex=1;
+                    vm.loadData();
+                    break;
+                case "发布":
+                    vm.row={};
+                    vm.selectedArray=[];
+                    vm.operationType="add";
+                    vm.dialogShow=true;
+                    break;
+                case "删除":
+                    vm.deleteList();
+                    break;
+            }
+        });
+    }
+</script>

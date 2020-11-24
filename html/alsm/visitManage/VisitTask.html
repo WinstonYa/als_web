@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>走访任务</title><!--
+    <link href="../../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">-->
+    <link href="../../../alsm/ttyu.net/file/ttyu/css/ttyu.web.css" rel="stylesheet" type="text/css">
+
+    <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+
+
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../../alsm/vue/vue.js"></script>
+
+    <link href="../../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <script src="../../../alsm/element2.12.0/index.js"></script>
+
+    <script src="../../../alsm/api_sub.js" type="text/javascript"></script>
+
+    <script src="../../../js/config/config.js"></script>
+
+    <link href="../../../css/alsCommon.css" rel="stylesheet">
+    <!-- 适配ie 解决ie中then方法不能调用-->
+    <script src="../../../alsm/ttyu.net/file/system/promise/es6-promise.js"></script>
+    <script src="../../../alsm/ttyu.net/file/system/promise/es6-promise.auto.js"></script>
+
+    <style>
+        .t-body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #tableDiv{
+            overflow: auto;
+        }
+
+
+        #selectDiv{
+            padding: 2px;
+        }
+
+        .el-pagination{
+            padding: 0px;
+        }
+        .el-pagination__sizes .el-input__inner{
+            height: 99%;
+        }
+        .omitContent {
+            display: inline-block;
+            width: 40px;
+            height: 30px;
+            /* border-radius: 50%; */
+            background-color: #e7e7e7;
+            text-align: center;
+            line-height: 30px;
+            cursor: pointer;
+        }
+
+        .el-select-dropdown{
+            max-width: 243px;
+        }
+        .el-select-dropdown__item{
+            display: inline-block;
+        }
+        .el-select-dropdown__item span {
+            min-width: 205px;
+            display: inline-block;
+        }
+        .el-form-item{
+            margin-bottom: 2px;
+        }
+        .el-dialog__footer,.el-dialog__header{
+            padding: 8px;
+        }
+        .el-button--mini{
+            font-size: 100%;
+            padding: 4px;
+        }
+    </style>
+
+</head>
+<body>
+<div id='body1'>
+    <div class="t-body">
+        <div>
+            <div class="t-title">
+                <span>查询条件</span>
+            </div>
+            <div class="t-find">
+                <div id="selectDiv">
+                    <el-cascader style="width: 30%"
+                        ref="myCascader"
+                        :options="treeData"  placeholder="请选择部门或发布人"
+                        clearable  filterable
+                        v-model="selectNode"
+                        :show-all-levels="false"
+                        :props="{ checkStrictly: true ,value: 'id', label: 'name'}"
+                        @change="handleChange">
+                    </el-cascader>
+
+                    <el-select  style="width: 15%"
+                        v-model="params.personId" filterable clearable
+                        placeholder="请选择参与人员">
+                        <el-option
+                            v-for="item in PIList"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.userId">
+                        </el-option>
+                    </el-select>
+
+
+                    <el-date-picker style="width: 15%"
+                        value-format="yyyy-MM-dd"
+                        v-model="params.before"
+                        type="date"
+                        placeholder="选择结束时间起点">
+                    </el-date-picker>
+                    <el-date-picker style="width: 15%"
+                        value-format="yyyy-MM-dd"
+                        v-model="params.after"
+                        type="date"
+                        placeholder="选择结束时间终点">
+                    </el-date-picker>
+
+                    <el-button type="primary" icon="el-icon-search" circle @click="select"></el-button>
+                    <el-button type="primary" icon="el-icon-close" circle  @click="clear"></el-button>
+
+                </div>
+            </div>
+        </div>
+        <div class="t-title" style="background-color: rgb(64, 152, 186);">
+            <span>任务列表</span>
+        </div>
+
+        <div style="padding: 2px">
+            <el-button type="primary"  icon="el-icon-plus" circle  @click="publish"></el-button>
+            <el-button type="primary" icon="el-icon-delete" circle @click="deleteList"></el-button>
+        </div>
+        <div id="tableDiv" >
+            <el-table :data="rows"
+                :row-key="rowKey"
+                ref="myTable"
+                @select='selectRows'
+                @select-all="selectRows"
+                border fit highlight-current-row style="width: 100%;"
+                :row-style="{height:'5px'}" :cell-style="{padding:'5px 0'}">
+                <el-table-column type="expand">
+                    <template slot-scope="scope">
+                        <el-table :data="scope.row.missionPersonInfos" border fit :row-style="{height:'5px'}" :cell-style="{padding:'5px 0'}">
+                            <el-table-column prop="participantsName" label="姓名" min-width="10">
+                            </el-table-column>
+                            <el-table-column prop="patrolMileage" label="里程" align="right" min-width="5">
+                            </el-table-column>
+                            <el-table-column prop="reportedIncidents" label="事件数" align="right" min-width="5">
+                            </el-table-column>
+                            <el-table-column label="评定" min-width="50">
+                                <template slot-scope="person">
+                                    <el-tag style="margin-right: 5px;margin-left: 5px; cursor: pointer" :data="person.row.score"
+                                            :type="getFilterPass(person.row.score)" @click="clickPass(person.row)">合格
+                                    </el-tag>
+                                    <el-tag style="margin-right: 5px;margin-left: 5px; cursor: pointer" :data="person.row.score"
+                                            :type="getFilterFail(person.row.score)" @click="clickFail(person.row)">不合格
+                                    </el-tag>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-button icon="el-icon-check" size="small"  @click="evaluate(scope.row.missionPersonInfos)" type="primary"></el-button>
+                        <el-button icon="el-icon-refresh" size="small"  @click="restore()" type="primary"></el-button>
+                    </template>
+                </el-table-column>
+
+                <el-table-column type="selection" align="center"  :reserve-selection="true">
+                </el-table-column>
+                <el-table-column align="center" label="序号" width="50">
+                    <template slot-scope="scope">
+                        {{  (pageIndex - 1) * pageSize +scope.$index+1 }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="操作" width="80">
+                    <template slot-scope="scope">
+
+                        <el-button size="mini"  icon="el-icon-edit-outline"
+                                   v-on:click="show(scope.row)" style="cursor: pointer;">编辑</el-button>
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="类别" width="100" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.category }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="名称" width="100" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.name }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="参与人员" min-width="200">
+                    <template slot-scope="scope">
+                        <span v-for="(item, key) in scope.row.missionPersonInfos" v-show="key < scope.row.showAllNum">
+                            <el-tag :type="getTagColor(item.status)" style="margin: 5px;">
+                                {{item.participantsName}}
+                            </el-tag>
+                        </span>
+                        <div class="omitContent" v-show="scope.row.missionPersonInfos.length > 3" @click="showAll(scope.row)">{{scope.row.content}}</div>
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="发布人" width="100" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.publisher }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="开始时间" width="100">
+                    <template slot-scope="scope">
+                        {{ getPartTime(scope.row.starttime) }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="结束时间" width="100">
+                    <template slot-scope="scope">
+                        {{ getPartTime(scope.row.endtime) }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="提醒时间" width="100">
+                    <template slot-scope="scope">
+                        {{ getPartTime(scope.row.reminderTime) }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="状态" width="80">
+                    <template slot-scope="scope">
+                    <span v-if="isProgress(scope.row.starttime,scope.row.endtime)" style="color: red" >
+                        进行中
+                    </span>
+                        <span v-else style="color: green" >
+                        已完成
+                    </span>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+
+        <el-pagination
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageIndex"
+            :page-sizes="pageRows"
+            :page-size="pageSize"
+            layout="total,jumper,prev, pager, next,sizes"
+            :total="total"
+        ></el-pagination>
+
+
+        <el-dialog title="任务详情" center :visible.sync="dialogShow" width="70%" top="5vh">
+            <el-form :model="row"  label-width="100px" class="demo-ruleForm" :rules="rules" ref="row">
+                <el-row>
+                    <el-col :span="11">
+                        <el-form-item label="名称 :" >
+                            <el-input v-model="row.name"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="11">
+                        <el-form-item label="类别 :" >
+                            <el-input v-model="row.category"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="11">
+                        <el-form-item label="开始时间 :" prop="starttime">
+                            <el-date-picker style="width: 100%"
+                                    value-format="yyyy-MM-dd"
+                                    v-model="row.starttime"
+                                    type="date"
+                                    placeholder="选择日期时间(必填)">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="11">
+                        <el-form-item label="结束时间 :" prop="endtime">
+                            <el-date-picker style="width: 100%"
+                                    value-format="yyyy-MM-dd"
+                                    v-model="row.endtime"
+                                    type="date"
+                                    placeholder="选择日期时间(必填)">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+
+                </el-row>
+
+                <el-row>
+                    <el-col :span="11">
+                        <el-form-item label="提醒时间 :" >
+                            <el-date-picker style="width: 100%"
+                                    value-format="yyyy-MM-dd"
+                                    v-model="row.reminderTime"
+                                    type="date"
+                                    placeholder="选择日期时间">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+
+                </el-row>
+                <el-row>
+                    <el-col :span="22">
+                        <el-form-item label="描述 :" >
+                            <el-input
+                                    type="textarea"
+                                    :rows="2"
+                                    placeholder=""
+                                    v-model="row.description">
+                            </el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="11">
+                        <el-form-item label="筛选条件 :" >
+                            <el-select style="width: 100%" v-model="changeDptId" filterable clearable
+                                       type="info"    size="small" @change="changeOpt" placeholder="请选择派出所">
+                                <el-option :value="item.id" :label="item.name"
+                                           v-for="(item, index) in dptOption" :key="index"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+
+                </el-row>
+                <el-row>
+                    <el-col :span="22">
+                        <el-form-item label="参与人员 :" >
+                            <el-select multiple style="width: 100%"
+                                v-model='selectedArray'
+                                @change='changeSelect' filterable clearable
+                                placeholder='请选择人员(多选)'>
+                                <div>
+                                    <el-checkbox v-model="checked" @change='selectAll'>全选</el-checkbox>
+                                </div>
+                                <el-option
+                                    v-for='(item, index) in options'
+                                    :key='index'
+                                    :label='item.name'
+                                    :value='item.userId'>
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="22">
+                        <el-form-item label="路线 :" >
+                            <el-select multiple style="width: 100%"
+                                       v-model='rSelectedArray'
+                                       filterable clearable  @change='rChangeSelect'
+                                       placeholder='请选择路线(多选)'>
+                                <div>
+                                    <el-checkbox v-model="rChecked" @change='rSelectAll'>全选</el-checkbox>
+                                </div>
+                                <el-option
+                                        v-for='(item, index) in rOptions'
+                                        :key='index'
+                                        :label='item.name' :value='item.id'></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary"  @click="submitTo('row')">确 定</el-button>
+                <el-button  type="primary" @click="dialogShow = false">关 闭</el-button>
+            </span>
+        </el-dialog>
+    </div>
+</div>
+</body>
+
+</html>
+<script type="text/javascript">
+    $(function () {
+        new Vue({
+            el: '#body1',
+            data: {
+                selectNode:[],
+                treeData: [],
+                PIList:[],
+
+                params:{
+                    page:null,
+                    limit: null,
+                    dptId:null ,
+                    after:null,
+                    before:null,
+                    personId: null,
+                    publisherId:null
+                },
+
+                checked: false,
+                selectedArray: [],
+                oldMissionPersons:[],
+                options:[],
+                dialogShow:false,
+
+                rows: [],
+                row: {},
+                saveSelectRows:[],
+
+                total: 0,
+                pageIndex:1,
+                pageSize: 15,
+                pageRows: [5, 10,15, 20, 30, 40, 50],
+
+                operationType:"",
+
+                rChecked: false,
+                rSelectedArray: [],
+                rOptions:[],
+                oldMissionRoutes:[],
+
+                allPersonOpt:[],
+                allRouteOpt:[],
+                changeDptId:null,
+                dptOption:[],
+                // 验证规则
+                rules: {
+                    starttime: [{ required: true, message: '请选择开始时间', trigger: 'blur' }],
+                    endtime: [{ required: true, message: '请选择结束时间', trigger: 'blur' }]
+                }
+            },
+
+            mounted: function () {
+                vm = this;
+                vm.fillOptions();
+                //设置默认时间为前一个月
+                var now = new Date();
+                vm.params.before = formatTimeToStr(now.setMonth(now.getMonth() - 1));
+                vm.loadData();
+
+                //点击才能获得搜索选中的级联下拉框节点
+                $("#selectDiv  .el-select").click(function () {
+                    var node=vm.$refs.myCascader.getCheckedNodes();
+                    var dptId=null;
+                    if(node!=null&&node.length>=1){
+                        var type=node[0].data.type;
+                        var l=vm.selectNode.length;
+
+                        if(type===undefined){
+                            if(l>=2){
+                                dptId=vm.selectNode[l-2];
+                            }
+                        }else {
+                            if(l>=1){
+                                dptId=vm.selectNode[l-1];
+                            }
+                        }
+                    }
+                    if(dptId==null){
+                        vm.PIList = vm.options;
+                    }else {
+                        vm.fillPOption(dptId);
+                    }
+                })
+
+                setMyHeight("#tableDiv",217);
+                //回车键触发方法
+                document.onkeydown = function (e) {
+                    var key = window.event.keyCode;
+                    if (key == 13) {
+                        vm.select();
+                    }
+                }
+                //随浏览器改变改变高度
+                window.onresize = function () {
+                    if (vm != null) {
+                        setMyHeight("#tableDiv",217);
+                    }
+                }
+            },
+            computed: {
+
+            },
+            methods: {
+                //改变路线和参与人员下拉框
+                changeOpt:function () {
+                    if (vm.changeDptId == null||vm.changeDptId == "") {
+                        vm.options = vm.allPersonOpt;
+                        vm.changeSelect();
+                        vm.rOptions=vm.allRouteOpt;
+                        vm.rChangeSelect();
+                    } else {
+                        doApi(
+                            function (res) {
+                                var newOpt=[];
+                                if(res.status === 200) {
+                                    var data= res.data.rows;
+                                    for (var i=0,len=data.length;i<len;i++){
+                                        var item=data[i];
+                                        if(vm.rSelectedArray.indexOf(item.id)==-1){
+                                            newOpt.push(item);
+                                        }
+                                    }
+                                }
+
+                                if ( vm.rSelectedArray.length>0) {
+                                    for ( var i=0,len=vm.rOptions.length;i<len;i++ ){
+                                        var item=vm.rOptions[i];
+                                        //放入已选中路线
+                                        if(vm.rSelectedArray.indexOf(item.id)!=-1){
+                                            newOpt.push(item);
+                                        }
+                                    }
+                                }
+                                vm.rOptions=newOpt;
+                                vm.rChangeSelect();
+                            },null,null,params.serviceIp + '/VisitRouteInfo/listUserDeptData',
+                            "get",{dptId: vm.changeDptId}
+                        );
+
+                        doApi(
+                            function (res) {
+                                var newOpt=[];
+                                if (res.status === 200) {
+                                    var data=res.data;
+                                    for (var i=0,len=data.length;i<len;i++){
+                                        var item=data[i];
+                                        if(vm.selectedArray.indexOf(item.userId)==-1){
+                                            newOpt.push(item);
+                                        }
+                                    }
+                                }
+                                if ( vm.selectedArray.length>0) {
+                                    for ( var i=0,len=vm.options.length;i<len;i++ ){
+                                        var item=vm.options[i];
+                                        //放入已选中人员
+                                        if(vm.selectedArray.indexOf(item.userId)!=-1){
+                                            newOpt.push(item);
+                                        }
+                                    }
+                                }
+                                vm.options=newOpt;
+                                vm.changeSelect();
+                            }, null, null, params.serviceIp + '/PoliceInfo/getListByDptId',
+                            "get", {dptId: vm.changeDptId}
+                        )
+                    }
+
+                },
+                restore:function () {
+                    vm.loadData();
+                },
+                evaluate:function (val) {
+                    var updList=[];
+                    for (var i=0;i<val.length;i++){
+                        var obj=val[i];
+                        if(obj.score!=null){
+                            var updObj={id:obj.id,score:obj.score}
+                            updList.push(updObj);
+                        }
+                    }
+                    var param = {
+                        missionType:"visit",
+                        updList: updList
+                    }
+                    doApiByJsonstr(
+                        function (res) {
+                            vm.loadData();
+                            if (res.status === 200) {
+                                vm.$message.info("任务评定成功！");
+                            } else {
+                                vm.$message.error("任务评定失败！");
+                            }
+                        },
+                        null, null, params.serviceIp + '/MissionPersonInfo/batchOptMissionPerson', 'post', param
+                    );
+
+                },
+                handleChange:function () {
+                    vm.params.personId=null;
+                },
+                fillPOption:function (dptId) {
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.PIList = res.data;
+                            }else {
+                                vm.PIList =[];
+                            }
+                        }, null, null, params.serviceIp + '/PoliceInfo/getListByDptId',
+                        "get",{dptId:dptId}
+                    )
+                },
+                select:function () {
+                    vm.params.dptId=null;
+                    vm.params.publisherId=null;
+                    var node=vm.$refs.myCascader.getCheckedNodes();
+                    if(node!=null&&node.length>=1){
+                        var type=node[0].data.type;
+                        var l=vm.selectNode.length;
+                        if(type===undefined){
+                            if(l>=2){
+                                vm.params.publisherId=node[0].data.userId;
+                            }
+                        }else {
+                            if(l>=1){
+                                vm.params.dptId=node[0].data.id;
+                            }
+                        }
+                    }
+
+                    vm.pageIndex = 1;
+                    vm.loadData();
+                },
+                clear:function () {
+                    vm.params.before=null;
+                    vm.params.after=null;
+                    vm.params.personId=null;
+                    vm.params.dptId=null;
+                    vm.params.publisherId=null;
+                    vm.selectNode=[];
+
+                },
+                getPartTime:function (val) {
+                    return   getPartTime(val);
+                },
+                rowKey :function(row) {
+                    return row.id;
+                },
+                clearFilter:function () { // 清空全部筛选,必须放到方法中，否则加载失败
+                    this.$refs.myTable.clearSelection();
+                },
+                rSelectAll:function() {
+                    vm.rSelectedArray = [];
+                    if (vm.rChecked) {
+                        for ( var i=0,len=vm.rOptions.length;i<len;i++ ){
+                            var item=vm.rOptions[i];
+                            vm.rSelectedArray.push(item.id)
+                        }
+                    } else {
+                        vm.rSelectedArray = [];
+                    }
+                },
+                selectAll:function() {
+                    vm.selectedArray = [];
+                    if (vm.checked) {
+                        for ( var i=0;i<vm.options.length;i++ ){
+                            var item=vm.options[i];
+                            vm.selectedArray.push(item.userId)
+                        }
+                    } else {
+                        vm.selectedArray = [];
+                    }
+                },
+                changeSelect:function() {
+                    if( vm.selectedArray.length==vm.options.length){
+                        vm.checked=true;
+                    }else {
+                        vm.checked=false;
+                    }
+                },
+                rChangeSelect:function () {
+                    if( vm.rSelectedArray.length==vm.rOptions.length){
+                        vm.rChecked=true;
+                    }else {
+                        vm.rChecked=false;
+                    }
+                },
+                //将选中行数据存入变量
+                selectRows:function(rows){
+                    vm.saveSelectRows=rows;
+                },
+                // 记忆选择核心方法
+
+                //填充下拉框
+                fillOptions:function () {
+                    //筛选派出所
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.dptOption = res.data;
+                            }
+                        }, null, null, params.serviceIp + '/PoliceInfo/getCurrentUserPoliceStation',
+                        "get"
+                    )
+
+                    //参与人员下拉框
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.options= res.data;
+                                vm.PIList = vm.options;
+                                vm.allPersonOpt=  vm.options;
+                            }
+                        },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceInfo',
+                        "get"
+                    );
+
+                    //走访路线下拉框
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.rOptions= res.data.rows;
+                                vm.allRouteOpt=vm.rOptions;
+                            }
+                        },null,null,params.serviceIp + '/VisitRouteInfo/listUserDeptData',
+                        "get"
+                    );
+
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.treeData= res.data[0].children;
+                            }
+                        },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserAllPoliceInfoTree',
+                        "get"
+                    );
+                },
+                loadData: function () { //获取点击对象
+                    vm.params.page=vm.pageIndex;
+                    vm.params.limit=vm.pageSize;
+
+                    vm.params.before=setStartTime( vm.params.before);
+                    vm.params.after=setEndTime( vm.params.after);
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.rows= res.data.rows;
+                                // console.log(vm.rows)
+                                for (var i=0; i<vm.rows.length; i++) {
+                                    vm.rows[i].showAllNum = 3;
+                                    vm.rows[i].content = '. . .';
+                                    vm.rows[i].showAllJudge = false;
+                                }
+                                vm.total =res.data.total;
+                            }
+                        },null,null,params.serviceIp + '/VisitMissionInfo/listUserDeptAllMission',
+                        "get",vm.params
+                    );
+                },
+                //分页 初始页pageIndex、控制每页几条
+                handleSizeChange:function(size){
+                    this.pageSize = size;
+                    this.loadData();
+                },
+                // 控制页面的切换
+                handleCurrentChange: function(pageIndex) {
+                    this.pageIndex = pageIndex;
+                    this.loadData();
+                },
+                isProgress:function(startTime,endTime){
+                    if(startTime==null||endTime==null){
+                        return true;
+                    }
+                    var now=new Date();
+                    if(now<new Date(startTime.replace(/-/g,"/"))||now>new Date(endTime.replace(/-/g,"/"))){
+                        return false;
+                    }
+                    return true;
+                },
+                getTagColor: function (status) {
+                    if (status == "1") {
+                        //  已读
+                        return "success";
+                    }
+                    // 未读
+                    return "info";
+                },
+                getFilterPass: function (score) {
+                    if (score == 1) {
+                        return "success";
+                    } else {
+                        return "info";
+                    }
+                },
+                getFilterFail: function (score) {
+                    if (score == 0) {
+                        return "danger";
+                    } else {
+                        return "info";
+                    }
+                },
+                clickPass: function (person) {
+                    if (person.score != 1) {
+                        person.score = 1;
+                    } else {
+                        person.score = -1;
+                    }
+                },
+                clickFail: function (person) {
+                    if (person.score != 0) {
+                        person.score = 0;
+                    } else {
+                        person.score = -1;
+                    }
+                },
+                publish:function () {
+                    vm.changeDptId=null;
+                    vm.changeOpt();
+                    vm.row={};
+                    vm.rSelectedArray=[];
+                    vm.rChecked=false;
+                    vm.selectedArray=[];
+                    vm.checked=false;
+                    vm.operationType="add";
+                    vm.dialogShow=true;
+                },
+                show: function (row) { //获取点击对象
+                    vm.changeDptId=null;
+                    vm.changeOpt();
+                    vm.selectedArray=[];
+                    vm.rSelectedArray=[];
+                    vm.row=row;
+                    //人员
+                    vm.oldMissionPersons=row.missionPersonInfos;
+                    for ( var i=0;i< vm.oldMissionPersons.length;i++ ){
+                        var person= vm.oldMissionPersons[i];
+                        vm.selectedArray.push(person.participantId);
+                    }
+                    if( vm.selectedArray.length==vm.options.length){
+                        vm.checked=true;
+                    }else {
+                        vm.checked=false;
+                    }
+
+                    //路线
+                    vm.oldMissionRoutes=row.missionRouteInfos;
+                    for ( var i=0,len=vm.oldMissionRoutes.length;i<len;i++ ){
+                        var route=vm.oldMissionRoutes[i];
+                        vm.rSelectedArray.push(route.routeId);
+                    }
+                    if( vm.rSelectedArray.length==vm.rOptions.length){
+                        vm.rChecked=true;
+                    }else {
+                        vm.rChecked=false;
+                    }
+
+                    vm.dialogShow=true;
+                    vm.operationType="edit";
+                },
+                submitTo:function (formName) {
+                    vm.$refs[formName].validate(function (valid) {
+                        if (valid) {
+                            vm.row.endtime=setEndTime(vm.row.endtime);
+
+                            if(vm.operationType=="edit"){
+                                vm.row.syncTime=formatTimeToStr(new Date());
+
+                                doApiByJsonstr(
+                                    function(res) {
+                                        if (res.status === 200) {
+                                            var data=res.data;
+                                            var delIds=[];
+                                            var addList=[];
+
+                                            var oldMissionPersonUserIds=[];
+                                            for ( var i=0;i<vm.oldMissionPersons.length;i++ ){
+                                                var person=vm.oldMissionPersons[i];
+                                                oldMissionPersonUserIds.push(person.participantId);
+                                                if(vm.selectedArray.indexOf(person.participantId)==-1){
+                                                    delIds.push(person.id);
+                                                }
+                                            }
+
+                                            for ( var i=0;i<vm.options.length;i++ ){
+                                                var item=vm.options[i];
+                                                if(oldMissionPersonUserIds.indexOf(item.userId)!=-1){
+                                                    continue;
+                                                }
+                                                if(vm.selectedArray.indexOf(item.userId)!=-1){
+                                                    var param= {
+                                                        "missionId":data.id,"missionName":data.name,
+                                                        "participantId":item.userId,"participantsName":item.name};
+                                                    addList.push(param);
+                                                }
+                                            }
+
+                                            var rDelIds=[];
+                                            var rAddList=[];
+
+                                            var oldMissionRouteIds=[];
+                                            for ( var i=0,len=vm.oldMissionRoutes.length;i<len;i++ ){
+                                                var route=vm.oldMissionRoutes[i];
+                                                oldMissionRouteIds.push(route.routeId);
+                                                if(vm.rSelectedArray.indexOf(route.routeId)==-1){
+                                                    rDelIds.push(route.id);
+                                                }
+                                            }
+
+                                            for ( var i=0,len=vm.rOptions.length;i<len;i++ ){
+                                                var item=vm.rOptions[i];
+                                                if(oldMissionRouteIds.indexOf(item.id)!=-1){
+                                                    continue;
+                                                }
+                                                if(vm.rSelectedArray.indexOf(item.id)!=-1){
+                                                    var param= {
+                                                        "missionId":data.id,"missionName":data.name,
+                                                        "routeId":item.id,"routeName":item.name};
+                                                    rAddList.push(param);
+                                                }
+                                            }
+                                            if(delIds.length==0&&addList.length==0&&rDelIds.length==0&&rAddList.length==0){
+                                                vm.loadData();
+                                                vm.dialogShow=false;
+                                                vm.$message.info("任务编辑成功！");
+                                            }else {
+                                                if(rDelIds.length==0&&rAddList.length==0){
+                                                    var paramBean={missionType:"visit",addList:addList,delIds:delIds};
+                                                    doApiByJsonstr(
+                                                        function(res) {
+                                                            vm.loadData();
+                                                            if (res.status === 200) {
+                                                                vm.dialogShow=false;
+                                                                vm.$message.info("任务编辑成功！");
+                                                            }else{
+                                                                vm.$message.error("任务编辑成功，但任务人员编辑失败！");
+                                                            }
+                                                        },
+                                                        null, null,params.serviceIp + '/MissionPersonInfo/batchOptMissionPerson',
+                                                        'post',paramBean
+                                                    );
+
+                                                }else if(delIds.length==0&&addList.length==0){
+                                                    var paramBean={missionType:"visit",addList:rAddList,delIds:rDelIds};
+                                                    doApiByJsonstr(
+                                                        function(res) {
+                                                            vm.loadData();
+                                                            if (res.status === 200) {
+                                                                vm.dialogShow=false;
+                                                                vm.$message.info("任务编辑成功！");
+                                                            }else{
+                                                                vm.$message.error("任务编辑成功，但任务路线编辑失败！");
+                                                            }
+                                                        },
+                                                        null, null, params.serviceIp + '/MissionRouteInfo/batchOptMissionRoute',
+                                                        'post',paramBean
+                                                    );
+
+                                                }else {
+                                                    var paramBean={missionType:"visit",addList:addList,delIds:delIds};
+
+                                                    doApiByJsonstr(
+                                                        function(res) {
+                                                            if (res.status === 200) {
+                                                                var rParamBean={missionType:"visit",addList:rAddList,delIds:rDelIds};
+                                                                doApiByJsonstr(
+                                                                    function(res) {
+                                                                        vm.loadData();
+                                                                        if (res.status === 200) {
+                                                                            vm.dialogShow=false;
+                                                                            vm.$message.info("任务编辑成功！");
+                                                                        }else{
+                                                                            vm.$message.error("任务和任务人员编辑成功，但任务路线编辑失败！");
+                                                                        }
+                                                                    },
+                                                                    null, null, params.serviceIp + '/MissionRouteInfo/batchOptMissionRoute',
+                                                                    'post',rParamBean
+                                                                );
+
+                                                            }else{
+                                                                vm.loadData();
+                                                                vm.$message.error("任务编辑成功，但任务人员、任务路线编辑失败！");
+                                                            }
+                                                        },
+                                                        null, null,params.serviceIp + '/MissionPersonInfo/batchOptMissionPerson',
+                                                        'post',paramBean
+                                                    );
+
+                                                }
+                                            }
+
+                                        }else{
+                                            vm.$message.error("任务编辑失败！");
+                                        }
+                                    },
+                                    null, null, params.serviceIp + '/VisitMissionInfo', 'put', vm.row
+                                );
+                            }else if(vm.operationType=="add"){
+                                doApiByJsonstr(
+                                    function(res) {
+                                        if (res.status === 200) {
+                                            var data=res.data;
+                                            var paramList=[];
+                                            for ( var i=0;i<vm.options.length;i++ ){
+                                                var item=vm.options[i];
+                                                if(vm.selectedArray.indexOf(item.userId)!=-1){
+                                                    var param= {
+                                                        "missionId":data.id,"missionName":data.name,
+                                                        "participantId":item.userId,"participantsName":item.name};
+                                                    paramList.push(param);
+                                                }
+                                            }
+
+                                            var rParamList=[];
+                                            for ( var i=0,len=vm.rOptions.length;i<len;i++ ){
+                                                var item=vm.rOptions[i];
+                                                if(vm.rSelectedArray.indexOf(item.id)!=-1){
+                                                    var param= {
+                                                        "missionId":data.id,"missionName":data.name,
+                                                        "routeId":item.id,"routeName":item.name};
+                                                    rParamList.push(param);
+                                                }
+                                            }
+                                            if(paramList.length==0&&rParamList.length==0){
+                                                vm.loadData();
+                                                vm.dialogShow=false;
+                                                vm.$message.info("任务添加成功！");
+                                            }else {
+                                                if(rParamList.length==0){
+                                                    var paramBean={missionType:"visit",addList:paramList};
+                                                    doApiByJsonstr(
+                                                        function(res) {
+                                                            vm.loadData();
+                                                            if (res.status === 200) {
+                                                                vm.dialogShow=false;
+                                                                vm.$message.info("任务添加成功！");
+                                                            }else{
+                                                                vm.$message.error("任务添加成功，但任务人员添加失败！");
+                                                            }
+                                                        },
+                                                        null, null, params.serviceIp + '/MissionPersonInfo/batchOptMissionPerson',
+                                                        'post',paramBean
+                                                    );
+                                                }else if(paramList.length==0){
+                                                    var paramBean={missionType:"visit",addList:rParamList};
+                                                    doApiByJsonstr(
+                                                        function(res) {
+                                                            vm.loadData();
+                                                            if (res.status === 200) {
+                                                                vm.dialogShow=false;
+                                                                vm.$message.info("任务添加成功！");
+                                                            }else{
+                                                                vm.$message.error("任务添加成功，但任务路线添加失败！");
+                                                            }
+                                                        },
+                                                        null, null, params.serviceIp + '/MissionRouteInfo/batchOptMissionRoute',
+                                                        'post',paramBean
+                                                    );
+                                                }else {
+                                                    var paramBean={missionType:"visit",addList:paramList};
+                                                    doApiByJsonstr(
+                                                        function(res) {
+                                                            if (res.status === 200) {
+                                                                var rParamBean={missionType:"visit",addList:rParamList};
+                                                                doApiByJsonstr(
+                                                                    function(res) {
+                                                                        vm.loadData();
+                                                                        if (res.status === 200) {
+                                                                            vm.dialogShow=false;
+                                                                            vm.$message.info("任务添加成功！");
+                                                                        }else{
+                                                                            vm.$message.error("任务和任务人员添加成功，但任务路线添加失败！");
+                                                                        }
+                                                                    },
+                                                                    null, null, params.serviceIp + '/MissionRouteInfo/batchOptMissionRoute',
+                                                                    'post',rParamBean
+                                                                );
+                                                            }else{
+                                                                vm.loadData();
+                                                                vm.$message.error("任务添加成功，但任务人员和任务路线添加失败！");
+                                                            }
+                                                        },
+                                                        null, null, params.serviceIp + '/MissionPersonInfo/batchOptMissionPerson',
+                                                        'post',paramBean
+                                                    );
+
+                                                }
+                                            }
+
+                                        }else{
+                                            vm.$message.error("任务添加失败！");
+                                        }
+                                    },
+                                    null, null, params.serviceIp + '/VisitMissionInfo', 'post', vm.row
+                                );
+                            }
+                        } else {
+                            return false
+                        }
+                    })
+
+                },
+                deleteList:function () {
+                    vm.$confirm('是否删除?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function (){
+                        var delIds=[];
+                        for ( var i=0;i<vm.saveSelectRows.length;i++ ){
+                            var row=vm.saveSelectRows[i];
+                            if(row.id!=null){
+                                delIds.push(row.id);
+                            }
+                        }
+                        if(delIds.length==0){
+                            return;
+                        }
+                        doApiByJsonstr(
+                            function(res) {
+                                if (res.status === 200) {
+                                    vm.pageIndex=1;
+                                    vm.loadData();
+                                    vm.clearFilter();
+                                    vm.$message.info("任务和任务人员批量删除成功！");
+                                }else{
+                                    vm.$message.error("任务和任务人员批量删除失败！");
+                                }
+                            },
+                            null, null, params.serviceIp + '/VisitMissionInfo/batchDelete', 'post',delIds
+                        );
+
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除',
+                            duration: 1000
+                        });
+                    });
+
+                },
+                // 显示全部或收起
+                showAll: function (row) {
+                    // console.log(row)
+                    // console.log(vm.rows)
+                    row.showAllJudge = !row.showAllJudge;
+                    // console.log(row.showAllJudge)
+                    row.showAllNum = row.showAllJudge ? row.missionPersonInfos.length : 3;
+                    row.content = row.showAllJudge ? '收起' : '. . .';
+                    vm.rows.splice(1, 0);
+                }
+            }
+        })
+    })
+</script>
+

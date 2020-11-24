@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查询条件</title>
+    <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <script src="../../../alsm/vue/vue.js"></script>
+
+    <link href="../../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <script src="../../../alsm/element2.12.0/index.js"></script>
+
+    <script src="../../../alsm/api_sub.js" type="text/javascript"></script>
+    <script src="../../../js/config/config.js"></script>
+
+    <link href="../../../css/alsCommon.css" rel="stylesheet">
+    <style>
+        #vue1 {
+            width: 100%;
+        }
+
+        .el-time-panel{
+           width: 100%;
+            overflow: auto;
+        }
+
+        .el-input__inner{
+            padding: 1px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="vue1">
+    <div id="selectDiv">
+        <div style="background-color: white">
+            <div style="text-align: center;font-size: 20px">查询条件</div>
+
+            <div style="width: 100%" id="patrolTrackS" v-if="showS=='patrolTrackS'">
+
+                <div>
+                    <div style="width:80px;display: inline-block">
+                        终止时间：
+                    </div>
+
+                    <el-date-picker style="width: 36%"
+                                    value-format="yyyy-MM-dd"
+                                    v-model="patrolTrackS.before"
+                                    type="date"
+                                    placeholder="起点">
+                    </el-date-picker>
+                    至
+                    <el-date-picker style="width: 36%"
+                                    value-format="yyyy-MM-dd"
+                                    v-model="patrolTrackS.after"
+                                    type="date"
+                                    placeholder="终点">
+                    </el-date-picker>
+                </div>
+
+                <div>
+                    <div style="width:80px;display: inline-block">
+                        时长：
+                    </div>
+
+                    <el-input
+                            placeholder="" style="width: 10%"
+                            v-model="patrolTrackS.durationStartH" >
+                    </el-input>
+                    时
+                    <el-input
+                            placeholder="" style="width: 10%"
+                            v-model="patrolTrackS.durationStartM" >
+                    </el-input>
+                    分至
+                    <el-input
+                            placeholder="" style="width: 10%"
+                            v-model="patrolTrackS.durationEndH" >
+                    </el-input>
+                    时
+                    <el-input
+                            placeholder="" style="width: 10%"
+                            v-model="patrolTrackS.durationEndM" >
+                    </el-input>
+                    分
+                </div>
+                <div>
+                    <div style="width:80px;display: inline-block">
+                        里程：
+                    </div>
+
+                    <el-input
+                            placeholder="" style="width: 10%"
+                            v-model="patrolTrackS.mileageStart" >
+                    </el-input>
+                    公里至
+                    <el-input
+                            placeholder="" style="width: 10%"
+                            v-model="patrolTrackS.mileageEnd" >
+                    </el-input>
+                    公里
+                </div>
+
+                <div>
+                    <div style="width:80px;display: inline-block">
+                        是否可见 :
+                    </div>
+
+                    <el-radio-group v-model="patrolTrackS.isValid" >
+                        <el-radio :label=1>可见</el-radio>
+                        <el-radio :label=0>不可见</el-radio>
+                    </el-radio-group>
+                </div>
+                <div>
+                    <div style="width:80px;display: inline-block">
+                        是否有效 :
+                    </div>
+
+                    <el-radio-group v-model="patrolTrackS.isEffective" >
+                        <el-radio :label=1>有效</el-radio>
+                        <el-radio :label=0>无效</el-radio>
+                    </el-radio-group>
+                </div>
+
+            </div>
+
+
+            <div style="width: 100%" id="visitTrackS" v-if="showS=='visitTrackS'">
+                <div>
+                    <div style="width:80px;display: inline-block">
+                        终止时间：
+                    </div>
+                    <el-date-picker style="width: 36%"
+                                    value-format="yyyy-MM-dd"
+                                    v-model="visitTrackS.before"
+                                    type="date"
+                                    placeholder="起点">
+                    </el-date-picker>
+                    至
+                    <el-date-picker style="width: 36%"
+                                    value-format="yyyy-MM-dd"
+                                    v-model="visitTrackS.after"
+                                    type="date"
+                                    placeholder="终点">
+                    </el-date-picker>
+
+                </div>
+
+
+                <div>
+                    <div style="width:80px;display: inline-block">
+                        时长：
+                    </div>
+
+                    <el-input
+                              placeholder="" style="width: 10%"
+                              v-model="visitTrackS.durationStartH" >
+                    </el-input>
+                    时
+                    <el-input
+                            placeholder="" style="width: 10%"
+                            v-model="visitTrackS.durationStartM" >
+                    </el-input>
+                    分至
+                    <el-input
+                            placeholder="" style="width: 10%"
+                            v-model="visitTrackS.durationEndH" >
+                    </el-input>
+                    时
+                    <el-input
+                            placeholder="" style="width: 10%"
+                            v-model="visitTrackS.durationEndM" >
+                    </el-input>
+                    分
+                </div>
+                <div>
+                    <div style="width:80px;display: inline-block">
+                        里程：
+                    </div>
+
+                    <el-input
+                            placeholder="" style="width: 10%"
+                            v-model="visitTrackS.mileageStart" >
+                    </el-input>
+                    公里至
+                    <el-input
+                            placeholder="" style="width: 10%"
+                            v-model="visitTrackS.mileageEnd" >
+                    </el-input>
+                    公里
+                </div>
+                <div>
+                    <div style="width:80px;display: inline-block">
+                        是否可见 :
+                    </div>
+
+                    <el-radio-group v-model="visitTrackS.isValid" >
+                        <el-radio :label=1>可见</el-radio>
+                        <el-radio :label=0>不可见</el-radio>
+                    </el-radio-group>
+                </div>
+                <div>
+                    <div style="width:80px;display: inline-block">
+                        是否有效 :
+                    </div>
+
+                    <el-radio-group v-model="visitTrackS.isEffective" >
+                        <el-radio :label=1>有效</el-radio>
+                        <el-radio :label=0>无效</el-radio>
+                    </el-radio-group>
+                </div>
+
+            </div>
+            <div style="text-align: center;">
+                <el-button type="primary"  icon="el-icon-search" @click="select">查询</el-button>
+                <el-button type="primary" icon="el-icon-close" @click="clear">清空</el-button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+</body>
+
+<script>
+    $(function () {
+        new Vue({
+            el: '#vue1',
+            data: {
+                showS:null,
+                patrolTrackS: {
+                    after:null,
+                    before:null,
+                    durationStartH:null,
+                    durationStartM:null,
+                    durationEndH:null,
+                    durationEndM:null,
+                    mileageStart:null,
+                    mileageEnd:null,
+                    isValid:null,
+                    isEffective:null
+                },
+                visitTrackS: {
+                    after:null,
+                    before:null,
+                    durationStartH:null,
+                    durationStartM:null,
+                    durationEndH:null,
+                    durationEndM:null,
+                    mileageStart:null,
+                    mileageEnd:null,
+                    isValid:null,
+                    isEffective:null
+                },
+
+            },
+            created: function () {
+                vm = this;
+
+                //回车键触发方法
+                document.onkeydown = function (e) {
+                    var key = window.event.keyCode;
+                    if (key == 13) {
+                        vm.select();
+                    }
+                }
+
+
+
+            },
+            methods: {
+                select: function () {
+                    if(vm.showS=='patrolTrackS'||vm.showS=='visitTrackS'){
+                    var parent=   window.parent.document.getElementById("operator").contentWindow;
+                        parent.vm.select();
+                    }
+                    window.parent.toggleSelectHtml(null);
+                },
+                clear: function () {
+                    var parent=   window.parent.document.getElementById("operator").contentWindow;
+                    if(vm.showS=='patrolTrackS'){
+                        vm.patrolTrackS={};
+
+                        parent.vm.params.dptId=null;
+                        parent.vm.params.personId=null;
+                    }else if(vm.showS=='visitTrackS'){
+                        vm.visitTrackS={};
+
+                        parent.vm.params.dptId=null;
+                        parent.vm.params.visitorId=null;
+                    }
+                }
+            }
+        })
+    })
+</script>
+</html>

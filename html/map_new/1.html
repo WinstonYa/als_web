@@ -1,0 +1,981 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>2DMap</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+          type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="../../alsm/tianditu/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../../alsm/tianditu/ol.css"/>
+    <link rel="stylesheet" type="text/css" href="../../alsm/element2.12.0/index.css"/>
+
+    <script src="../../alsm/tianditu/ol.js" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/olUtil.js" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/proj4-src.js" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/proj4.js" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/GeoGlobeJS.min.js" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/GMap.js" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/SelPos.js" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/dataLayer.js" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/tdt.js?v=20181228" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/Measures.js" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/tracePlayback.js" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/jquery.js" type="text/javascript"></script>
+    <script src="../../alsm/tianditu/num-alignment.js" type="text/javascript"></script>
+
+    <script src="../../alsm/ttyu/ttyu.web.js" type="text/javascript"></script>
+    <script src="../../alsm/sometool.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        window.onload = menuFix;
+        // ssy 屏蔽右键菜单
+        window.oncontextmenu = function (event) {
+            var evt = event || window.event;
+            evt.preventDefault();
+        }
+
+        ///中心点坐标
+        var cenPoint = {
+            "lat": GetQueryString("lat"),
+            "lon": GetQueryString("lon"),
+            "minzoom": GetQueryString("nz"),
+            "maxzoom": GetQueryString("xz"),
+            "sip": GetQueryString("sip"),
+            "slayer": GetQueryString("sl")
+        };
+        var cenPoint = {
+            lat: 39.88,
+            lon: 101.87,
+            // ssy proj
+            // lon: 11763117,
+            // lat: 4693118,
+            maxzoom: 18,
+            minzoom: 7,
+            sip: 'http://122.14.210.73:8008/geoserver/gxzrbhq/wms&sl=gxzrbhq:shtlsm',
+            slayer: 'gxzrbhq:shtlsm'
+        };
+        // window.console.log(cenPoint);
+        setWPath("", 54, cenPoint);
+        // setWPath("", GetQueryString("regid"), cenPoint);
+        var isload = false;
+
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+
+        function setSMT() {
+            isload = true;
+            gotoLatLon(cenPoint.lat, cen.lon, 55000, 0, 40);
+        }
+
+        function setAggainSMT() {
+            document.getElementById("hdLogs").value = document.getElementById("hdLogs").value + "1";
+            if (parent.getWWJApplet()) {
+                setTimeout("setSMT()", 500);
+                if (parent.setiframe)
+                    parent.setiframe("5");
+            } else
+                setTimeout("setAggainSMT()", 100);
+        }
+
+        function getxb(id) {
+            //        alert(id);
+            //        alert(parent.mainframe.infoMain.document.location);
+            var words = id.split(';');
+            $('#infoMain').attr('src', 'infoview2.aspx?layer=' + words[0] + '&id=' + words[1]);
+            $('#infoMain').css({'z-index': '9997'});
+            $('#iVisilble').css({'z-index': '9998'});
+            $('#infoMain').css({'visibility': 'visible'});
+            $('#iVisilble').css({'visibility': 'visible'});
+
+        }
+
+        function setVisible() {
+            $('#infoMain').css({'visibility': 'hidden'});
+            $('#iVisilble').css({'visibility': 'hidden'});
+        }
+
+        var theApplet;
+
+        function getWWJApplet() {
+            var doCm = window;
+
+            if (theApplet == null) {
+                if (doCm) {
+                    theApplet = doCm;
+                }
+            }
+            return theApplet;
+        }
+
+        function changstyle() {
+            var drawdiv = document.getElementById("draw");
+            if (drawdiv.style.display == "none") {
+                drawdiv.style.display = "block";
+            } else {
+                drawdiv.style.display = "none";
+            }
+        }
+
+        $(window).resize(function () {
+            changeScreen();
+        });
+    </script>
+    <link href="../../alsm/tianditu/ditu.css" rel="stylesheet" type="text/css">
+    <style>
+        .t-btns {
+            /* display: flex; */
+            /* flex-direction: row-reverse; */
+            /* align-items: center; */
+            border-top: 1px solid rgb(196, 192, 192);
+            border-bottom: 1px solid rgb(238, 232, 232);
+            text-align: right;
+        }
+
+        .t-btns > button {
+            margin: 5px 1px 5px 1px;
+            width: 70px;
+            height: 30px;
+            font-size: 12px;
+            font-family: "宋体";
+            text-align: center;
+            background-color: #6392e4;
+            color: #fff;
+            outline: none;
+            cursor: pointer;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            border: 0;
+        }
+
+        .tuceng {
+            width: 120px;
+            z-index: 9999;
+            background: white;
+            border: 1px solid lightgrey;
+            position: absolute;
+            top: 40px;
+            right: 10px;
+            display: none;
+            border-radius: 7px;
+            overflow: auto;
+        }
+
+        .tuceng p {
+            margin: 0px 0px 0px 0px;
+            padding-left: 15px;
+            line-height: 30px;
+            text-align: center;
+            font-size: 13px;
+            color: rgb(112, 109, 109);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-bottom: 1px solid lightgrey;
+            box-sizing: border-box;
+        }
+
+        /*.tuceng p:nth-child(1) {*/
+        /*    border-bottom: 1px solid lightgrey;*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+
+        .tuceng p input {
+            margin: 13px 10px 12px 0;
+            cursor: pointer;
+        }
+
+        .tuceng input {
+            margin: 13px 10px 12px 0;
+            pointer-events: none;
+        }
+
+        .tuceng .first {
+            border-radius: 7px 7px 0 0;
+        }
+
+        .tuceng .last {
+            border-bottom: 0px;
+            border-radius: 0 0 7px 7px;
+        }
+
+        .tuceng p:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+
+        .ol-popup {
+            position: absolute;
+            background-color: white;
+            -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+            /*filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));*/
+            filter: drop-shadow(0 1px 4px #FFC125);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #cccccc;
+
+            bottom: 12px;
+            left: -50px;
+        }
+
+        .ol-popup:after, .ol-popup:before {
+            top: 100%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+        }
+
+        .ol-popup:after {
+            border-top-color: white;
+            border-width: 10px;
+            left: 48px;
+            margin-left: -10px;
+        }
+
+        .ol-popup:before {
+            border-top-color: #cccccc;
+            border-width: 11px;
+            left: 48px;
+            margin-left: -11px;
+        }
+
+        .ol-popup-closer {
+            text-decoration: none;
+            position: absolute;
+            top: 2px;
+            right: 8px;
+        }
+
+        .ol-popup-closer:after {
+            content: "✖";
+        }
+
+        /** 地图上的闪烁显示效果*/
+        #css_animation {
+            height: 50px;
+            width: 50px;
+            border-radius: 25px;
+            background: rgba(55, 52, 255, 0.9);
+            transform: scale(0);
+            animation: myfirst 1s;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes myfirst {
+            to {
+                transform: scale(2);
+                background: rgba(55, 52, 255, 0.1);
+            }
+        }
+
+        .trace {
+            width: 460px;
+            height: auto;
+            z-index: 9999;
+            background: white;
+            border: 1px solid lightgrey;
+            position: absolute;
+            top: 40px;
+            right: 10px;
+            display: none;
+            border-radius: 7px;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .search {
+            width: 200px;
+            height: auto;
+            z-index: 9999;
+            background: white;
+            border: 1px solid lightgrey;
+            position: absolute;
+            top: 40px;
+            right: 10px;
+            display: none;
+            border-radius: 7px;
+            overflow: auto;
+        }
+
+        .progress {
+            position: relative;
+            width: 300px;
+            margin: 20px 20px 20px 20px;
+            background-color: white;
+            height: auto;
+            overflow: unset;
+            -webkit-box-shadow: unset;
+            box-shadow: unset;
+            display: inline-block;
+        }
+
+        .progress_bg {
+            height: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #f2f2f2;
+        }
+
+        .progress_bar {
+            background: #5FB878;
+            width: 0;
+            height: 10px;
+            border-radius: 5px;
+        }
+
+        .progress_btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            position: absolute;
+            background: #fff;
+            left: 0px;
+            margin-left: -10px;
+            top: -5px;
+            cursor: pointer;
+            border: 1px #ddd solid;
+            box-sizing: border-box;
+        }
+
+        .progress_btn:hover {
+            border-color: #F7B824;
+        }
+
+        .text {
+            width: 30px;
+            display: inline-block;
+        }
+
+        .el-button {
+            margin-bottom: 10px;
+            padding: 7px 10px;
+        }
+
+        .cusSize {
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body onload="">
+
+<div id="bg" style="overflow-x: hidden; overflow-y: hidden; background-color: #2f3e21;">
+    <div style="width: 100%;height:40px;background-color: white">
+        <div class="t-btns">
+            <button id="backViewBtn" style="display: none" onclick="back2Table()"><span
+                    class="glyphicon glyphicon-play-circle"></span>返回
+            </button>
+            <button onclick="search()"><span class="glyphicon glyphicon-search"></span>查询</button>
+            <button onclick="tracePanel()"><span class="glyphicon glyphicon-play-circle"></span>轨迹回放</button>
+            <button id="showPosBtn" onclick="dataShowFun()"><span class="glyphicon glyphicon-filter"></span>采集点位
+            </button>
+            <!--    <button onclick="selectPosition1()"><span class="glyphicon glyphicon-fullscreen"></span>采集点位</button>-->
+            <button onclick="zoomIn()"><span class="glyphicon glyphicon-zoom-in"></span>放大</button>
+            <button onclick="zoomOut()"><span class="glyphicon glyphicon-zoom-out"></span>缩小</button>
+            <button onclick="drawArea()"><span class="glyphicon glyphicon-repeat"></span>测面</button>
+            <button onclick="drawLine()"><span class="glyphicon glyphicon-pencil"></span>测距</button>
+            <button onclick="crear()"><span class="glyphicon glyphicon-share"></span>清除</button>
+            <!--        <button><span class="glyphicon glyphicon-remove"></span>返回</button>-->
+            <button id="dataBtn" onclick="data()"><span class="glyphicon glyphicon-duplicate"></span>数据</button>
+            <button id="tucengBtn" onclick="tuceng()"><span class="glyphicon glyphicon-duplicate"></span>图层</button>
+        </div>
+    </div>
+
+    <div id="tracePanel" class="trace">
+        <div style="text-align: center">
+            <div class="progress">
+                <div class="progress_bg">
+                    <div class="progress_bar"></div>
+                </div>
+                <div class="progress_btn"></div>
+            </div>
+            <div class="text">0%</div>
+        </div>
+        <div style="text-align: center">
+            <input id="speedTraceInput" style="width:100px;" class="alignment" data-step="1" data-min="1" data-max="10"
+                   data-digit="0" value="1" onchange="changeSpeed(this)"/>
+            <button type="button" class="el-button el-button--default el-button--mini" style="display: inline;"
+                    onmousedown="playBack()" onmouseup="cancelPlay()" onmouseout="cancelPlay()">
+                <i class="cusSize el-icon-d-arrow-left"></i></button>
+            <button id="playTraceBtn" type="button" class="el-button el-button--default el-button--mini"
+                    onclick="startTrace()">
+                <i class="cusSize el-icon-video-play"></i></button>
+            <button id="pauseTraceBtn" type="button" class="el-button el-button--default el-button--mini"
+                    style="display: none;"
+                    onclick="pauseTrace()">
+                <i class="cusSize el-icon-video-pause"></i></button>
+            <button type="button" class="el-button el-button--default el-button--mini"
+                    onmousedown="playForward()" onmouseup="cancelPlay()" onmouseout="cancelPlay()">
+                <i class="cusSize el-icon-d-arrow-right"></i></button>
+            <button type="button" class="el-button el-button--default el-button--mini"
+                    onclick="resetTrace()">
+                <i class="cusSize el-icon-refresh-left"></i></button>
+            <button id="showInfoBtn" type="button" class="el-button el-button--default el-button--mini"
+                    onclick="showPlayInfo()">
+                <i class="cusSize el-icon-warning-outline"></i></button>
+            <button id="hideInfoBtn" type="button" class="el-button el-button--default el-button--mini"
+                    style="display: none;"
+                    onclick="hidePlayInfo()">
+                <i class="cusSize el-icon-warning"></i></button>
+        </div>
+    </div>
+
+    <div id="searchPanel" class="search">
+        <div id="searchTable"
+             class="el-table el-table--fit el-table--border el-table--enable-row-hover el-table--enable-row-transition"
+             style="border: 0px;border-radius: 7px;">
+            <div class="hidden-columns">
+            </div>
+            <div class="el-table__header-wrapper">
+                <table cellspacing="0" cellpadding="0" border="0" class="el-table__header" style="width: 200px;">
+                    <colgroup>
+                        <col name="el-table_1_column_1" width="130">
+                        <col name="el-table_1_column_2" width="70">
+                        <col name="gutter" width="0">
+                    </colgroup>
+                    <thead class="has-gutter">
+                    <tr class="">
+                        <th colspan="1" rowspan="1" class="el-table_1_column_1  is-center   is-leaf">
+                            <div class="cell">类型</div>
+                        </th>
+                        <th colspan="1" rowspan="1" class="el-table_1_column_2  is-center   is-leaf">
+                            <div class="cell">数量</div>
+                        </th>
+                        <th class="gutter" style="width: 0px; display: none;"></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="el-table__body-wrapper is-scrolling-none">
+                <table cellspacing="0" cellpadding="0" border="0" class="el-table__body" style="width: 200px;">
+                    <colgroup>
+                        <col name="el-table_1_column_1" width="130">
+                        <col name="el-table_1_column_2" width="70">
+                    </colgroup>
+                    <tbody id="searchContent">
+                    <tr class="el-table__row" style="height: 5px;">
+                        <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center " style="padding: 5px 0px;">
+                            <div class="cell">
+                                加油站
+                            </div>
+                        </td>
+                        <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center " style="padding: 5px 0px;">
+                            <div class="cell">
+                                12
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table><!----><!----></div><!----><!----><!----><!---->
+            <div class="el-table__column-resize-proxy" style="display: none;"></div>
+        </div>
+
+        <td align="right">
+            <!--                    <img src="images/close.png" id="img1"/>-->
+            <a href="javascript:void(0)" class="ol-popup-closer" onclick="hideSearchPanel()"></a>
+        </td>
+    </div>
+
+    <div id="data" class="tuceng" style="height: calc((13 + 13 + 12 + 1)*17px + 1px)">
+        <p class="first"><input id="mjCB" onclick="setDataType(this,'mj')" type="checkbox" name="tuceng" v-model="map"/>民警监控
+        </p>
+        <p><input id="blhCB" onclick="setDataType(this,'blh')" type="checkbox" name="tuceng" v-model="map"/>堡垒户监控</p>
+        <p id="allData"><input onclick="setDataType(this,'all')" type="checkbox" name="all" v-model="map"/>全部</p>
+        <p><input onclick="setDataType(this,'blhdata')" type="checkbox" name="blhdata" v-model="map"/>堡垒户</p>
+        <p><input onclick="setDataType(this,'czrk')" type="checkbox" name="czrk" v-model="map"/>常住人口</p>
+        <p><input onclick="setDataType(this,'zzrk')" type="checkbox" name="zzrk" v-model="map"/>暂住人口</p>
+        <p><input onclick="setDataType(this,'gaxt')" type="checkbox" name="gaxt" v-model="map"/>公安系统</p>
+        <p><input onclick="setDataType(this,'dzj')" type="checkbox" name="dzj" v-model="map"/>党政军</p>
+        <p><input onclick="setDataType(this,'jtcs')" type="checkbox" name="jtcs" v-model="map"/>交通场所</p>
+        <p><input onclick="setDataType(this,'ggcs')" type="checkbox" name="ggcs" v-model="map"/>公共场所</p>
+        <p><input onclick="setDataType(this,'dldc')" type="checkbox" name="dldc" v-model="map"/>电厂</p>
+        <p><input onclick="setDataType(this,'qsy')" type="checkbox" name="qsy" v-model="map"/>企事业</p>
+        <p><input onclick="setDataType(this,'tzhy')" type="checkbox" name="tzhy" v-model="map"/>特种行业</p>
+        <p><input onclick="setDataType(this,'swsb')" type="checkbox" name="swsb" v-model="map"/>涉危涉爆</p>
+        <p><input onclick="setDataType(this,'yhjr')" type="checkbox" name="yhjr" v-model="map"/>银行金融</p>
+        <p><input onclick="setDataType(this,'yyxx')" type="checkbox" name="yyxx" v-model="map"/>医院学校</p>
+        <p class="last"><input onclick="setDataType(this,'czfw')" type="checkbox" name="czfw"
+                               v-model="map"/>出租房屋</p>
+    </div>
+
+    <div id="tuceng" class="tuceng" style="height: calc((13 + 13 + 12 + 1)*8px + 1px)">
+        <!--    <p class="first"><input onclick="setMapType(this,'yx')" type="checkbox" name="tuceng" v-model="map"/>影像地图</p>-->
+        <p class="first"><input onclick="setBaseMapType(this,'sl')" type="checkbox" name="tuceng" checked=checked
+                                v-model="map"
+                                id="slCB"/>矢量地图</p>
+        <p><input onclick="setBaseMapType(this,'ggyx')" type="checkbox" name="tuceng" v-model="map"
+                  id="yxCB"/>影像地图</p>
+        <p><input onclick="setBaseMapType(this,'dx')" type="checkbox" name="tuceng" v-model="map" id="dxCB"/>地形地图</p>
+        <!--    <p><input onclick="setMapType(this,'dldm')" type="checkbox" name="tuceng" v-model="map"/>道路地名</p>-->
+        <p><input onclick="setMapType(this,'tianditulabel')" type="checkbox" name="tuceng" checked=checked
+                  v-model="map"/>图标注记
+        </p>
+        <!--    <p><input onclick="setMapType(this,'jtb')" type="checkbox" name="tuceng" value="6" v-model="map"/>天地图图幅</p>-->
+        <!--    <p><input onclick="setMapType(this,'gnqh')" type="checkbox" name="tuceng" checked=checked v-model="map"/>行政地形</p>-->
+        <!--    <p><input onclick="setMapType(this,'gnqh')" type="checkbox" name="tuceng" checked=checked v-model="map"/>行政地形</p>-->
+        <p><input onclick="setMapType(this,'gnqh')" type="checkbox" name="tuceng" checked=checked
+                  v-model="map"/>行政地形</p>
+        <p><input onclick="setMapType(this,'jtb')" type="checkbox" name="tuceng" v-model="map"/>派出所管辖</p>
+        <p><input onclick="setMapType(this,'xz')" type="checkbox" name="tuceng"
+                  v-model="map"/>堡垒户管护</p>
+        <p class="last"><input onclick="setMapType(this,'lw')" type="checkbox" name="tuceng"
+                               v-model="map"/>路网</p>
+        <!--    <p><input onclick="setMapType(this,'xz')" type="checkbox" name="tuceng" value="8" v-model="map"/>巡护网格图</p>-->
+        <!--    <p><input onclick="setMapType(this,'dm')" type="checkbox" name="tuceng" value="9" v-model="map"/>天地图地名</p>-->
+        <!--    <p><input onclick="setMapType(this,'ggyx')" type="checkbox" name="tuceng" v-model="map"/>新影像地图</p>-->
+        <!--    <p><input onclick="setMapType(this,'ggdx')" type="checkbox" name="tuceng" v-model="map"/>新地形地图</p>-->
+        <!--    <p><input onclick="setMapType(this,'ggdldm')" type="checkbox" name="tuceng" v-model="map"/>新道路地名</p>-->
+        <!--    <p class="last"><input onclick="setMapType(this,'ggsl')" type="checkbox" name="tuceng" v-model="map"/>新矢量地图</p>-->
+    </div>
+    <div id="gnssMap">
+        <iframe src="../alsm/pointPosition/patrolButtun.html" id="dataShow" frameborder="0"
+                scrolling="yes"
+                style="height: 100%;width:300px;z-index: 999;position: absolute;right: 0;background-color: white"></iframe>
+        <div id="gnssLegend"></div>
+    </div>
+</div>
+
+<div style="display: none; margin-top:40px">
+    <div id="popw" class="ol-popup" style="font-size: 12px; width: 400px; height: 400px">
+        <table style="width:100%;">
+            <tr style="height: 10px;">
+                <td>
+                    <h2 style="position: relative; top: 0px; float: left;">
+                        基本信息
+                    </h2>
+                </td>
+                <td align="right">
+                    <!--                    <img src="images/close.png" id="img1"/>-->
+                    <a href="#" id="img1" class="ol-popup-closer"></a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div id="mainframeshow" style="border: 0; width:100%;height: 200px">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript">
+
+    var tag = false, ox = 0, left = 0, bgleft = 0;
+
+
+    /**
+     * 窗口大小改变事件
+     * @return {[type]} [description]
+     */
+    $(function () {
+        // 初始化
+        alignmentFns.initialize();
+
+        $('#dataShow').hide();
+        $('#dataShow')[0].contentWindow.refreshPosData = refreshPosData;
+
+        initOnClick($('#data'));
+        initOnClick($('#tuceng'));
+
+        initTracePanel();
+        $('.progress_btn').mousedown(function (e) {
+            ox = e.pageX - left;
+            tag = true;
+        });
+        $(document).mouseup(function () {
+            tag = false;
+        });
+        $('.progress').parent().mousemove(function (e) {//鼠标移动
+            if (tag) {
+                left = e.pageX - ox;
+                if (left <= 0) {
+                    left = 0;
+                } else if (left > 300) {
+                    left = 300;
+                }
+                setProgress();
+                updateProgress();
+            }
+        });
+        $('.progress_bg').click(function (e) {//鼠标点击
+            if (!tag) {
+                bgleft = $('.progress_bg').offset().left;
+                left = e.pageX - bgleft;
+                if (left <= 0) {
+                    left = 0;
+                } else if (left > 300) {
+                    left = 300;
+                }
+                // $('.progress_btn').css('left', left);
+                // $('.progress_bar').animate({width: left}, 300);
+                // $('.text').html(parseInt((left / 300) * 100) + '%');
+                setProgress();
+                updateProgress();
+            }
+        });
+    })
+
+    function initOnClick(obj) {
+        var children = obj.children();
+        for (var i = 0; i < children.length; i++) {
+            children[i].setAttribute('onclick', 'onPClicked(this)');
+            // children[i].children[0].setAttribute('onclick', '');
+        }
+    }
+
+    //设置嵌套页面高度
+    function setShowHeight() {
+        var display = $("#dataShow").css("display");
+        if (display == "block" || display == "inline") {
+            var fH = $("#dataShow").height();
+            var selectHtml = document.getElementById("dataShow").contentWindow;
+            var vH = fH;
+            selectHtml.vm.setVueHeight(vH);
+            var treeH = vH - 40;
+            selectHtml.vm.treeHeight = treeH + "px";
+
+            var tableH;
+            // vue变量动态绑定设置高度
+            if (selectHtml.vm.selectedObj.formName == selectHtml.vm.options[1].formName || selectHtml.vm.selectedObj.formName == selectHtml.vm.options[9].formName) {
+                tableH = treeH - 64 - 22;
+            } else {
+                tableH = treeH - 32 - 22;
+            }
+            selectHtml.vm.tableHeight = tableH + "px";
+        }
+    }
+
+    function showBackButton() {
+        $('#backViewBtn').show();
+    }
+
+    function hideBackButton() {
+        $('#backViewBtn').hide();
+    }
+
+    function back2Table() {
+        top.back2Table();
+    }
+
+    function hideTracePanel() {
+        $('#tracePanel').hide();
+        hideTrace();
+    }
+
+    function tracePanel() {
+        $('#dataShow').hide();
+        $('#data').hide();
+        $('#tuceng').hide();
+        if (curTrace.length === 0) {
+            top.showMessage('请先显示一条轨迹。', 0);
+        } else {
+            if ($('#tracePanel').is(':hidden')) {
+                showTrace();
+            } else {
+                hideTrace();
+            }
+            $('#tracePanel').toggle();
+            alignmentFns.destroy();
+            $('#speedTraceInput').attr('value', 1);
+            // 初始化
+            alignmentFns.initialize();
+
+        }
+    };
+
+    function hideSearchPanel() {
+        $('#searchPanel').hide();
+        clearMeasure();
+    }
+
+    function showSearchPanel() {
+        $('#dataShow').hide();
+        $('#data').hide();
+        $('#tuceng').hide();
+        hideTracePanel();
+        $('#searchPanel').show();
+        changeCustomPanelWidth('searchPanel');
+    };
+
+    function setSearchContent(strHtml) {
+        $('#searchContent')[0].innerHTML = strHtml;
+    }
+
+    function changeSpeed(me) {
+        curStep = rates[parseFloat(me.value)];
+    }
+
+    var isPlayFB = false;
+    var playTimeoutId = null;
+    var playTimeout = 300;
+
+    function playBack() {
+        cancelPlay();
+        isPlayFB = true;
+        curStep = -curStep;
+        stepTrace();
+        delayPlay();
+    }
+
+    function playForward() {
+        cancelPlay();
+        isPlayFB = true;
+        stepTrace();
+        delayPlay();
+    }
+
+    function delayPlay() {
+        $('#pauseTraceBtn').hide();
+        $('#playTraceBtn').show();
+        pauseTrace();
+        playTimeoutId = setTimeout(function () {
+            startTrace();
+            playTimeoutId = null;
+        }, playTimeout);
+    }
+
+    function cancelPlay() {
+        if (!isPlayFB)
+            return;
+        if (playTimeoutId != null) {
+            clearTimeout(playTimeoutId);
+        } else {
+            pauseTrace();
+        }
+        curStep = Math.abs(curStep);
+        isPlayFB = false;
+    }
+
+    function showPlayInfo() {
+        $('#showInfoBtn').hide();
+        $('#hideInfoBtn').show();
+        isShowInfo = true;
+    }
+
+    function hidePlayInfo() {
+        $('#hideInfoBtn').hide();
+        $('#showInfoBtn').show();
+        isShowInfo = false;
+        traceHoverTooltip.setPosition();
+    }
+
+    function onPClicked(me) {
+        var inputObj = me.children[0];
+        inputObj.click();
+    }
+
+    function dataShowFun() {
+        $('#tuceng').hide();
+        $('#data').hide();
+        $('#tracePanel').hide();
+        $('#dataShow').show();
+
+        setShowHeight();
+    }
+
+    function data() {
+        $('#dataShow').hide();
+        $('#tuceng').hide();
+        $('#tracePanel').hide();
+        $('#data').toggle();
+        changeCustomPanelWidth('data', 118);
+    };
+
+    function tuceng() {
+        $('#dataShow').hide();
+        $('#data').hide();
+        $('#tracePanel').hide();
+        $('#tuceng').toggle();
+        changeCustomPanelWidth('tuceng', 118);
+    };
+
+    function hidePanel() {
+        $('#tuceng').hide();
+        $('#data').hide();
+        $('#dataShow').hide();
+    }
+
+    $(document).mousedown(
+        function (event) {
+            // alert(event.target.id); //这样会弹出你单击的元素的id,你可以在这答里写你的程序了
+            // console.log(event);
+
+            if (event.target.id !== 'dataBtn' &&
+                event.target.id !== 'tucengBtn' &&
+                event.target.id !== 'showPosBtn') {
+                if (event.target.parentElement) {
+                    let parent = event.target.parentElement;
+                    if (parent.id === 'data' ||
+                        parent.id === 'tuceng') {
+                        return;
+                    }
+                    if (parent.parentElement) {
+                        parent = parent.parentElement;
+                        if (parent.id === 'data' ||
+                            parent.id === 'tuceng') {
+                            return;
+                        }
+                    }
+                }
+                hidePanel();
+            }
+        }
+    );
+
+    function search() { //测面
+        // gMap.toggleControl('polygon');
+        // startMeasure(MeasureType_rect);
+        drawSearchRect();
+    };
+
+    function drawLine() { //测距
+        // gMap.toggleControl('line');
+        startMeasure(MeasureType_line);
+    };
+
+    function drawArea() { //测面
+        // gMap.toggleControl('polygon');
+        startMeasure(MeasureType_area);
+    };
+
+    function crear() { //清除
+        // gMap.clearFeature()
+        clearMeasure();
+    };
+
+    function showMJ(checked) {
+        showCB('mjCB', checked);
+    }
+
+    function showBLH(checked) {
+        showCB('blhCB', checked);
+    }
+
+    function showCB(id, checked) {
+        showCBObj($("#" + id), checked)
+    }
+
+    function showCBObj(obj, checked) {
+        var checkedOfAll = obj.attr("checked");
+        if (checked) {
+            if (!checkedOfAll) {
+                obj.attr('checked', 'abc')
+            }
+        } else {
+            if (checkedOfAll !== "checked") {
+                obj.attr('checked', false)
+            }
+        }
+    }
+
+    function refreshAllDataStatus() {
+        var parent = $('#allData')[0];
+        var allCbObj = parent.children[0];
+        while (parent.nextElementSibling) {
+            var siblingCbObj = parent.nextElementSibling.children[0];
+            if (!siblingCbObj.checked) {
+                allCbObj.checked = false;
+                return;
+            }
+            parent = parent.nextElementSibling;
+        }
+        allCbObj.checked = true;
+    }
+
+    function setDataType(me, type) { //图层
+        var isYes = me.checked;
+        if (type === 'mj') {
+            if (isYes) {
+                top.showPolice();
+            } else {
+                top.cancelPolice();
+            }
+        } else if (type === 'blh') {
+            if (isYes) {
+                top.showPatrol();
+            } else {
+                top.cancelPatrol();
+            }
+        } else if (type === 'all') {
+            var parent = me.parentElement;
+            while (parent.nextElementSibling) {
+                var siblingCbObj = parent.nextElementSibling.children[0];
+                if (siblingCbObj.checked !== isYes) {
+                    siblingCbObj.checked = isYes;
+                    setPosVisible(siblingCbObj.name, isYes);
+                }
+                parent = parent.nextElementSibling;
+            }
+        } else {
+            setPosVisible(type, isYes);
+            refreshAllDataStatus();
+        }
+        return;
+    };
+
+    function setMapType(me, type) { //图层
+        var isYes = $(me)[0].checked;
+        setlayerVisible(type, isYes);
+        gMap.setLegendVisible(type, isYes);
+        return;
+    };
+
+    function setBaseMapType(me, type) { //图层
+        var curCB = $(me)[0];
+        var isYes = curCB.checked;
+        if (!isYes) {
+            // console.log($(me)[0]);
+            curCB.checked = true;
+        } else {
+            $('input#yxCB')[0].checked = false;
+            setlayerVisible('ggyx', false);
+            $('input#dxCB')[0].checked = false;
+            setlayerVisible('dx', false);
+            $('input#slCB')[0].checked = false;
+            setlayerVisible('sl', false);
+
+            curCB.checked = true;
+            setlayerVisible(type, isYes);
+        }
+        return;
+    };
+
+    function quanping() { //全屏
+        var left = $(parent.document).find('.t-left');
+        var right = $(parent.document).find('.t-right')
+
+        if ($(left).is(':hidden')) {
+            $(left).show();
+            right.css('left', '25.3%');
+            right.css('width', '75%');
+        } else {
+            $(left).hide();
+            right.css('left', '0px');
+            right.css('width', '100%');
+            var wid = document.documentElement.clientWidth - 0;
+            document.getElementById("gnssMap").style.width = wid + "px";
+        }
+    };
+
+    function reset() {
+        var len = gMap.getOverlays().length
+        for (var i = len; i > 0; i--) {
+            gMap.removeOverlay(gMap.getOverlays()[i]);
+        }
+    }
+
+</script>

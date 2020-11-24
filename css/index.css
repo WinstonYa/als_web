@@ -1,0 +1,409 @@
+﻿ /**
+  * 作       者：StampGIS Team
+  * 创建日期：2017年7月22日
+  * 描        述：主界面样式表
+  * 注意事项：
+  * 遗留bug：0
+  * 修改日期：2017年11月8日
+  ******************************************/
+
+ body {
+ 	margin: 0;
+ 	overflow: hidden;
+	 /* ssy +toolDiv.height 39px 80px 1px*/
+ 	_padding: 120px 0px 0px 0;
+ 	/*IE6下通过设置上下的填充来给上下固定部分腾出空间*/
+ 	_border: 0;
+ }
+
+ #mainDiv {
+ 	width: 100%;
+	 /* ssy +toolDiv.height 39px 80px 1px*/
+ 	top: 120px;
+ 	position: fixed;
+ 	height: 100%;
+ 	height: 733px;
+ 	/*默认值，后面会自适应布局*/
+ }
+
+ #headerDiv {
+ 	height: 70px;
+ 	width: 100%;
+ 	position: absolute;
+ 	top: 0px;
+ 	left: 0px;
+ 	background: #2A80C9;
+ }
+
+ #toolDiv {
+ 	height: 39px;
+ 	border-bottom: 1px solid #cecece;
+ }
+
+ /* ssy header 70px*/
+ .header {
+	height: 80px;
+	 background: #2a80c9;
+ }
+
+ .logoImg {
+ 	margin: 8px 10px 8px 20px;
+ 	width: 143px;
+ 	height: 54px;
+ }
+
+ .titleImg {
+ 	margin: 19px 0px;
+ 	height: 32px;
+ }
+
+ /* ssy modify menu */
+ .titleText {
+ 	font-family: "STXingkai" ! important;
+ 	font-size: 40px;
+ 	line-height: 40px;
+ 	font-weight: 900;
+ 	color: #fafcfc;
+ 	position: relative;
+ 	top: 7px;
+ 	/*text-shadow: 2px 2px 2px;*/
+	 /*字体间距*/
+ 	letter-spacing: 3px;
+ 	opacity: 1.0;
+
+
+ }
+
+ .topImg {
+ 	margin-top: 3px;
+ }
+
+ .loadingImg {
+ 	margin-right: 8px;
+ 	vertical-align: top;
+ 	width: 32px;
+ 	height: 32px;
+ }
+
+ .btnPreNext {
+	 float: right;
+ 	/*position: absolute;*/
+ 	right: 0px;
+	 /* ssy OpenLayersDiv*/
+ 	top: 70px;
+ 	z-index: 99;
+ 	background: white;
+ 	width: 40px;
+ 	height: 39px;
+ }
+
+ #DB_navi .selectedStyle{
+	 background-color:#1F6BA5;
+ }
+ /*-------------topBanner样式 START--------------*/
+
+
+
+
+ #head	erDiv .defaultStyle {
+ 	opacity: 0.6;
+ 	filter: alpha(opacity=60);
+ }
+
+ #DB_ul li {
+ 	cursor: pointer;
+ }
+
+ #DB_ul {
+ 	width: 100%;
+ 	margin: 0px;
+
+ }
+
+ #DB_ul li:hover {
+ 	background: url(../images/top/dbli-bg.png);
+	 background-size: 100% 100%;
+ }
+
+ #DB_navi {
+ 	height: 70px;
+ 	/*position: absolute;*/
+ 	top: 0;
+ 	/*right: 68px;*/
+	 float: left;
+ 	z-index: 1;
+ 	margin: 0px;
+ 	padding: 0px;
+ 	text-align: center;
+ 	background: #2a80c9;
+ }
+
+ #DB_ul li {
+	/* line-height: 8px;
+ 	float: right;
+ 	margin: auto;
+ 	list-style: none;
+	!* ssy modify menu *!
+ 	width: 90px;
+ 	height: 40px;
+ 	border-left: 1px solid #1b72bc;
+	 font-size: 12px;*/
+
+	/* line-height: 31px;
+	 float: right;
+	 margin: auto;
+	 list-style: none;
+	 width: 131px;
+	 height: 81px;
+	 border-left: 1px solid #1b72bc;
+	 font-size: 17px;*/
+
+
+	 line-height: 42px;
+	 float: right;
+	 margin: auto;
+	 list-style: none;
+	 width: 95px;
+	 height: 79px;
+	 border-left: 1px solid #1b72bc;
+	 font-size: 14px;
+
+ }
+
+ /*-------------topBanner样式 END--------------*/
+ /*-------------tools子菜单样式 START--------------*/
+
+ #toolDiv .defaultStyle {
+ 	padding: 1px 5px;
+ 	color: #444444;
+ 	border: none;
+ 	background-color: #fff;
+ }
+
+ #toolDiv .selectedStyle {
+ 	background-color: #d4f1fb;
+ 	border: 1px solid #80c9e2;
+ 	padding: 0px 4px;
+ }
+
+ #toolDiv #div_toolBar img {
+ 	padding-right: 3px;
+ 	display: inline;
+ }
+
+ #toolDiv #div_toolBar span {
+ 	display: inline;
+ }
+
+ #toolDiv #div_toolBar button {
+ 	display: inline-block;
+ 	height: 28px;
+ 	line-height: 28px;
+ 	margin-bottom: 5px;
+ }
+
+ #toolDiv #div_toolBar {
+ 	overflow: hidden;
+	/* ssy OpenLayersDiv*/
+	height: 39px;
+ }
+
+ .nextDbIcon {
+ 	width: 22px;
+ 	background-image: url(../images/toolsIcon/show.png);
+ }
+
+ .nextSgIcon {
+ 	width: 10px;
+ 	background-image: url(../images/toolsIcon/next.png);
+ }
+
+ .preDbIcon {
+ 	width: 22px;
+ 	background-image: url(../images/toolsIcon/hide.png);
+ }
+
+ .preSgIcon {
+ 	width: 10px;
+ 	background-image: url(../images/toolsIcon/previous.png);
+ }
+
+ .toolIcon {
+ 	height: 16px;
+ 	float: right;
+ 	margin: 10px 5px;
+ 	cursor: pointer;
+ 	display: none;
+ }
+
+ #nextMenu {
+ 	display: none;
+ }
+
+ #toolDiv {
+ 	width: 100%;
+ }
+
+ #toolDiv button {
+ 	font-family: 'Microsoft Yahei';
+ 	outline: none;
+ }
+
+ #toolDiv #toolBar_ios {
+ 	margin: 5px 0px 5px 5px;
+ 	height: 34px;
+ 	line-height: 34px;
+ 	overflow: auto;
+ 	padding-right: 25px;
+ }
+ /*加大间距用以解决菜单显示不全问题*/
+
+ #toolDiv #toolBar_ios button {
+ 	margin-left: 0px;
+	 /* ssy modify menu */
+ 	font-size: 18px;
+ }
+
+ #toolDiv #toolBar_ios button:hover {
+ 	padding: 0px 4px;
+ 	border: 1px solid #80c9e2;
+ 	background-color: #fff;
+ }
+
+ #toolDiv .disable {
+ 	color: #A0A0A0;
+ }
+ /*-------------tools子菜单样式 END--------------*/
+ /*-------------leftPanel左侧面板样式 START--------------*/
+
+ #leftPanel {
+ 	border-right: 1px solid #cecece;
+ }
+
+ #operator {
+ 	width: 100%;
+ 	height: 100%;
+ }
+ /*
+ * 图层管理header
+ */
+
+ .layerHeader {
+ 	height: 38px;
+ 	border: 1px solid #c2cad2;
+ 	background: #fefefe;
+ }
+
+ .layerHeaderInnerDiv {
+ 	width: 100px;
+ 	height: 38px;
+ 	margin-left: 12px;
+ 	margin-top: 1px;
+ }
+
+ .layerHeaderInnerImg {
+ 	text-align: center;
+ 	width: 18px;
+ 	height: 18px;
+ 	margin-top: -6px;
+ }
+
+ .layerHeaderInnerText {
+ 	font-size: 18px;
+ 	color: #67B6E6;
+ 	line-height: 38px;
+ 	font-weight: bold;
+ }
+ /*
+ * 图层关闭按钮
+ */
+
+ .closeLayerImg {
+ 	position: absolute;
+ 	left: 224px;
+ 	top: 11px;
+ 	cursor: pointer;
+ }
+ .closeLayerImg2 {
+	 position: absolute;
+	 /*left: 418px;*/
+	 /* gsy */
+	 left: 269px;
+	 top: 10px;
+	 cursor: pointer;
+ }
+ /*-------------leftPanel左侧面板样式 END--------------*/
+ /*-------------mainMap地图div样式 START--------------*/
+
+ .whole {
+ 	width: 100%;
+ 	height: 100%;
+ }
+
+ .half {
+ 	width: 50%;
+ 	height: 100%;
+ 	float: left;
+ }
+
+ .hide {
+ 	display: none;
+ }
+ /*-------------mainMap地图div样式 END--------------*/
+ /*-------------底部地形剖面div样式 START--------------*/
+
+ #profileChart {
+ 	position: relative;
+ 	width: 100%;
+ 	height: 100%;
+ }
+
+ #closeCharts {
+ 	position: absolute;
+ 	right: 0;
+ 	top: 0;
+ }
+ /*-------------底部地形剖面div样式 START--------------*/
+ /*---------------------ul li样式 START-------------------*/
+
+ .nav {
+ 	list-style-type: none;
+ 	list-style-position: outside;
+ 	list-style-image: none;
+ 	margin-left: 0px;
+ }
+
+ img {
+ 	vertical-align: middle;
+ }
+
+ .nav li {
+ 	float: left;
+ }
+
+ ul {
+ 	padding: 0px;
+ 	margin: 0px;
+ }
+
+ .nav-tabs>li>a,
+ .nav-tabs {
+ 	border-bottom-color: #ddd;
+ 	border-bottom-width: 1px;
+ 	border-bottom-style: solid;
+ }
+
+ .nav-tabs::before,
+ .nav-pills::before,
+ .nav-tabs::after,
+ .nav-pills::after {
+ 	line-height: 0;
+ 	display: table;
+ 	content: "";
+ }
+
+ .nav-tabs::after,
+ .nav-pills::after {
+ 	clear: both;
+ }
+ /*------------------------ul li样式 END----------------------*/

@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+<head lang="en">
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <title>场所统计</title>
+  <link href="../../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="../../../css/bootstrap@3.3.7/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+  <link href="../../../alsm/ttyu.net/file/ttyu/css/ttyu.web.css" rel="stylesheet" type="text/css">
+  <link href="../../../alsm/ttyu.net/file/system/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../../alsm/index/index.css">
+  <link rel="stylesheet" href="../../../fonticon/iconfont.css">
+  <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+  <script src="../../../alsm/ttyu.net/file/system/jq/jquery-ui.js" type="text/javascript"></script>
+  <script src="../../../alsm/ttyu.net/file/system/ztree/js/jquery.ztree.all.min.js"></script>
+  <script src="../../../alsm/bootstrap@3.3.7/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../../../alsm/bootstrap@3.3.7/bootstrap-select.min.js"></script>
+  <script src="../../../alsm/ttyu/ttyu.web2.js" type="text/javascript"></script>
+
+  <link href="../../../css/elui/index.css" rel="stylesheet">
+  <!-- 必须先引入vue  后使用element-ui -->
+  <script src="../../../alsm/vue/vue.js"></script>
+  <script src="../../../alsm/elui/index.js"></script>
+  <script src="../../../alsm/echarts/echarts.min.js"></script>
+
+  <script src="../../../alsm/api_sub.js" type="text/javascript"></script>
+  <script src="../../../js/config/config.js"></script>
+</head>
+
+<body>
+  <div id='body1'>
+    <div class="t-body">
+
+        <div class="t-find" style="margin-top: 5px">
+
+            <div class="t-data-time" style="display: inline">
+                <span>支队选择：</span>
+                <el-select  style="width: auto"
+                            v-model='selectedZhiDui'
+                            placeholder='支队选择'>
+                    <el-option v-for='(item, index) in optionsZhiDui'
+                               :key='index'
+                               :label='item.name'
+                               :value='item.id'>
+                    </el-option>
+                </el-select>
+                <span>大队选择：</span>
+                <el-select  style="width: auto"
+                            v-model='selectedDaDui'
+                            placeholder='大队选择'>
+                    <el-option v-for='(item, index) in optionsDaDui'
+                               :key='index'
+                               :label='item.name'
+                               :value='item.id'>
+                    </el-option>
+                </el-select>
+                <span>派出所选择：</span>
+                <el-select  style="width: 180px"
+                            v-model='selectedPaiChuSuo'
+                            placeholder='派出所选择'>
+                    <el-option v-for='(item, index) in optionsPaiChuSuo'
+                               :key='index'
+                               :label='item.name'
+                               :value='item.id'>
+                    </el-option>
+                </el-select>
+                <!--<span>人员选择：</span>
+                <el-select  style="width: 150px"
+                            v-model='selectedPerson'
+                            @change='changeSelect04'
+                            placeholder='人员选择'>
+                    <el-option v-for='(item, index) in optionsPerson'
+                               :key='index'
+                               :label='item.name'
+                               :value='item.name'>
+                    </el-option>
+                </el-select>-->
+            </div>
+
+
+            <div class="t-btns" style="display: inline">
+                <button title='统计'>
+                    <span class="glyphicon glyphicon-search"></span>
+                    统计
+                </button>
+                <button title='重置'>
+                    <span class="glyphicon glyphicon-repeat"></span>
+                    重置
+                </button>
+            </div>
+
+        </div>
+
+        <div style="width: 100%;">
+        <div id="chart" class="chart" style="height: 700px;width: 100%;"></div>
+      </div>
+
+        <div style="display: none">
+
+
+      <div style="width: 100%;">
+        <div id="Piechart01" class="chart" style="height: 1200px; width: 100%;"></div>
+<!--        <div id="Piechart02" class="chart" style="float: left;height: 700px; width: 31%;"></div>-->
+<!--        <div id="Piechart03" class="chart" style="float: left;height: 700px; width: 31%;"></div>-->
+      </div>
+
+      <div style="width: 100%;">
+        <div id="Piechart02" class="chart" style="height: 1200px; width: 100%;"></div>
+      </div>
+
+      <div style="width: 100%;">
+        <div id="Piechart03" class="chart" style="height: 1200px; width: 100%;"></div>
+      </div>
+        </div>
+    </div>
+  </div>
+</body>
+
+</html>
+<script src="./../../json/nation.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(function () {
+        new Vue({
+            el: '#body1',
+            data: {
+              value2:"",
+                chart: null,
+                Piechartchart:null,
+                anaType: '总里程',
+                anaTypes: ['总里程', '任务次数', '事件个数'],
+                rows: [],
+                b:[],
+                paramsData:{},
+
+
+                //下拉框
+                selectedObj:null,
+                allDeptIds:null,
+                options:[],
+                optionsZhiDui:[],
+                optionsDaDui:[],
+                optionsPaiChuSuo:[],
+                optionsPerson:[],
+
+                selectedZhiDui:null,
+                selectedDaDui:null,
+                selectedPaiChuSuo:null,
+                selectedPerson:null,
+            },
+            mounted: function () {
+                vm = this;
+                initButton(this);
+                vm.chart = echarts.init(document.getElementById('chart'));
+                // vm.showGraph();
+
+              //初始化饼图
+              vm.Piechartchart = echarts.init(document.getElementById('Piechart01'));
+              vm.Piechartchart02 = echarts.init(document.getElementById('Piechart02'));
+              vm.Piechartchart03 = echarts.init(document.getElementById('Piechart03'));
+
+                vm.showGraph()
+
+                vm.optionsZhiDui = optionsZhiDui;
+                vm.optionsDaDui = optionsDaDui[101];
+                vm.optionsPaiChuSuo = optionsPaiChuSuo[201];
+
+
+            },
+            computed: {
+                anaTypeCom: {
+                    get: function () {
+                        return this.anaType;
+                    },
+                    set: function (val) {
+                        this.anaType = val;
+                    }
+                }
+            },
+            created: function () {
+                vm = this;
+                vm.fillOptions();
+
+            },
+            methods: {
+                changeSelect:function(val) {
+                    console.log(val);
+                    vm.selectOption = val;
+
+                },
+                fillOptions:function () {
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                console.log(res)
+                                vm.options= res.data;
+                                /*if(vm.options!=null&&vm.options.length>0){
+                                    var deptIds="";
+                                    for ( var i=0;i<vm.options.length;i++ ){
+                                        var deptId=vm.options[i].id;
+                                        deptIds+=deptId+",";
+                                    }
+                                    vm.allDeptIds=deptIds.substring(0,deptIds.length-1);
+                                    vm.selectedObj="allDeptIds";
+                                    vm.params.deptIds=vm.allDeptIds;
+                                    // vm.loadData();
+                                }*/
+                            }else {
+                                vm.$message.error('当前部门下无民警!');
+                            }
+                        },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceStation',
+                        "get"
+                    )
+                },
+                loadData: function () { //获取点击对象
+
+
+                },
+                showGraph: function () { //获取点击对象
+
+                    var texts = ['涉爆单位','企事业单位','特种行业','商业网点','出租房屋','其它场所'];
+                    var lengthvals = [
+                        {
+                            name:'涉爆单位',value:23
+                        },{
+                            name:'企事业单位',value:12
+                        },{
+                            name:'特种行业',value:17
+                        },{
+                            name:'商业网点',value:50
+                        },{
+                            name:'出租房屋',value:69
+                        },{
+                            name:'其它场所',value:80
+                        }
+                    ];
+
+                    var opt = {
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                textStyle: {
+                                    // color: '#fff'
+                                }
+                            }
+                        },
+                      title: {
+                        text: '场所统计',
+                        x: 'center',
+                        y: 15,
+                        textStyle: {
+                          color: '#21280f',
+                          fontSize:18,
+                          fontWeight: 'normal',
+                        },
+                      },
+                        grid: {
+                          left: '3%',
+                          right: '4%',
+                          containLabel: true,
+                          y2:50,
+                        },
+                        legend: {
+                            x: '5%',
+                            // top: '10%',
+                            textStyle: {
+                                // color: '#90979c'
+                            },
+                            data: this.anaTypes
+                        },
+                        calculable: true,
+                        xAxis: [{
+                            type: 'category',
+                            axisLine: {
+                                lineStyle: {
+                                    // color: '#90979c'
+                                }
+                            },
+                            splitLine: {
+                                show: false
+                            },
+                            axisTick: {
+                                show: false
+                            },
+                            splitArea: {
+                                show: false
+                            },
+                            axisLabel: {
+                                interval: 0,
+                                textStyle: {
+                                    fontSize: '15',
+                                    // color: '#fffffb'
+                                },
+                              // rotate:-40
+                            },
+                            data: texts
+                        }],
+                        yAxis: [{
+                            name:'数量',
+                            type: 'value',
+                            splitLine: {
+                                show: false
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    // color: '#90979c'
+                                }
+                            },
+                            axisTick: {
+                                show: false
+                            },
+                            axisLabel: {
+                                interval: 0
+                            },
+
+                        }],
+                        series: [{
+                            name: '数量',
+                            type: 'bar',
+                            barMaxWidth: 35,
+                            barGap: '2',
+                            barCategoryGap: '10',
+                            itemStyle: {
+                              normal: {
+                                color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,   // 0,0,1,0表示从左向右    0,0,0,1表示从右向左
+                                        [
+                                          {offset: 1, color: '#83bff6'},
+                                          {offset: 0, color: '#2898f0'}
+                                        ]
+                                )
+                              }
+                            },
+                            data: lengthvals
+                        }]
+                    };
+                    this.chart.setOption(opt);
+
+                },
+              //饼图
+              showPieGraph: function (b) { //获取点击对象
+
+                // //  饼图宽度 动态变化
+                // var width02;
+                //   if (!width){
+                //     width02="55%"
+                //   }else {
+                //     width02 = 80-180/width*100;
+                //   }
+
+
+                //里程 任务 事件
+
+                //名称
+                var texts = [];
+                //里程长度
+                var lengthvals = [];
+                //任务次数
+                var taskvals = [];
+                //事件个数
+                var eventvals = [];
+
+                var i;
+                var propname;
+
+                if (this.anaType == '事件个数'){
+                  propname = 'event';
+                }
+                else if (this.anaType == '总里程') {
+                  propname = 'length';
+                }
+                else if (this.anaType == '任务次数') {
+                  propname = 'task';
+                }
+
+                if (propname!=null){
+                  var rows = this.insertionSort(this.rows, propname,'pieType');
+                }
+
+                // this.insertionSort(this.rows, propname);
+
+
+                for (i = 0; i < rows.length; i++) {
+
+                  // lengthvalsData.value=this.rows[i].length;
+                  texts.push(rows[i].name);
+                  lengthvals.push(rows[i].length);
+                  taskvals.push(rows[i].task);
+                  eventvals.push(rows[i].event);
+                }
+
+                //自定义 json 路程
+                var  params = [];
+                for(var i = 0; i < texts.length; i++){
+                  params.push({"value":lengthvals[i],"name":texts[i]});
+
+                }
+
+                //任务次数
+                var  taskvalsData = [];
+                for(var j = 0; j < taskvals.length; j++){
+                  taskvalsData.push({"value":taskvals[j],"name":texts[j]});
+                }
+
+
+                //事件次数
+                var  eventvalsData = [];
+                for(var k = 0; k < taskvals.length; k++){
+                  eventvalsData.push({"value":eventvals[k],"name":texts[k]});
+                }
+
+                optPie = {
+                  tooltip: {
+                    trigger: 'item',
+                    formatter: " {b}：{c}km "
+                  },
+                  color:['#3734ff','#33f8ff','#2898f0'],   //环形颜色
+                  graphic:{       //图形中间文字
+                    type:"text",
+                    left:"center",
+                    top:"center",
+                    style:{
+                      text:"总里程",
+                      textAlign:"center",
+                      fill:"#21280f",
+                      fontSize:30
+                    }
+                  },
+                  legend: {
+                    x : '85%',
+                    y : '25%',
+                    orient: 'vertical',
+                    align: 'left',
+
+                   /* x : '10',
+                    y : '1',*/
+                    itemWidth: 18,
+                    itemHeight: 18,
+                    textStyle:{//图例文字的样式
+                      // color:'#551216',
+                      fontSize:20
+                    },
+                    data:texts
+                  },
+                  series: [
+
+                    {
+                      name: '面积模式',
+                      type: 'pie',
+                      radius: ['10%', '25%'],       //饼图大小
+                      // roseType : 'area',
+
+                      labelLine: {    //图形外文字线
+                        normal: {
+                          length: 50,
+                          length2:100
+                        }
+                      },
+                      label: {
+                        normal: {
+                          formatter: ' {c|{c}km}  \n  {b|{b}} ({d}%)\n\n',       //图形外文字上下显示
+                          borderWidth: 10,
+                          borderRadius: 4,
+                          padding: [0, -80],          //文字和图的边距
+                          rich: {
+                            a: {
+                              color: '#333',
+                              fontSize: 20,
+                              lineHeight: 20
+                            },
+                            b: {                        //name 文字样式
+                              fontSize: 18,
+                              lineHeight: 20,
+                              color: '#21280f'
+                            },
+                            c: {                   //value 文字样式
+                              fontSize: 15,
+                              lineHeight: 20,
+                              color: '#551216',
+                              align:"center"
+                            },
+                            d: {                   //value 文字样式
+                              fontSize: 15,
+                              lineHeight: 23,
+                              color: '#551216',
+                              align:"center"
+                            }
+                          }
+                        }
+                      },
+                      // data: eventvals
+                      data:params
+                    }
+                  ]
+                };
+
+
+                //第二饼图
+                optPie02 = {
+                  tooltip: {
+                    trigger: 'item',
+                    formatter: " {b}：{c}次 "
+                  },
+                  color:['#96f43b','#3734ff','#33f8ff'],   //环形颜色
+                    graphic:{       //图形中间文字
+                      type:"text",
+                      left:"center",
+                      top:"center",
+                      style:{
+                        text:"任务次数",
+                        textAlign:"center",
+                        fill:"#21280f",
+                        fontSize:30
+                      }
+                    },
+                  legend: {
+                    x : '85%',
+                    y : '25%',
+                    orient: 'vertical',
+                    align: 'left',
+                    itemWidth: 18,
+                    itemHeight: 18,
+                    textStyle:{//图例文字的样式
+                      // color:'#551216',
+                      fontSize:20
+                    },
+                    data:texts
+                  },
+                  series: [
+
+                    {
+                      name: '面积模式',
+                      type: 'pie',
+                      radius: ['10%', '25%'],       //饼图大小
+                      // roseType : 'area',
+
+                      labelLine: {    //图形外文字线
+                        normal: {
+                          length: 40,
+                          length2:120
+                        }
+
+                      },
+                      label: {
+                        normal: {
+                          formatter: ' {c|{c}次}  \n  {b|{b}} ({d}%) \n\n',       //图形外文字上下显示
+                          borderWidth: 20,
+                          borderRadius: 4,
+                          padding: [0, -80],          //文字和图的边距
+                          rich: {
+                            a: {
+                              color: '#333',
+                              fontSize: 33,
+                              lineHeight: 20
+                            },
+                            b: {                        //name 文字样式
+                              fontSize: 18,
+                              lineHeight: 20,
+                              color: '#21280f'
+                            },
+                            c: {                   //value 文字样式
+                              fontSize: 15,
+                              lineHeight: 20,
+                              color: '#21280f',
+                              align:"center"
+                            }
+                          }
+                        }
+                      },
+                      // data: eventvals
+                      data:taskvalsData
+                    }
+                  ]
+                };
+
+                //第三饼图
+                optPie03 = {
+                  tooltip: {
+                    trigger: 'item',
+                    formatter: " {b}：{c}个 "
+                  },
+                  color:['#3734ff','#4bc1ff','#03f403'],   //环形颜色
+                    graphic:{       //图形中间文字
+                      type:"text",
+                      left:"center",
+                      top:"center",
+                      style:{
+                        text:"事件个数",
+                        textAlign:"center",
+                        fill:"#21280f",
+                        fontSize:30
+                      }
+                    },
+                  legend: {
+                    x : '85%',
+                    y : '25%',
+                    orient: 'vertical',
+                    align: 'left',
+                    itemWidth: 18,
+                    itemHeight: 18,
+                    textStyle:{//图例文字的样式
+                      // color:'#551216',
+                      fontSize:22
+                    },
+                    data:texts
+                  },
+                  series: [
+
+                    {
+                      name: '面积模式',
+                      type: 'pie',
+                      radius: ['10%', '25%'],       //饼图大小
+                      // roseType : 'area',
+
+                      labelLine: {    //图形外文字线
+                        normal: {
+                          length: 80,
+                          length2:150
+                        }
+                      },
+
+                      // labelLine: {
+                      //   normal: {
+                      //     lineStyle: {
+                      //       color: 'rgba(255, 255, 255, 0.3)'
+                      //     },
+                      //     smooth: 0.2,
+                      //     length: this.standSize / 50,
+                      //     length2: this.standSize / 100,
+                      //   }
+                      // },
+
+                      label: {  //圖上的文字
+                        normal: {
+                          formatter: ' {c|{c}个}  \n  {b|{b}} ({d}%) \n\n',       //图形外文字上下显示
+                          borderWidth: 20,
+                          borderRadius: 4,
+                          padding: [0, -80],          //文字和图的边距
+                          rich: {
+                            a: {
+                              color: '#333',
+                              fontSize: 15,
+                              lineHeight: 20
+                            },
+                            b: {                        //name 文字样式
+                              fontSize: 18,
+                              lineHeight: 20,
+                              color: '#21280f'
+                            },
+                            c: {                   //value 文字样式
+                              fontSize: 15,
+                              lineHeight: 20,
+                              color: '#21280f',
+                              align:"center"
+                            }
+                          }
+                        }
+                      },
+
+                      // data: eventvals
+                      data:eventvalsData,
+                    /*  itemStyle: {
+                        emphasis: {
+                          shadowBlur: 10,
+                          shadowOffsetX: 0,
+                          shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                      }*/
+                    }
+                  ]
+                };
+
+
+                this.Piechartchart.setOption(optPie);
+                this.Piechartchart02.setOption(optPie02);
+                this.Piechartchart03.setOption(optPie03);
+
+              },
+
+
+                insertionSort: function (arr, propname,type) {
+
+                  var len = arr.length;
+                    var preIndex, current;
+                    for (var i = 1; i < len; i++) {
+                        preIndex = i - 1;
+                        current = arr[i];
+                        while (preIndex >= 0 && arr[preIndex][propname] < current[propname]) {
+                            arr[preIndex + 1] = arr[preIndex];
+                            preIndex--;
+                        }
+                        arr[preIndex + 1] = current;
+                    }
+                  if (type){
+                    return arr.slice(0,15);
+                  }
+                  return arr;
+                }
+            }
+        })
+    })
+
+    // <!--监听浏览器可视区域-->
+    // $(window).resize(function() {
+    //   var width = $(this).width();
+    //   var height = $(this).height();
+    //   // alert('width'+width+'-height'+height);
+    //
+    //   // $("#DB_ul").width(width*0.5);
+    //
+    //   // alert(1);
+    //   vm.showPieGraph();
+    //   // this.Piechartchart03.setOption(optPie03);
+    //
+    // });
+
+</script>
+<script type="text/javascript">
+  function initButton(vm) {
+    $('button').on("click", function (e) {
+      switch (this.innerText.trim()) {
+        case "重置":
+          var node = $(e.currentTarget).parents('.t-find');
+          if (node.length == 0) node = $(e.currentTarget).parents('.modal-body');
+          ttyu.clear(node);
+          break;
+        case "统计":
+          console.log(vm.value2)
+
+          // vm.showGraph(vm.b);
+          vm.loadData();
+          break;
+        case "新增":
+          var newRow;
+          if (vm.rows == null || vm.rows.length == 0) {
+            vm.rows = [];
+            newRow = {};
+          } else {
+            var newRow = vm.rows[0];
+            newRow = ttyu.json.clone(newRow);
+          }
+          for (var item in newRow) {
+            newRow[item] = "";
+          }
+          newRow.id = 0;
+          vm.row = newRow;
+          $($('.modal')[0]).show();
+          break;
+        case "保存":
+          if (!ttyu.validate.validates(vm.rows, vm.row, $('#form1'))) return false;
+          var eveaName = ttyu.user.getUserName();
+          vm.row.eveaName = eveaName;
+
+          vm.row.uid = vm.row.id;
+          vm.row.score = $("#score").val();
+          $($('.modal')[0]).hide();
+          /*		ttyu.server.doApi("getEveaScoreByUserID", {
+                      where: 'uid=' + vm.row.id,
+                      projectId: 1
+                  }, function(res) {
+                      if (res.length == 0) {
+                          vm.row.id = 0;
+                      } else {
+                          vm.row.id = res[0].id;
+                      }
+                      ttyu.server.doApi("saveEveaScore", {
+                          data: vm.row
+                      }, function(data) {
+                          if (data > 0) {
+                              if (vm.row.id == 0) {
+                                  vm.row.id = data;
+                                  vm.rows.push(vm.row);
+                              }
+                              alert("保存成功!");
+
+                              $('.modal').hide();
+                              vm.find();
+                          } else alert("保存失败!");
+                      });
+
+                  });*/
+          break;
+        case "删除":
+          ttyu.server.doApi("delUser", {
+            data: vm.selected
+          }, function (data) {
+            if (data > 0) {
+              vm.find();
+              alert("删除成功!");
+            }
+          });
+          return false;
+          break;
+      }
+    });
+  }
+
+
+
+</script>

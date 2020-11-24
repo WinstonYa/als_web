@@ -1,0 +1,909 @@
+<html>
+
+<head>
+    <meta http-equiv=Content-Type content="text/html; charset=utf-8">
+    <meta name=Generator content="Microsoft Word 15 (filtered)">
+    <style>
+
+        <!--
+        /* Font Definitions */
+        @font-face {
+            font-family: 宋体;
+            panose-1: 2 1 6 0 3 1 1 1 1 1;
+        }
+
+        @font-face {
+            font-family: 黑体;
+            panose-1: 2 1 6 9 6 1 1 1 1 1;
+        }
+
+        @font-face {
+            font-family: "Cambria Math";
+            panose-1: 2 4 5 3 5 4 6 3 2 4;
+        }
+
+        @font-face {
+            font-family: 方正小标宋简体;
+        }
+
+        @font-face {
+            font-family: 仿宋_GB2312;
+        }
+
+        @font-face {
+            font-family: "\@宋体";
+            panose-1: 2 1 6 0 3 1 1 1 1 1;
+        }
+
+        @font-face {
+            font-family: "\@黑体";
+            panose-1: 2 1 6 0 3 1 1 1 1 1;
+        }
+
+        @font-face {
+            font-family: "\@方正小标宋简体";
+        }
+
+        @font-face {
+            font-family: "\@仿宋_GB2312";
+        }
+
+        /* Style Definitions */
+        p.MsoNormal, li.MsoNormal, div.MsoNormal {
+            margin: 0cm;
+            margin-bottom: .0001pt;
+            text-align: justify;
+            text-justify: inter-ideograph;
+            font-size: 16.0pt;
+            font-family: "Times New Roman", serif;
+        }
+
+        p.MsoHeader, li.MsoHeader, div.MsoHeader {
+            mso-style-link: "页眉 Char";
+            margin: 0cm;
+            margin-bottom: .0001pt;
+            text-align: center;
+            layout-grid-mode: char;
+            border: none;
+            padding: 0cm;
+            font-size: 9.0pt;
+            font-family: "Times New Roman", serif;
+        }
+
+        p.MsoFooter, li.MsoFooter, div.MsoFooter {
+            mso-style-link: "页脚 Char";
+            margin: 0cm;
+            margin-bottom: .0001pt;
+            layout-grid-mode: char;
+            font-size: 9.0pt;
+            font-family: "Times New Roman", serif;
+        }
+
+        span.Char {
+            mso-style-name: "页眉 Char";
+            mso-style-link: 页眉;
+            font-family: 仿宋_GB2312;
+        }
+
+        span.Char0 {
+            mso-style-name: "页脚 Char";
+            mso-style-link: 页脚;
+            font-family: 仿宋_GB2312;
+        }
+
+        /* Page Definitions */
+        @page WordSection1 {
+            size: 595.3pt 841.9pt;
+            margin: 72.0pt 2.0cm 72.0pt 89.85pt;
+            layout-grid: 15.6pt;
+        }
+
+        div.WordSection1 {
+            page: WordSection1;
+            height: 559px;
+        }
+
+        .myInput{
+         width: 100%;
+         height: 100%;
+         border: none;
+         float: left;
+         zoom:1;
+         outline: medium;
+
+            text-align:center
+        }
+
+        .mytext{
+         position: relative;
+         top: 5px;
+         width: 100%;
+         height: 80%;
+         border: none;
+         /*float: left;*/
+         zoom:1;
+         outline: medium;
+        }
+
+        /*日期样式*/
+       /* /deep/ .el-date-editor.el-input, .el-date-editor.el-input__inner {
+            width: 160px;
+        }*/
+
+        .el-input--small .el-input__inner {
+            height: 32px;
+            line-height: 32px;
+            width: 144px;
+        }
+
+        -->
+    </style>
+
+    <link href="../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <script src="../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../alsm/vue/vue.js"></script>
+    <link href="../../css/elui/index.css" rel="stylesheet">
+    <script src="../../alsm/elui/index.js"></script>
+
+</head>
+
+<body lang=ZH-CN style='text-justify-trim:punctuation;' >
+
+<div id="populationContain" style="">
+
+<div class="WordSection1" style='overflow:auto;overflow-x: hidden' >
+
+    <p class=MsoNormal align=center style='text-align:center'>
+        <u>
+            <span id="title" lang=EN-US
+                  style='font-size:22.0pt;font-family:方正小标宋简体'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+        </u><span
+            style='font-size:22.0pt;font-family:方正小标宋简体'>边境派出所常住人口信息表
+             </span>
+    </p>
+
+    <table align=center class=MsoNormalTable border=1 cellspacing=0 cellpadding=0
+           style='border-collapse:collapse;border:none'>
+        <tr style='height:25.5pt'>
+            <td width=107 style='width:80.1pt;border:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;
+  height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>地<span lang=EN-US>&nbsp; </span>址</span></p>
+            </td>
+
+<!--         <td colspan="3">             <input type="text" class="myInput" v-model="lists.borderPoliceStation" placeholder=""/></td>-->
+
+         <td width=164 colspan=3 style='width:123.3pt;border:solid windowtext 1.0pt;border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+             <input type="text" class="myInput" v-model="lists.placeOfAbode" placeholder=""/>
+<!--                          <input type="text" class="myInput" v-model="lists.borderPoliceStation" placeholder=""/>-->
+         </td>
+            <td width=156 colspan=3 style='width:117.0pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>坐<span lang=EN-US>&nbsp; </span>标</span></p>
+            </td>
+            <td width=149 colspan=3 style='width:111.55pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                          <input readonly="readonly" type="text" class="myInput" v-model="lists.coordinate" placeholder=""/>
+
+            </td>
+        </tr>
+        <tr style='height:25.5pt'>
+            <td width=107 style='width:80.1pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>户<span lang=EN-US>&nbsp; </span>主</span></p>
+            </td>
+            <td width=164 colspan=3 style='width:123.3pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>民 &nbsp;族</span></p>
+            </td>
+            <td width=156 colspan=3 style='width:117.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>性<span lang=EN-US>&nbsp; </span>别</span></p>
+            </td>
+
+
+            <td width=149 colspan=2 rowspan=6 style='width:111.55pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+
+<!--                <img src="https://avatar.csdnimg.cn/E/9/8/3_weixin_30244681.jpg">-->
+                <!--头像-->
+                <img :src="photographFile_url" id="show" alt="..." style="max-height: 220px;height: 15vw;width: 100%">
+
+                <input accept="image/png, image/jpeg, image/gif, image/jpg" v-model="fileReSet01" class="upload" @change='add_img'  type="file">
+
+            </td>
+        </tr>
+        <tr style='height:25.5pt'>
+            <td width=107 style='width:80.1pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" v-model="lists.householder" placeholder=""/>
+            </td>
+            <td width=164 colspan=3 style='width:123.3pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" v-model="lists.nation" placeholder=""/>
+            </td>
+            <td width=156 colspan=3 style='width:117.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" v-model="lists.sex" placeholder=""/>
+            </td>
+        </tr>
+        <tr style='height:25.5pt'>
+            <td width=107 style='width:80.1pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>出生日期</span></p>
+            </td>
+            <td width=164 colspan=3 style='width:123.3pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>政治面貌</span></p>
+            </td>
+            <td width=156 colspan=3 style='width:117.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>宗教信仰</span></p>
+            </td>
+        </tr>
+        <tr style='height:25.5pt'>
+
+            <td width=107 style='width:80.1pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+
+<!--                             <input type="text" class="myInput" v-model="lists.birthday" placeholder=""/>-->
+
+                <template>
+                    <el-date-picker
+                            style="width: 145px"
+                            v-model="lists.birthday"
+                            value-format="yyyy-MM-dd"
+                            type="date"
+                            placeholder="选择日期"
+                            :picker-options="pickerOptions"
+                            size="small"
+                            >
+                    </el-date-picker>
+                   <!-- <el-date-picker
+                            v-model="value1"
+                            type="date"
+                            placeholder="选择日期">
+                    </el-date-picker>-->
+                </template>
+
+            </td>
+            <td width=164 colspan=3 style='width:123.3pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" v-model="lists.identity" placeholder=""/>
+            </td>
+            <td width=156 colspan=3 style='width:117.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" v-model="lists.religion" placeholder=""/>
+            </td>
+        </tr>
+        <tr style='height:25.5pt'>
+            <td width=107 style='width:80.1pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>文化程度</span></p>
+            </td>
+            <td width=164 colspan=3 style='width:123.3pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>工作单位</span></p>
+            </td>
+            <td width=156 colspan=3 style='width:117.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>婚姻状况</span></p>
+            </td>
+        </tr>
+        <tr style='height:25.5pt'>
+            <td width=107 style='width:80.1pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" v-model="lists.education" placeholder=""/>
+            </td>
+            <td width=164 colspan=3 style='width:123.3pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" v-model="lists.unit" placeholder=""/>
+            </td>
+            <td width=156 colspan=3 style='width:117.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" v-model="lists.maritalStatus" placeholder=""/>
+            </td>
+        </tr>
+        <tr style='height:25.5pt'>
+            <td width=107 style='width:80.1pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>籍<span lang=EN-US>&nbsp; </span>贯</span></p>
+            </td>
+            <td width=164 colspan=3 style='width:123.3pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>身份证号码</span></p>
+            </td>
+            <td width=156 colspan=3 style='width:117.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>联系电话</span></p>
+            </td>
+            <td width=149 colspan=2 style='width:111.55pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:黑体'>兵役情况</span></p>
+            </td>
+        </tr>
+        <tr style='height:25.5pt'>
+            <td width=107 style='width:80.1pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" v-model="lists.nativePlace" placeholder=""/>
+            </td>
+            <td width=164 colspan=3 style='width:123.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" oninput="value=value.replace(/[^\d]/g,'')" v-model="lists.idNumber" placeholder=""/>
+            </td>
+            <td width=156 colspan=3 style='width:117.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" oninput="value=value.replace(/[^\d]/g,'')" v-model="lists.phone" placeholder=""/>
+            </td>
+            <td width=149 colspan=3 style='width:111.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:25.5pt'>
+                             <input type="text" class="myInput" v-model="lists.militaryService" placeholder=""/>
+            </td>
+        </tr>
+
+    </table>
+
+
+
+    <table align=center class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width=619 style='margin-top:50px;width:464.4pt;border-collapse:collapse;border:none;'>
+        <tr style='height:54.0pt'>
+            <td width=141 style='width:105.75pt;border:solid windowtext 1.0pt;padding:
+  0cm 5.4pt 0cm 5.4pt;height:54.0pt'>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        style='font-size:14.0pt;font-family:黑体'>经济收支情况</span></b></p>
+            </td>
+            <td width=478 style='width:358.65pt;border:solid windowtext 1.0pt;border-left:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:54.0pt'>
+
+<!--                          <input type="text" class="myInput" v-model="lists.borderPoliceStation" placeholder=""/>-->
+
+
+             <textarea class="mytext" v-model="lists.economy" ></textarea>
+<!--
+                <p class=MsoNormal><b><span lang=EN-US style='font-size:12.0pt;font-family:
+  黑体'>&nbsp;</span></b></p>
+                <p class=MsoNormal><b><span lang=EN-US style='font-size:12.0pt;font-family:
+  黑体'>&nbsp;</span></b></p>
+                <p class=MsoNormal><b><span lang=EN-US style='font-size:12.0pt;font-family:
+  黑体'>&nbsp;</span></b></p>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        lang=EN-US style='font-size:12.0pt;font-family:黑体'>&nbsp;</span></b></p>-->
+            </td>
+        </tr>
+        <tr style='height:2.0cm'>
+            <td width=141 style='width:105.75pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:2.0cm'>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        style='font-size:14.0pt;font-family:黑体'>家庭史情况</span></b></p>
+            </td>
+            <td width=478 style='width:358.65pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:2.0cm'>
+
+                <textarea class="mytext" v-model="lists.familyBackground" ></textarea>
+
+            </td>
+        </tr>
+        <tr style='height:54.0pt'>
+            <td width=141 style='width:105.75pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:54.0pt'>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        style='font-size:14.0pt;font-family:黑体'>主要社会关系</span></b></p>
+            </td>
+            <td width=478 style='width:358.65pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:54.0pt'>
+
+                <textarea class="mytext" v-model="lists.socialRelations" ></textarea>
+
+            </td>
+        </tr>
+        <tr style='height:54.0pt'>
+            <td width=141 style='width:105.75pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:54.0pt'>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        style='font-size:14.0pt;font-family:黑体'>邻里关系情况</span></b></p>
+            </td>
+            <td width=478 style='width:358.65pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:54.0pt'>
+                <textarea class="mytext" v-model="lists.neighborhood" ></textarea>
+
+            </td>
+        </tr>
+        <tr style='height:59.4pt'>
+            <td width=141 style='width:105.75pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        style='font-size:14.0pt;font-family:黑体'>围封禁牧情况</span></b></p>
+            </td>
+            <td width=478 style='width:358.65pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+                <textarea class="mytext" v-model="lists.waiBanSituation" ></textarea>
+
+            </td>
+        </tr>
+        <tr style='height:59.4pt'>
+            <td width=141 style='width:105.75pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        style='font-size:14.0pt;font-family:黑体'>家庭成员违法经历</span></b></p>
+            </td>
+            <td width=478 style='width:358.65pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+
+                <textarea class="mytext" v-model="lists.illegalExperience" ></textarea>
+
+            </td>
+        </tr>
+        <tr style='height:59.4pt'>
+            <td width=141 style='width:105.75pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        style='font-size:14.0pt;font-family:黑体'>雇工情况</span></b></p>
+            </td>
+            <td width=478 style='width:358.65pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+
+                <textarea class="mytext" v-model="lists.employmentSituation" ></textarea>
+
+             <!--  <p class=MsoNormal align=center style='text-align:center'><b><span
+                       lang=EN-US style='font-size:12.0pt;font-family:黑体'>&nbsp;</span></b></p>
+               <p class=MsoNormal align=center style='text-align:center'><b><span
+                       lang=EN-US style='font-size:12.0pt;font-family:黑体'>&nbsp;</span></b></p>
+               <p class=MsoNormal align=center style='text-align:center'><b><span
+                       lang=EN-US style='font-size:12.0pt;font-family:黑体'>&nbsp;</span></b></p>
+               <p class=MsoNormal align=center style='text-align:center'><b><span
+                       lang=EN-US style='font-size:12.0pt;font-family:黑体'>&nbsp;</span></b></p>
+               <p class=MsoNormal align=center style='text-align:center'><b><span
+                       lang=EN-US style='font-size:12.0pt;font-family:黑体'>&nbsp;</span></b></p>-->
+            </td>
+        </tr>
+        <tr style='height:59.4pt'>
+            <td width=141 style='width:105.75pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        style='font-size:14.0pt;font-family:黑体'>周边治安热点及其他情况</span></b></p>
+            </td>
+            <td width=478 style='width:358.65pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+                <textarea class="mytext" v-model="lists.aroundTheProblem" ></textarea>
+
+            </td>
+        </tr>
+        <tr style='height:59.4pt'>
+            <td width=141 style='width:105.75pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        style='font-size:14.0pt;font-family:黑体'>周边重点地段及重要场所</span></b></p>
+            </td>
+            <td width=478 style='width:358.65pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+                <textarea class="mytext" v-model="lists.aroundThePlace" ></textarea>
+
+            </td>
+        </tr>
+        <tr style='height:59.4pt'>
+            <td width=141 style='width:105.75pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        style='font-size:14.0pt;font-family:黑体'>其他情况</span></b></p>
+            </td>
+            <td width=478 style='width:358.65pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:59.4pt'>
+                <textarea class="mytext" v-model="lists.otherConditions" ></textarea>
+
+            </td>
+        </tr>
+    </table>
+
+    <p class=MsoNormal style='margin-right:-1.1pt'><b><span lang=EN-US>&nbsp;</span></b></p>
+
+    <table align=center class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 style='overflow-y: auto;border-collapse:collapse;border:none;'>
+        <tr>
+            <td width=613 style='width:459.55pt;border:solid windowtext 1.0pt;padding:
+  0cm 5.4pt 0cm 5.4pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-family:黑体'>房屋照片</span></p>
+            </td>
+        </tr>
+        <tr>
+            <td width=613 style='width:459.55pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt'>
+
+               <!-- <img :src="home_url" alt="..." style="height: 50vw;width: auto">
+                <input type="text" class="myInput" v-model="lists.housePhotos" placeholder=" "/>-->
+
+                <img :src="hourseFile_url" id="show02" alt="..." style="max-height: 220px;height: 43vw;width: auto">
+                <input id="feedbakcImg" v-model="fileReSet02" accept="image/png, image/jpeg, image/gif, image/jpg" class="upload" @change='add_hourseImg'  type="file">
+
+
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:黑体'>&nbsp;</span>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width=613 style='width:459.55pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-family:黑体'>贵重物品信息</span></p>
+            </td>
+        </tr>
+
+        <tr style='height:274.4pt'>
+            <td width=613 style='width:459.55px;border:solid windowtext 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:274.4pt'>
+
+             <textarea class="myInput" type="text" height="200px"></textarea>
+
+            </td>
+        </tr>
+
+
+    </table>
+
+    <p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+</div>
+
+<div class="t-btns" align="center">
+<!--    <div class="login-button" @click="login" type="submit">测试</div>-->
+
+
+<!--    <div class="login-button" @click="submitEdit" type="submit">提交</div>-->
+
+    <!--    <div class="login-button" @click="submitEdit" type="submit">测试</div>-->
+
+
+   <!-- <button>
+        <span class="glyphicon glyphicon-ok" @click="submitEdit"></span>提交
+    </button>-->
+
+    <button type="button" class="btn btn-success" @click="submitEdit">提交</button>
+
+<!--    <button type="button" class="btn btn-danger" @click="resetting">重置</button>-->
+
+    <!--<button>
+        <span class="glyphicon glyphicon-repeat" @click="resetting"></span>重置
+    </button>-->
+    <!--<button>
+        <span class="glyphicon glyphicon-remove"></span>关闭
+    </button>-->
+</div>
+
+</div>
+<script src="../../alsm/api_sub.js" type="text/javascript"></script>
+<script src="../../js/config/config.js"></script>
+
+<script>
+    // var data;
+    var vm;
+
+    function setData(operate,res) {
+        console.log(res);
+        vm.setRes(operate,res);
+    }
+
+    $(function () {
+         vm = new Vue({
+            el:'#populationContain',
+            data:{
+                lists: {
+                },
+                operated:'',
+                photographFile_url:'#',
+                hourseFile_url:'',
+                home_url: '#',
+                img1:null,
+                img2:null,
+
+                fileReSet01:null,
+                fileReSet02:'',
+
+                //-----------------
+                pickerOptions: {},
+
+            },
+            mounted: function(){
+                vm = this;
+
+                vm.fileReSet02=''
+            },
+            methods: {
+                setRes:function(operate,res) {
+                    vm.operated=operate;
+
+                    if (operate=='edit'){
+                        console.log("修改");
+                        vm.lists=res;
+                        //头像
+                        if (res.photograph){
+                            vm.photographFile_url = res.photograph;
+                        }else {
+                            vm.photographFile_url = '#';
+                        }
+                        //房屋照片
+                        if (res.housePhotos){
+                            vm.hourseFile_url = res.housePhotos;
+                        }else {
+                            vm.hourseFile_url = '#';
+                        }
+                        // vm.home_url = vm.lists.housePhotos;
+                    }else if (operate=='add'){
+                        console.log("新增");
+                        vm.lists={};
+                        vm.lists={
+                            // id:'',
+                            borderPoliceStation:'',
+                            placeOfAbode:'',
+                            coordinate:'',
+                            photograph:'',
+                            householder:'',
+                            nation:'',
+                            sex:'',
+                            birthday:'',
+                            identity:'',
+                            religion:'',
+                            education:'',
+                            unit:'',
+                            maritalStatus:'',
+                            nativePlace:'',
+                            idNumber:'',
+                            phone:'',
+                            militaryService:'',
+                            economy:'',
+                            familyBackground:'',
+                            socialRelations:'',
+                            neighborhood:'',
+                            waiBanSituation:'',
+                            illegalExperience:'',
+                            employmentSituation:'',
+                            aroundTheProblem:'',
+                            aroundThePlace:'',
+                            otherConditions:'',
+                            //贵重物品信息
+                            itemInformation:'',
+
+                        };
+
+                        //重置图片
+                        vm.fileReSet01='';
+                        vm.fileReSet02='';
+                        vm.hourseFile_url = '';
+                        vm.photographFile_url = '';
+                    }
+
+                    console.log(vm.lists);
+
+                },
+
+                //------------------------------------------------
+                add_img:function(event) {
+
+                    let reader = new FileReader();
+
+                    vm.img1 = event.target.files[0];
+
+                    let type1 = event.target.files[0].type;
+
+                    var url = null;
+                    // 下面函数执行的效果是一样的，只是需要针对不同的浏览器执行不同的 js 函数而已
+                    if (window.createObjectURL != undefined) { // basic
+                        url = window.createObjectURL(vm.img1);
+                    } else if (window.URL != undefined) { // mozilla(firefox)
+                        url = window.URL.createObjectURL(vm.img1);
+                    } else if (window.webkitURL != undefined) { // webkit or chrome
+                        url = window.webkitURL.createObjectURL(vm.img1);
+                    }
+                    console.log(url);
+                    vm.photographFile_url=url;
+                    document.getElementById('show').src = url;
+
+                },
+                add_hourseImg:function(event){
+
+                    let reader = new FileReader();
+                    vm.img2 = event.target.files[0];
+                    let type1 = event.target.files[0].type;
+                    var url = null;
+                    // 下面函数执行的效果是一样的，只是需要针对不同的浏览器执行不同的 js 函数而已
+                    if (window.createObjectURL != undefined) { // basic
+                        url = window.createObjectURL(vm.img2);
+                    } else if (window.URL != undefined) { // mozilla(firefox)
+                        url = window.URL.createObjectURL(vm.img2);
+                    } else if (window.webkitURL != undefined) { // webkit or chrome
+                        url = window.webkitURL.createObjectURL(vm.img2);
+                    }
+                    console.log(url);
+                    vm.hourseFile_url=url;
+                    document.getElementById('show02').src = url;
+                },
+
+                //----------------------------------------------
+                //提交修改
+                submitEdit:function() {
+                    var form = new FormData();
+
+                    // alert(vm.operated);
+                    if (vm.img1){
+                        form.append('photographFile',vm.img1,vm.img1.name);
+                    }if (vm.img2){
+                        form.append('housePhotosFile',vm.img2,vm.img2.name);
+                    }
+
+                    //地址
+                    form.append('placeOfAbode',vm.lists.placeOfAbode);
+                    //坐标
+                    form.append('coordinate',vm.lists.coordinate);
+                    //户主
+                    form.append('householder',vm.lists.householder);
+
+                    form.append('nation',vm.lists.nation);
+                    form.append('sex',vm.lists.sex);
+                    //生日 Date类型
+                    // form.append('birthday',vm.lists.birthday);
+                    form.append('religion',vm.lists.religion);
+                    form.append('education',vm.lists.education);
+                    form.append('unit',vm.lists.unit);
+                    form.append('maritalStatus',vm.lists.maritalStatus);
+
+                    form.append('nativePlace',vm.lists.nativePlace);
+                    form.append('idNumber',vm.lists.idNumber);
+                    form.append('phone',vm.lists.phone);
+                    form.append('militaryService',vm.lists.militaryService);
+
+                    form.append('economy',vm.lists.economy);
+                    form.append('familyBackground',vm.lists.familyBackground);
+                    form.append('socialRelations',vm.lists.socialRelations);
+                    form.append('neighborhood',vm.lists.neighborhood);
+                    form.append('waiBanSituation',vm.lists.waiBanSituation);
+                    form.append('illegalExperience',vm.lists.illegalExperience);
+                    form.append('employmentSituation',vm.lists.employmentSituation);
+                    form.append('aroundTheProblem',vm.lists.aroundTheProblem);
+                    form.append('aroundThePlace',vm.lists.aroundThePlace);
+                    form.append('otherConditions',vm.lists.otherConditions);
+
+                    if (vm.operated=='edit'){
+
+                        form.append('id',vm.lists.id);
+
+                        doApiByFile(
+                            function(res) {
+                                // vm.photographFile_url = res.data.photograph;
+
+                                // vm.dialogShow=false;
+                                //清空 防止缓存 但是无效
+                                // vm.lists={};
+
+                                parent.vm.dialogShow=false;
+                                parent.vm.loadData();
+
+                                if (res.status === 200) {
+                                    // alert("成功")
+                                    parent.vm.showMessage("suc");
+
+                                }else{
+                                    // alert("失败")
+                                    parent.vm.showMessage("fail");
+
+                                }
+                            },
+                            null, null,params.serviceIp + '/RkglCzrkxxb/updateDataAndFile', 'put',form
+                        );
+                    }else if (vm.operated=='add'){
+
+                        doApiByFile(
+                            function(res) {
+                                // vm.photographFile_url = res.data.photograph;
+
+                                //清空 防止缓存
+                                // vm.lists={};
+
+                                // vm.dialogShow=false;
+                                parent.vm.dialogShow=false;
+                                parent.vm.loadData();
+
+                                if (res.status === 200) {
+                                    parent.vm.showMessage("suc");
+                                    // alert("成功")
+                                }else{
+                                    // alert("失败")
+                                    parent.vm.showMessage("fail");
+
+                                }
+                            },
+                            null, null,params.serviceIp + '/RkglCzrkxxb/addDataAndFile', 'post',form
+                        );
+                    }
+                }
+            }
+        });
+
+    });
+</script>
+
+</body>
+
+</html>

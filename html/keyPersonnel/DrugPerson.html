@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>吸毒人员登记表</title>
+
+    <link href="../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+
+    <!--<link href="../../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">-->
+    <link href="../../alsm/ttyu.net/file/ttyu/css/ttyu.web.css" rel="stylesheet" type="text/css">
+
+    <script src="../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <script src="../../alsm/ttyu.net/file/system/jq/jquery-ui.js" type="text/javascript"></script>
+
+    <script src="../../alsm/ttyu.net/file/system/bs/bootstrap.min.js" type="text/javascript"></script>
+
+    <script src="../../alsm/ttyu.net/file/system/promise/es6-promise.js"></script>
+    <script src="../../alsm/ttyu.net/file/system/promise/es6-promise.auto.js"></script>
+
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../alsm/vue/vue.js"></script>
+
+    <link href="../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <!-- <link href="../../css/elui/index.css" rel="stylesheet"> -->
+    <!--    高版本ele ui-->
+    <script src="../../alsm/element2.12.0/index.js"></script>
+    <!-- <script src="../../alsm/elui/index.js"></script> -->
+
+    <script src="../../alsm/api_sub.js" type="text/javascript"></script>
+    <script src="../../js/config/config.js"></script>
+    <style>
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            width:200px
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 150px;
+            height: 200px;
+            line-height: 200px;
+            text-align: center;
+        }
+        .avatar {
+            width: 200px;
+            height: 200px;
+            display: block;
+        }
+        [v-cloak]{
+            display:none;
+        }
+
+        .el-col {
+            height: 48px;
+        }
+        .el-form-item__error {
+            top: 50%;
+            width: 70px;
+            transform: translateY(-50%);
+            padding: 0;
+            /* text-align: center; */
+            left: 210px;
+            z-index: 999;
+        }
+        .el-upload__input {
+            display: none !important;
+        }
+        #tableDiv{
+            overflow: auto;
+        }
+        .el-cascader:hover, .el-cascader-menu:hover {
+            cursor: pointer;
+        }
+    </style>
+
+    <style scoped>
+        .el-table th>.cell{
+            white-space:normal;
+        }
+        /* .cell{
+            white-space:nowrap;
+        }
+        .el-table .cell{
+            white-space:nowrap;
+        } */
+
+        /*表格溢出文字展示为...*/
+        .el-table .cell{
+            white-space:nowrap;
+        }
+
+        /* .el-table--enable-row-transition .el-table__body td:nth-last-child(3):hover:after{
+            position: absolute;
+            left: 15px;
+            top: 5px;
+            padding: 5px;
+            background-color: #0095ff;
+            border-radius: 5px;
+            color: #fff;
+            !*这里显示的内容为表格中自定义的labelTooltip属性对应的值*!
+            content: "这里显示的内容为表格中自定义的labelTooltip属性对应的值";
+            z-index: 999999;
+            width: auto;
+        }
+
+        .el-table .cell:nth-last-child(2):hover:after{
+            position: absolute;
+            left: 15px;
+            top: 5px;
+            padding: 5px;
+            background-color: #0095ff;
+            border-radius: 5px;
+            color: #fff;
+            !*这里显示的内容为表格中自定义的labelTooltip属性对应的值*!
+            content: "这里显示的内容为表格中自定义的labelTooltip属性对应的值";
+            z-index: 2;
+            width: 120px;
+        } */
+
+        /* tbody tr td:last-child:hover:after {
+            position: absolute;
+            left: 15px;
+            top: 5px;
+            padding: 5px;
+            background-color: #0095ff;
+            border-radius: 5px;
+            color: #fff;
+            !*这里显示的内容为表格中自定义的labelTooltip属性对应的值*!
+            content: attr(labelTooltip);
+            z-index: 2;
+            width: 120px;
+        }
+
+        el-table-column{
+            width: 500px;
+        } */
+    </style>
+</head>
+<body>
+<div id='body1'>
+    <div class="t-body">
+        <div>
+            <div class="t-find">
+                <div class="t-form">
+                    <div>
+                        <span style="margin-right: -25px;">派出所名称：</span>
+                        <el-select v-model="params.dptId" clearable filterable placeholder="请选择派出所">
+                            <el-option
+                                v-for="item in policeStation"
+                                :key="item.name"
+                                :label="item.name"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </div>
+
+                    <div style="margin-left: 10px;">
+                        <span style="margin-right: -5px;">姓名：</span>
+                        <el-input v-model="params.name" clearable style="width: 140px;" placeholder="请输入"></el-input>
+                    </div>
+                    <div style="margin-left: -5px;">
+                        <span style="margin-right: -5px;">身份证号：</span>
+                        <el-input v-model="params.idNumber" clearable style="width: 210px;" placeholder="请输入"></el-input>
+                    </div>
+                </div>
+                <div class="t-btns">
+                    <button title='查询'>
+                        <span class="glyphicon glyphicon-search" ></span>
+                        查询
+                    </button>
+                    <button title='重置'>
+                        <span class="glyphicon glyphicon-repeat" ></span>
+                        重置
+                    </button>
+                    <button
+                        v-loading.fullscreen.lock="fullscreenLoading"
+                        element-loading-text="拼命处理中"
+                        element-loading-spinner="el-icon-loading"
+                        element-loading-background="rgba(0, 0, 0, 0.8)"
+                        @click="exportToExcel()">
+                        <span class="iconfont icondaochu" style="font-size: 15px" >导出</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="t-btnsDiv" ></div>
+
+        <div class="t-btns" style="background: #ffffff">
+            <button title='新增'>
+                <span class="glyphicon glyphicon glyphicon-plus"></span>
+                新增
+            </button>
+            <button title='删除'>
+                <span class="glyphicon glyphicon-trash"></span>
+                删除
+            </button>
+        </div>
+
+        <div id="tableDiv">
+            <el-table :data="rows"
+                :row-key="rowKey"
+                ref="myTable"
+                @select='selectRows'
+                @select-all="selectRows"
+                border fit highlight-current-row style="width: 100%;"
+                :row-style="{height:'5px'}" :cell-style="{padding:'5px 0'}">
+
+                <el-table-column type="selection" align="center"  :reserve-selection="true">
+                </el-table-column>
+                <el-table-column align="center" label="序号" width="60">
+                    <template slot-scope="scope">
+                        {{  (pageIndex - 1) * pageSize +scope.$index+1 }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="操作" width="100">
+                    <template slot-scope="scope">
+                        <!-- <span v-on:click="show(scope.row)" style="cursor: pointer;color: #0e78c9">编辑</span> -->
+                        <el-button size="mini"  icon="el-icon-edit" v-on:click="show(scope.row)" style="display:inline">编辑</el-button>
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="姓名" width="150*">
+                    <template slot-scope="scope">
+                        <el-tooltip effect="light" :content="scope.row.name" placement="top">
+                            <span>{{ scope.row.name }}</span>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="性别" width="50">
+                    <template slot-scope="scope">
+                        {{ scope.row.sex }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="联系电话" width="120">
+                    <template slot-scope="scope">
+                        <el-tooltip effect="light" :content="scope.row.phone" placement="top">
+                            <span>{{ scope.row.phone }}</span>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
+
+                <!-- <el-table-column align="center" label="目前职业" width="80">
+                    <template slot-scope="scope">
+                        <el-tooltip effect="light" :content="scope.row.occupation" placement="top">
+                            <span>{{ scope.row.occupation }}</span>
+                        </el-tooltip>
+                    </template>
+                </el-table-column> -->
+
+                <el-table-column align="center" label="身份证号" width="180">
+                    <template slot-scope="scope">
+                        <el-tooltip effect="light" :content="scope.row.idNumber" placement="top">
+                            <span>{{ scope.row.idNumber }}</span>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="吸毒状态" width="80">
+                    <template slot-scope="scope" v-if="scope.row.birthday">
+                        {{ scope.row.kief }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="居住地详址" min-width="200">
+                    <template slot-scope="scope">
+                        <el-tooltip effect="light" :content="scope.row.placeOfAbode" placement="top">
+                            <span>{{ scope.row.placeOfAbode }}</span>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
+
+                <!-- <el-table-column align="center" label="滥用毒品种类" width="120">
+                    <template slot-scope="scope">
+                        <el-tooltip effect="light" :content="scope.row.kindOfDrug" placement="top">
+                            <span>{{ scope.row.kindOfDrug }}</span>
+                        </el-tooltip>
+                    </template>
+                </el-table-column> -->
+
+                <!-- <el-table-column align="center" label="目前思想状况" min-width="50">
+                    <template slot-scope="scope">
+                        <el-tooltip effect="light" :content="scope.row.ideologicalSituation" placement="top">
+                            <span>{{ scope.row.ideologicalSituation }}</span>
+                        </el-tooltip>
+                    </template>
+                </el-table-column> -->
+            </el-table>
+        </div>
+
+        <el-pagination
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageIndex"
+            :page-sizes="pageRows"
+            :page-size="pageSize"
+            layout="total,jumper,prev, pager, next,sizes"
+            :total="total"
+            style="margin-bottom: 15px">
+        </el-pagination>
+
+        <el-dialog v-cloak title="吸毒人员登记表" @close="closeDialog('combatTbaleRow')" center :visible.sync="dialogShow" top="3vh"  style="height: 100%" width="952px">
+            <!-- 解决了 el-dialog懒加载
+            <div slot="footer" class="dialog-footer" style="position:relative;top: -55px;height:530px">
+                <iframe style="width: 100%;height: 600px" id="mainIframe" ref="mainIframe" name="mainIframe" src="../wordHtml/TempPopulationWord.html" frameborder="0" scrolling="auto"></iframe>
+            </div> -->
+            <el-form :model="combatTbaleRow"  label-width="120px" class="demo-ruleForm" :rules="rules" ref="combatTbaleRow">
+                <div class="childDialog" style="width: 100%;overflow: hidden;height: 100%;box-shadow: 0px 15px 10px -2px rgba(0, 0, 0, .04)">
+                    <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
+                        <el-tab-pane name="first" label="基本信息">
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-row>
+                                        <el-col :span="24">
+                                            <el-form-item label="姓   名:" >
+                                                <el-input v-model="combatTbaleRow.name" style="width: 200px;"></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="24">
+                                            <el-form-item label="曾用名:" >
+                                                <el-input v-model="combatTbaleRow.alias" style="width: 200px;"></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="24">
+                                            <el-form-item  label="性  别:" >
+                                                <el-radio v-model="combatTbaleRow.sex" label="男">男</el-radio>
+                                                <el-radio v-model="combatTbaleRow.sex" label="女">女</el-radio>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="24">
+                                            <el-form-item label="联系电话:" prop="phone">
+                                                <el-input v-model="combatTbaleRow.phone" style="width: 200px;"></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                </el-col>
+                                <el-col :span="12" style="height: 210px;">
+                                    <el-form-item label="照片：">
+                                        <el-upload
+                                            ref='upload'
+                                            name="photographFile"
+                                            class="avatar-uploader"
+                                            :action="updateUrl"
+                                            :http-request="httpRequest"
+                                            :show-file-list="false"
+                                            :on-success="handleAvatarSuccess"
+                                            :before-upload="beforeAvatarUpload" >
+                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                        </el-upload>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item  label="民  族:" >
+                                        <el-select  v-model="combatTbaleRow.nation" filterable placeholder="请选择" style="width: 200px;">
+                                            <el-option
+                                                v-for="item in nationOptions"
+                                                :key="item"
+                                                :label="item"
+                                                :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="宗教信仰:" >
+                                        <el-select v-model="combatTbaleRow.religion" placeholder="请选择" style="width: 200px;">
+                                            <el-option
+                                                v-for="item in religionOptions"
+                                                :key="item"
+                                                :label="item"
+                                                :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="身份证号:" prop="idNumber">
+                                        <el-input v-model="combatTbaleRow.idNumber" style="width: 200px;" @input="idNumTransform(combatTbaleRow.idNumber)"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="婚姻状况:" >
+                                        <el-select v-model="combatTbaleRow.maritalStatus" placeholder="请选择" style="width: 200px;">
+                                            <el-option
+                                                v-for="item in maritalStatusOptions"
+                                                :key="item"
+                                                :label="item"
+                                                :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="出生日期:" prop="birthday">
+                                        <el-date-picker
+                                            style="width: 200px"
+                                            value-format="yyyy-MM-dd"
+                                            v-model="birthday"
+                                            type="date"
+                                            placeholder="选择日期时间">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="填表时间:" prop="writeTime">
+                                        <el-date-picker
+                                            style="width: 200px;"
+                                            value-format="yyyy-MM-dd HH:mm:ss"
+                                            v-model="combatTbaleRow.writeTime"
+                                            type="datetime"
+                                            placeholder="选择日期时间">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="目前职业:" >
+                                        <el-input v-model="combatTbaleRow.occupation" style="width: 200px;"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="血型:" >
+                                        <el-select v-model="combatTbaleRow.bloodType" placeholder="请选择" style="width: 200px">
+                                            <el-option
+                                                v-for="item in bloodTypeOptions"
+                                                :key="item"
+                                                :label="item"
+                                                :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="身高:">
+                                        <el-input type="number" v-model="combatTbaleRow.stature" placeholder="请输入身高(cm)" style="width: 200px;"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="吸毒状态:" >
+                                        <el-input v-model="combatTbaleRow.kief" style="width: 200px;"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="24">
+                                    <el-form-item label="户籍地详址:" >
+                                        <!-- <el-input v-model="combatTbaleRow.placeOfDomicile" style="width: 632px;"></el-input> -->
+                                        <el-cascader
+                                            style="width: 632px;" clearable
+                                            size="medium"
+                                            v-model="nativePlaceArray"
+                                            :options="nativePlaceList"
+                                            :props="optionNativePlaceProps"
+                                            @change="handleChange02">
+                                        </el-cascader>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="24">
+                                    <el-form-item label="居住地详址:" >
+                                        <el-input v-model="combatTbaleRow.placeOfAbode" style="width: 632px;"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="24">
+                                    <el-form-item label="滥用毒品种类" >
+                                        <el-input v-model="combatTbaleRow.kindOfDrug" style="width: 632px;"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="24">
+                                    <el-form-item label="单位:" >
+                                        <el-input v-model="combatTbaleRow.unitp" style="width: 632px;"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="24" style="height: 100%;">
+                                    <el-form-item label="目前思想状况" >
+                                        <el-input
+                                            style="width: 632px;"
+                                            type="textarea"
+                                            :rows="2"
+                                            v-model="combatTbaleRow.ideologicalSituation">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-tab-pane>
+                        <el-tab-pane name="second" label="走访记录">
+                            <el-table :data="zfqkCheckTbaleRows"
+                                border fit
+                                highlight-current-row
+                                style="width: 100%;"
+                                :row-style="{height:'5px'}"
+                                :cell-style="{padding:'5px 0'}">
+
+                                <el-table-column align="center" label="序号" width="50">
+                                    <template slot-scope="scope">
+                                        {{  (zfqkCheckPageIndex - 1) * zfqkCheckPageSize +scope.$index+1 }}
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column align="center" label="时间" width="170*">
+                                    <template slot-scope="scope">
+                                        {{ scope.row.writeTime }}
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column align="center" label="走访民警" min-width="10">
+                                    <template slot-scope="scope">
+                                        {{ scope.row.visitPoliceName }}
+                                    </template>
+                                </el-table-column>
+
+                                <el-table-column align="center" label="操作" width="150">
+                                    <template slot-scope="scope">
+                                        <el-button size="small" type="info" @click="zfqkShowDetail(scope.row)">查看详情</el-button>
+                                        <!-- <el-button size="small" type="danger" @click="deleteZfqkCheckShowDetail(scope.row.id)">删除</el-button> -->
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+
+                            <el-pagination
+                                background
+                                @current-change="zfqkHandleCurrentChange"
+                                :current-page="zfqkCheckPageIndex"
+                                :page-size="zfqkCheckPageSize"
+                                layout="total,jumper,prev, pager, next"
+                                :total="zfqkChecktotal"
+                                style="margin-top: 10px">
+                            </el-pagination>
+                        </el-tab-pane>
+                    </el-tabs>
+                </div>
+            </el-form>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button type="info" @click="dialogShow = false">取 消</el-button>
+                <el-button type="success" @click="addCombatSave('combatTbaleRow')">提交</el-button>
+            </span>
+        </el-dialog>
+
+        <el-dialog  v-cloak title="走访情况"  center :visible.sync="oneZfqkDialog" :modal='false' top="3vh" style="height: 100%;" width="952px">
+            <div style="width: 100%;height: 100%;">
+                <el-form :model="zfqkCheckTbaleRow"  label-width="100px" class="demo-ruleForm">
+                    <el-row>
+                        <!-- <el-col :span="12" >
+                            <el-form-item label="走访对象:">
+                                <el-input v-model="zfqkCheckTbaleRow.visitObjectName" style="width: 200px;"></el-input>
+                            </el-form-item>
+                        </el-col> -->
+                        <el-col :span="12">
+                            <el-form-item label="时间:">
+                                <!-- <el-input v-model="zfqkCheckTbaleRow.visitingTime"></el-input> -->
+                                <el-date-picker
+                                    style="width: 200px;"
+                                    readonly
+                                    value-format="yyyy-MM-dd HH:mm:ss"
+                                    v-model="zfqkCheckTbaleRow.writeTime"
+                                    type="datetime"
+                                    placeholder="填报时间">
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="走访民警:" >
+                                <el-input v-model="zfqkCheckTbaleRow.visitPoliceName" style="width: 200px;" readonly></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <!-- <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="走访民警:" >
+                                <el-input v-model="zfqkCheckTbaleRow.visitPoliceName" style="width: 200px;" readonly></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="监护人:" >
+                                <el-input v-model="zfqkCheckTbaleRow.guardian" style="width: 200px;"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row> -->
+
+                    <!-- <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="身份证号:">
+                                <el-input v-model="zfqkCheckTbaleRow.visitObjectIdNumber" style="width: 200px;"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="走访时长:" >
+                                <el-input v-model="zfqkCheckTbaleRow.duration" style="width: 200px;"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row> -->
+
+                    <!-- <el-row>
+                        <el-col :span="11">
+                            <el-form-item label="类型:">
+                                <el-input v-model="zfqkCheckTbaleRow.visitObjectType"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row> -->
+
+                    <el-row>
+                        <el-col :span="24" style="height: 100%;">
+                            <el-form-item label="工作拍照:" >
+                                <div v-if="workPhotographList.length != 0">
+                                    <div style="width: 100%;height: 200px;" v-for="item of workPhotographList" >
+                                        <img :src="getShowUrl(item.url, 'picture')" style="height: 100%;">
+                                    </div>
+                                </div>
+                                <span v-else>无</span>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="24" style="height: 100%;">
+                            <el-form-item label="工作视频:">
+                                <div v-if="workVideoList.length != 0">
+                                    <video width="400" height="220" controls="controls" v-for="item of workVideoList">
+                                        <source  :src="getShowUrl(item.url, 'video')">
+                                    </video>
+                                </div>
+                                <span v-else>无</span>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <!-- <el-col :span="24" style="height: 100%;">
+                            <el-form-item label="工作录音:">
+                                <div v-if="workSoundRecordList.length != 0">
+                                    <audio controls v-for="item of workSoundRecordList">
+                                        <source :src="getShowUrl(item.url, 'audio')" type="audio/ogg">
+                                        您的浏览器不支持 audio 元素。
+                                    </audio>
+                                </div>
+                                <span v-else>无</span>
+                            </el-form-item>
+                        </el-col> -->
+                        <el-col :span="24" style="height: 100%;">
+                            <el-form-item label="工作录音:">
+                                <ul v-if="workSoundRecordList.length != 0">
+                                    <li v-for="item of workSoundRecordList">
+                                        <audio controls>
+                                            <source :src="getShowUrl(item.url, 'audio')" type="audio/ogg">
+                                            您的浏览器不支持 audio 元素。
+                                        </audio>
+                                    </li>
+                                </ul>
+                                <span v-else>无</span>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="24" style="height: 100%;">
+                            <el-form-item label="走访记录:">
+                                <!--style="width: 50%;-->
+                                <el-input
+                                    style="width: 649px;"
+                                    readonly
+                                    type="textarea"
+                                    :rows="2"
+                                    v-model="zfqkCheckTbaleRow.workWordRecord">
+                                </el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </div>
+        </el-dialog>
+    </div>
+</div>
+</body>
+
+</html>
+<script type="text/javascript" src="../json/nation.js"></script>
+<script type="text/javascript" src="../json/citys.js"></script>
+<script src="../../js/utils/toExcel.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        // 自定义验证规则
+        var validateBirthday = function (rule, value, callback) {
+            if (!value) {
+                return callback(new Error('日期不能为空'));
+            } else {
+                callback();
+            }
+        };
+        var validateIdNumber = function (rule, value, callback) {
+            if (!value) {
+                return callback(new Error('身份证号不能为空'));
+            } else if (!checkIdNumber(value)) {
+                callback(new Error('身份证号码错误!'));
+            } else {
+                callback();
+            }
+        };
+        var validatePhoneNumber = function (rule, value, callback) {
+            if (!value) {
+                return callback(new Error('手机号不能为空'));
+            } else if (!checkPhoneNumber(value)) {
+                callback(new Error('手机号输入不正确!'));
+            } else {
+                callback();
+            }
+        };
+        new Vue({
+            el: '#body1',
+            data: {
+                params:{
+                    page:null,
+                    limit: null,
+                    dptId:null,
+                    name: null,
+                    idNumber: null
+                },
+                // 派出所名单
+                policeStation: [],
+
+                checked: false,
+                selectedArray: [],
+                options:[],
+                dialogShow:false,
+
+                rows: [],
+                row: {},
+                saveSelectRows:[],
+
+                // 籍贯下拉选择框
+                optionNativePlaceProps: {
+                    value: 'label',
+                    label: 'label',
+                    children: 'children'
+                },
+                nativePlaceList: [],
+                nativePlaceArray:[],
+
+                total: 0,
+                pageIndex:1,
+                pageSize: 20,
+                pageRows: [5, 10, 20, 30, 40, 50],
+
+                oldMissionPersons:[],
+                operationType:"",
+                operated:'',
+
+                combatTbaleRow:{},
+                maritalStatusOptions: [],
+                bloodTypeOptions:[],
+                religionOptions:[],
+                nationOptions:[],
+                sexOptions:[],
+                //图片上传
+                imageUrl:'',
+                // updateUrl: params.serviceIp + '/TjDrugAddictRegister/addDataAndFile',
+                updateUrl: '#',
+
+                // 导出控制
+                fullscreenLoading: null,
+                birthday: '',
+
+                // 走访情况
+                zfqkCheckTbaleRowID:'',
+                zfqkCheckTbaleRows:[],
+                zfqkCheckTbaleRow:{},
+                zfqkChecktotal:0,
+                zfqkCheckPageIndex:1,
+                zfqkCheckPageSize:10,
+                zfqkDialog:false,
+                oneZfqkDialog:false,
+                activeName: 'first',
+
+                workPhotographList: [],
+                workVideoList: [],
+                workSoundRecordList: [],
+
+                // 验证规则
+                rules: {
+                    // birthday: [{ validator: validateBirthday, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    writeTime: [{ validator: validateBirthday, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    idNumber: [{ validator: validateIdNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    phone: [{ validator: validatePhoneNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }]
+                }
+            },
+            mounted: function () {
+                vm = this;
+                // vm.fillOptions();
+                vm.loadData();
+                vm.setTableDiv();
+                initButton(this);
+                vm.nationOptions = nation;
+                vm.sexOptions=sexOptions;
+                vm.religionOptions=religionOptions;
+                vm.bloodTypeOptions=bloodTypeOptions;
+                vm.maritalStatusOptions=maritalStatusOptions;
+                vm.nativePlaceList = nativePlaceList;
+                vm.loadData02();
+            },
+            computed: {
+
+            },
+            methods: {
+                httpRequest: function(data) {
+                    let rd = new FileReader(); // 创建文件读取对象
+                    let file = data.file;
+                    rd.readAsDataURL(file); // 文件读取装换为base64类型
+                    rd.onloadend = function (e) {
+                        vm.imageUrl = this.result; // this指向当前方法onloadend的作用域
+                    };
+                },
+                addCombatSave:function(formName){
+                    this.$refs[formName].validate(function (valid) {
+                        if (valid) {
+                            vm.combatTbaleRow.birthday = vm.birthday;
+                            this.fd = new FormData();
+                            // console.log(vm.combatTbaleRow);
+                            for(var key in vm.combatTbaleRow){
+                                //key
+                                // console.log(key);
+                                // console.log(vm.combatTbaleRow[key]);
+                                //value
+                                let value = vm.combatTbaleRow[key];
+
+                                /* if (key=='birthday'){
+                                    let transDate = new Date(value);
+                                    this.fd.append(key,transDate);
+                                }*/
+                                //剔除异常数据
+                                if (key=='policeVisitForm'){
+                                }
+                                else {
+                                    if (value!=null){
+                                        this.fd.append(key, value);
+                                    }
+                                }
+                            }
+
+                            var userData = JSON.parse(window.localStorage.getItem('userdata'));
+                            if (vm.policeStation.length ===1 && userData.dptName === vm.policeStation[0].name) {
+                                this.fd.append('fillPersonId', userData.id)
+                                this.fd.append('fillPerson', userData.name)
+                            } else if (vm.combatTbaleRow.policeVisitForm) {
+                                this.fd.append('fillPersonId', vm.combatTbaleRow.policeVisitForm.fillPersonId)
+                                this.fd.append('fillPerson', vm.combatTbaleRow.policeVisitForm.fillPerson)
+                            }
+
+                            //图片
+                            if (vm.multfileImg != null) {
+                                this.fd.append('photographFile', vm.multfileImg)
+                            }
+
+                            if (vm.operated=="add"){
+                                doApiByFile(
+                                    function(res) {
+                                        vm.photographFile_url = res.data.photograph;
+                                        if (res.status === 200) {
+                                            // alert("成功")
+                                            vm.dialogShow=false;
+                                            vm.$message.info("新增成功！");
+                                            vm.loadData();
+                                        }else{
+                                            vm.$message.error("新增失败！");
+                                        }
+                                    },
+                                    function (res) {
+                                        vm.$message.error(res.responseJSON.message);
+                                    }, null,params.serviceIp + '/TjDrugAddictRegister/addDataAndFile', 'post',this.fd
+                                );
+                            }else if (vm.operated=='edit'){
+                                doApiByFile(
+                                    function(res) {
+                                        if (res.status === 200) {
+                                            vm.loadData();
+                                            vm.dialogShow=false;
+                                            vm.$message.info("修改成功！");
+                                        }else{
+                                            vm.$message.error("修改失败！");
+                                        }
+                                    },
+                                    function (res) {
+                                        vm.$message.error(res.responseJSON.message);
+                                    }, null,params.serviceIp + '/TjDrugAddictRegister/updateDataAndFile', 'PUT',this.fd
+                                );
+                            }
+                        } else {
+                            return vm.$message.error("填报信息有缺失或错误！")
+                        }
+                    })
+                },
+                handleAvatarSuccess:function(res, file) {
+                    vm.imageUrl = URL.createObjectURL(file.raw);
+                    vm.multfileImg = file.raw;
+                },
+                beforeAvatarUpload:function(file) {
+                    vm.multfileImg = file;
+                    const isJPG = file.type === 'image/jpeg';
+                    const isPng = file.type === 'image/png';
+                    if (!isJPG && !isPng) {
+                        this.$message.error('上传图片格式只能为.jpg或.png!');
+                    }
+                    // const isLt10M = file.size / 1024 / 1024 < 10;
+                    // if (!isLt10M) {
+                    //     this.$message.error('上传头像图片大小不能超过 10MB!');
+                    // }
+                    return isJPG || isPng;
+                },
+                // 走访情况
+                handleClick: function (tab, event) {
+                    if (tab.name == 'second') {
+                        vm.zfqkCheck(vm.combatTbaleRow.id)
+                    }
+                },
+                handleChange02:function(e) {
+                    if (e){
+                        //地址 级联选择框
+                        vm.combatTbaleRow.placeOfDomicile = e.toString();
+                    }
+                },
+                zfqkShowDetail:function(row){
+                    vm.zfqkCheckTbaleRow = row;
+                    vm.workPhotographList = vm.zfqkCheckTbaleRow.workPhotographList;
+                    vm.workVideoList = vm.zfqkCheckTbaleRow.workVideoList;
+                    vm.workSoundRecordList = vm.zfqkCheckTbaleRow.workSoundRecordList;
+                    // vm.zfqkCheckTbaleRow.workPhotograph = vm.getShowUrl(row.workPhotograph, 'picture');
+                    // vm.zfqkCheckTbaleRow.workVideo = vm.getShowUrl(row.workVideo, 'video');
+                    // vm.zfqkCheckTbaleRow.workSoundRecord = vm.getShowUrl(row.workSoundRecord, 'audio');
+                    vm.oneZfqkDialog=true;
+                },
+                zfqkHandleCurrentChange:function(zfqkCheckPageIndex){
+                    vm.zfqkCheckPageIndex = zfqkCheckPageIndex;
+                    vm.zfqkCheck(vm.zfqkCheckTbaleRowID);
+                },
+                zfqkCheck:function(id){
+                    vm.zfqkCheckTbaleRowID=id;
+                    // console.log(id);
+                    doApi(
+                        function (res) {
+                            // console.log(res);
+                            if(res.status === 200) {
+                                vm.zfqkCheckTbaleRows = res.data.rows;
+                                vm.zfqkChecktotal =res.data.total;
+                            }
+                        },null,null,params.serviceIp + '/TjKeyPersonVisit/pageByVisitObjectIdAndVisitObjectType',
+                        "get",{
+                            'visitObjectId':vm.zfqkCheckTbaleRowID,
+                            'visitObjectType':'统计_吸毒人员登记',
+                            'page':vm.zfqkCheckPageIndex,
+                            'limit':vm.zfqkCheckPageSize
+                        }
+                    );
+                },
+                //截取时间
+                getPartTime:function(val){
+                    //"2020-05-09 00:00:00"
+                    var time = val.substring(0,10);
+                    /* var timearr = val.replace(/\:/g, "-").split("-");
+                    var timestr = timearr[0]+"年"+ Number(timearr[1])+ "月" + timearr[2]+"日";*/
+                    // console.log(4444,val)
+                    return time;
+                },
+                closeDialog:function(formName){
+                    vm.imageUrl='';
+                    vm.multfileImg = null;
+                    vm.combatTbaleRow={};
+                    vm.birthday = '';
+                    vm.nativePlaceArray = [];
+                    vm.loadData();
+                    vm.activeName = 'first';
+                    vm.$refs[formName].clearValidate();
+                },
+                rowKey :function(row) {
+                    return row.id;
+                },
+                clearFilter:function () { // 清空全部筛选,必须放到方法中，否则加载失败
+                    this.$refs.myTable.clearSelection();
+                },
+                selectAll:function() {
+                    vm.selectedArray = [];
+                    if (vm.checked) {
+                        for ( var i=0;i<vm.options.length;i++ ){
+                            var item=vm.options[i];
+                            vm.selectedArray.push(item.userId)
+                        }
+                    } else {
+                        vm.selectedArray = [];
+                    }
+                },
+                changeSelect:function(val) {
+                    vm.selectedArray=val;
+                },
+                //将选中行数据存入变量
+                selectRows:function(rows){
+                    vm.saveSelectRows=rows;
+                },
+                //填充下拉框
+                /* fillOptions:function () {
+                     doApi(
+                         function (res) {
+                             if(res.status === 200) {
+                                 vm.options= res.data;
+                             }
+                         },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceInfo',
+                         "get"
+                     )
+                 },*/
+                //初始化数据列表
+                loadData: function () {
+                    vm.params.page=vm.pageIndex;
+                    vm.params.limit=vm.pageSize;
+                    doApi(
+                        function (res) {
+                            // console.log(res);
+                            if(res.status === 200) {
+                                vm.rows= res.data.rows;
+                                vm.total =res.data.total;
+                            }
+                        },null,null,params.serviceIp + '/TjDrugAddictRegister/listUserDeptData',
+                        "get",vm.params
+                    );
+                },
+                setTableDiv:function(){
+                    var height=$(window).height()-200;
+                    $("#tableDiv").css("height",height);
+                },
+                //初始化派出所列表
+                loadData02: function () {
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.policeStation = res.data;
+                            }
+                        },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceStation',"get"
+                    );
+                },
+                //分页 初始页pageIndex、控制每页几条
+                handleSizeChange:function(size){
+                    this.pageSize = size;
+                    this.loadData();
+                },
+                // 控制页面的切换
+                handleCurrentChange: function(pageIndex) {
+                    this.pageIndex = pageIndex;
+                    this.loadData();
+                },
+                isProgress:function(startTime,endTime){
+                    if(startTime==null||endTime==null){
+                        return true;
+                    }
+                    var now=new Date();
+                    if(now<new Date(startTime.replace(/-/g,"/"))||now>new Date(endTime.replace(/-/g,"/"))){
+                        return false;
+                    }
+                    return true;
+                },
+                getTagColor: function (score) {
+                    if (score == 1) {
+                        return "success";
+                    } else if(score == 0){
+                        return "danger";
+                    }
+                    return "info";
+                },
+                show: function (row) { //获取点击对象
+                    // console.log(row)
+                    vm.combatTbaleRow=row;
+                    vm.birthday = vm.combatTbaleRow.birthday;
+                    vm.operated='edit';
+
+                    if (row.photograph){
+                        vm.imageUrl = vm.getShowUrl(row.photograph, 'picture');
+                    }
+                    if (row.placeOfDomicile){
+                        vm.nativePlaceArray = row.placeOfDomicile.split(",");
+                    }
+                    vm.dialogShow=true;
+                },
+                deleteList:function () {
+                    vm.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        var delIds=[];
+                        for ( var i=0;i<vm.saveSelectRows.length;i++ ){
+                            var row=vm.saveSelectRows[i];
+                            delIds.push(row.id);
+                        }
+
+                        doApiByJsonstr(
+                            function(res) {
+                                if (res.status === 200) {
+                                    vm.pageIndex=1;
+                                    vm.loadData();
+                                    vm.dialogShow=false;
+                                    vm.clearFilter();
+                                    vm.$message.info("批量删除成功！");
+                                }else{
+                                    vm.$message.error("批量删除失败！");
+                                }
+                            },
+                            null, null, params.serviceIp + '/TjDrugAddictRegister/batchDelete', 'post',delIds
+                        );
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                showMessage:function (status) {
+                    if (status=='suc'){
+                        vm.$message.info("操作成功！");
+                    }if (status=='fail'){
+                        vm.$message.error("操作失败！");
+                    }
+                },
+                // 导出表单
+                exportToExcel: function () {
+                    vm.fullscreenLoading = true;
+                    vm.params.limit = null;
+                    var data3;
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                data3 = res.data.rows;
+                                // 处理日期
+                                for (let i = 0; i < data3.length; i++) {
+                                    if (data3[i].birthday){
+                                        data3[i].birthday = data3[i].birthday.substring(0,10);
+                                    }
+                                }
+                                // console.log(data3);
+
+                                var filter = ['id', 'photograph', 'policeVisitForm'];
+                                let b = Json2Excel(data3, "吸毒人员表", drugPerson, filter);
+
+                                if (b) {
+                                    vm.fullscreenLoading = false;
+                                }
+                            }
+                        }, null, null, params.serviceIp + '/TjDrugAddictRegister/listUserDeptData', "get", vm.params
+                    );
+                },
+                // 自动根据身份证号码填入出生日期
+                idNumTransform: function(num) {
+                    if (num.length >= 14) {
+                        var date = num.slice(6, 10) + '-' + num.slice(10, 12) + '-' + num.slice(12, 14);
+                        vm.birthday = date;
+                        vm.combatTbaleRow.birthday = vm.birthday;
+                    }
+                },
+                // 获取压缩路径图片、音频或视频
+                getShowUrl:function (oldUrl,type) {
+                    if (oldUrl){
+                        //将url的ip换成服务器的ip
+                        var showUrl=urlChangeIp(oldUrl,params.serviceIp);
+                        if(type=="picture"){
+                            //选择展示的url
+                            var url=getThumbnail(showUrl);
+                            if(isExistUrl(url)){
+                                return url;
+                            }else {
+                                if(isExistUrl(showUrl)){
+                                    return showUrl;
+                                }else {
+                                    return params.serviceIp + params.pictureLoadingFailedUrl;
+                                }
+                            }
+                        }else if(type=="audio"){
+                            if(isExistUrl(showUrl)){
+                                return showUrl;
+                            }
+                        }else if (type=="video"){
+                            //选择展示的url
+                            var url=getCompressVideo(showUrl);
+                            if(isExistUrl(url)){
+                                return url;
+                            }else {
+                                if(isExistUrl(showUrl)){
+                                    return showUrl;
+                                }
+                            }
+                        }else if(type=="other"){
+                            if(isExistUrl(showUrl)){
+                                return showUrl;
+                            }
+                        }
+                    }
+                    return null;
+                },
+            }
+        })
+    })
+</script>
+<script type="text/javascript">
+    function initButton(vm) {
+        $('button').on("click", function (e) {
+            switch (this.innerText.trim()) {
+                case "重置":
+                    // vm.params.dptName=null;
+                    // vm.params.name=null;
+                    // vm.params.idNumber=null;
+                    vm.params={};
+                    break;
+                case "查询":
+                    vm.pageIndex=1;
+                    vm.loadData();
+                    break;
+                case "新增":
+                    // var nullDate ='';
+                    // const obj1 = $("#mainIframe")[0].contentWindow;
+                    vm.operated='add';
+                    // obj1.setData(vm.operated);
+
+                    vm.dialogShow=true;
+                    break;
+                case "删除":
+                    vm.deleteList();
+                    break;
+                case "关闭":
+                    break;
+            }
+        });
+    }
+</script>

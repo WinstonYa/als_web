@@ -1,0 +1,144 @@
+* {
+	list-style: none; margin: 0px; padding: 0px;
+}
+a {
+	color: rgb(0, 0, 0); text-decoration: none;
+}
+a:hover {
+	color: rgb(255, 0, 0);
+}
+.clesr {
+	clear: both;
+}
+html {
+	margin: 0px; height: 100%;
+}
+body {
+	margin: 0px; height: 100%;
+}
+#bg {
+	margin: 0px auto; width: 100%; height: 100%; background-color: white;
+}
+#controlToggle li {
+	list-style: none;
+}
+.mousePositionCtrl {
+	top: 5px; right: 3px; color: rgb(255, 255, 255); font-family: Arial; font-size: 12px; display: block; position: absolute;
+}
+#cd {
+	background: url("../images/cd_bg.png") repeat-x; height: 37px;
+}
+.tuli {
+	margin-left: 20px; float: left;
+}
+.tuli_1 {
+	background: url("../images/zc.png") no-repeat; width: 90px; height: 37px;
+}
+.tuli_2 {
+	background: url("../images/od.png") no-repeat; width: 100px; height: 37px;
+}
+.tuli_3 {
+	background: url("../images/cd.png") no-repeat; width: 120px; height: 37px;
+}
+.tuli_4 {
+	background: url("../images/d.png") no-repeat; width: 90px; height: 37px;
+}
+.wenzi {
+	color: rgb(51, 51, 51); padding-top: 0px; padding-left: 25px; font-size: 12px;
+}
+#anniu {
+	width: 100%; height: 37px; float: right;
+}
+.anniu_ul {
+	list-style: none; margin: 0px; padding: 0px; width: 100%; height: 100%;
+}
+.anniu_ul_li {
+	padding: 0px; width: 90px; height: 37px; line-height: 37px; float: right;
+}
+.anniu_ul_li:hover {
+	background: url("../images/boder.png") no-repeat 1px;
+}
+.anniu_ul_li1 {
+	padding: 0px; width: 75px; height: 37px; line-height: 37px; float: right;
+}
+.anniu_ul_li1:hover {
+	background: url("../images/boder1.png") no-repeat 1px;
+}
+html {
+	margin: 0px; height: 100%;
+}
+body {
+	margin: -1px; height: 100%;
+}
+#bg {
+	margin: 0px auto; width: 100%; height: 100%; background-color: white;
+}
+#div1 {
+	top: -2px; width: 50%; height: 100%; float: right; position: relative;
+}
+#imgclose {
+	margin-top: 15px; margin-right: 5px; float: right;
+}
+#gnssMap {
+	border: currentColor; border-image: none; position: relative; z-index: 1; cursor: pointer;
+}
+#gnssLegend {
+	border: 1px; border-image: none; border-radius: 7px; position: absolute; z-index: 1; cursor: pointer; right: 10px; bottom: 10px; background-color: rgba(255,255,255,0.8);
+}
+.oneLegend {
+	border: 0px; border-image: none; position: relative; cursor: pointer;
+}
+#controlToggle li {
+	list-style: none;
+}
+#icone {
+	border: 0px solid rgb(0, 255, 0); border-image: none; width: 400px; height: 100%; float: left;
+}
+.mousePositionCtrl {
+	top: 5px; right: 3px; color: rgb(255, 255, 255); font-family: Arial; font-size: 12px; display: block; position: absolute;
+}
+#menuList {
+	border: 1px solid rgb(187, 187, 187); border-image: none; left: 1px; top: -7px; width: 87px; position: relative; background-color: rgb(255, 255, 255);
+}
+.menuItem {
+	width: 87px; height: 24px; text-align: center; line-height: 24px; overflow: hidden; background-color: rgb(255, 255, 255);
+}
+.liimg {
+	margin: 12px 8px; float: left;
+}
+.midspan {
+	left: -10px; top: -7px; font-size: 13px; position: relative;
+}
+.menuItem:hover {
+	width: 87px; height: 24px; text-align: center; line-height: 24px; overflow: hidden; background-color: rgb(238, 238, 238);
+}
+.menuHref {
+	width: 69px; height: 24px;
+}
+.tdd {
+	width: 100%; height: 20px;
+}
+#img_closePop {
+	border: 1px solid rgb(221, 221, 221); border-image: none; float: right; cursor: pointer;
+}
+#mestr {
+	border-width: 0px; border-style: solid; top: 4px; width: 100%; height: 64px; position: relative;
+}
+#mestr2 {
+	top: 4px; width: 100%; height: 1px; position: relative; background-color: rgb(204, 204, 204);
+}
+#div2 {
+	border: 1px solid black; border-image: none; top: 2px; width: 100px; height: 8px; float: left; position: relative;
+}
+#div3 {
+	border: 1px solid black; border-image: none; top: 2px; width: 100px; height: 8px; float: left; position: relative;
+}
+#ntripmes {
+	border-width: 0px; border-style: solid; top: 2px; width: 100%; height: 104px; position: relative;
+}
+#div4 {
+	top: 4px; width: 100%; height: 1px; position: relative; background-color: rgb(204, 204, 204);
+}
+.jindudata {
+	width: 80px; height: 100%; background-color: rgb(0, 255, 0);
+}

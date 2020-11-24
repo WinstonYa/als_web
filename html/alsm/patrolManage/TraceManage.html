@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>轨迹管理</title>
+
+    <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <script src="../../../alsm/vue/vue.js"></script>
+
+    <!-- element-ui 导入-->
+    <link href="../../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <script src="../../../alsm/element2.12.0/index.js"></script>
+
+    <script src="../../../alsm/api_sub.js" type="text/javascript"></script>
+    <script src="../../../js/config/config.js"></script>
+
+    <link href="../../../css/alsCommon.css" rel="stylesheet">
+
+    <style>
+
+
+        #vue1 {
+            width: 100%;
+            height: 100%;
+        }
+
+
+
+        .el-table .cell {
+            padding: 1px;
+        }
+
+        .el-table td, .el-table th {
+            padding: 0px 1px;
+        }
+
+        .el-pager .number, .el-pager .el-icon {
+            display: none;
+        }
+
+        .el-pager .active {
+            display: block;
+        }
+
+        #tableDiv {
+            overflow: auto;
+        }
+
+        .selectDiv .el-button {
+            float: right;
+            padding: 6px;
+        }
+
+        .selectDiv .el-input__inner {
+            padding: 5px;
+        }
+
+        .el-pagination {
+            padding: 0px;
+        }
+
+        .el-pagination__sizes .el-input__inner {
+            height: 100%;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="vue1">
+    <div class="selectDiv">
+        <el-select style="width: 42%" v-model="params.dptId" filterable clearable
+                   size="small" @change="changeSelect" placeholder="请选择派出所">
+            <el-option :value="item.id" :label="item.name" v-for="(item, index) in dptOption" :key="index"></el-option>
+        </el-select>
+        <el-select style="width: 42%" v-model="params.personId" filterable clearable
+                   size="small" placeholder="请选择堡垒户" @change="select">
+            <el-option :value="item.userId" :label="item.name" v-for="(item, index) in fOption"
+                       :key="index"></el-option>
+        </el-select>
+
+        <el-button icon="el-icon-more" size="small" onClick="openSelect('patrolTrackS')"></el-button>
+    </div>
+
+
+    <div id="tableDiv">
+        <el-table :data="rows"
+                  border
+        >
+            <el-table-column align="center" label="姓名" min-width="8" :show-overflow-tooltip="true">
+                <template slot-scope="scope">
+                <span style="color: #0e78c9;cursor: pointer" @click="displayTrack(scope)">
+                      {{ scope.row.personName }}
+                </span>
+                </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="里程" min-width="9" :show-overflow-tooltip="true">
+                <template slot-scope="scope">
+                    {{ parseFloat((scope.row.mileage / 1000).toFixed(2)) }}公里
+                </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="时长" min-width="9" :show-overflow-tooltip="true">
+                <template slot-scope="scope">
+                    {{getHour(scope.row.duration) }}时{{getMinute(scope.row.duration)}}分
+                </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="操作" min-width="12">
+                <template slot-scope="scope">
+                    <img v-if="scope.row.isEffective==1" style="height: 25px" @click="changeIsEffective(scope.row)"
+                         src="../../../images/track/pass.png">
+                    <img v-if="scope.row.isEffective==0" style="height: 25px" @click="changeIsEffective(scope.row)"
+                         src="../../../images/track/passbreak.png">
+
+                    <el-button v-if="scope.row.isValid==0" icon="el-icon-plus" size="small" style="height:25px"
+                               @click="draw(scope.row)"></el-button>
+                    <el-button v-if="scope.row.isValid==1" type="success" icon="el-icon-check" size="small"
+                               style="height:25px"></el-button>
+
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
+    <el-pagination
+            small
+            background
+            @current-change="handleCurrentChange"
+            :current-page="pageIndex"
+            :pager-count="5"
+            :page-sizes="pageRows"
+            :page-size="pageSize"
+            @size-change="handleSizeChange"
+            layout="total,sizes,prev, pager, next"
+            :total="total"
+    ></el-pagination>
+
+
+</div>
+</body>
+<script>
+    var vm = null;
+    $(function () {
+        new Vue({
+            el: '#vue1',
+            data: {
+                dptOption: [],
+                allFOption: [],
+                fOption: [],
+                params: {
+                    page: '',
+                    limit: '',
+                    dptId: '',
+                    after: '',
+                    before: '',
+                    personId: '',
+                    traceState: "已完成",
+                    durationStart: '',
+                    durationEnd: '',
+                    mileageStart: '',
+                    mileageEnd: '',
+                    isValid: '',
+                    isEffective: ''
+                },
+                rows: [],
+                row: {},
+
+                total: 0,
+                pageIndex: 1,
+                pageSize: 20,
+                pageRows: [5, 10, 15, 20, 30, 40, 50]
+            },
+            created: function () {
+                vm = this;
+                vm.fillOption();
+                //设置默认时间为前3天
+                var selectHtml = window.parent.document.getElementById("selectHtml").contentWindow;
+                selectHtml.vm.clear();
+                vm.select();
+
+                setMyHeight("#tableDiv", 54);
+                //回车键触发方法
+                document.onkeydown = function (e) {
+                    var key = window.event.keyCode;
+                    if (key == 13) {
+                        vm.select();
+                    }
+                }
+                //随浏览器改变改变高度
+                window.onresize = function () {
+                    if (vm != null) {
+                        setMyHeight("#tableDiv", 54);
+                    }
+                }
+
+            },
+            methods: {
+                draw: function (val) {
+                    //   console.info(val);
+                    var traceId = val.traceId;
+                    if (traceId == null) {
+                        vm.$message.error("该巡逻轨迹无点位信息！");
+                        return;
+                    }
+
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                openRoute("PatrolRouteInfo", res.data.gpsdata, null, val.id);
+                            } else {
+                                vm.$message.error("该轨迹id不存在");
+                            }
+                        }, null, null, params.serviceIp + '/TrackRecordInfo/getOneById/' + traceId,
+                        "get"
+                    );
+
+                },
+                changeIsEffective: function (val) {
+                    if (val.isEffective == 1) {
+                        val.isEffective = 0;
+                    } else {
+                        val.isEffective = 1;
+                    }
+                    doApiByJsonstr(
+                        function (res) {
+                            if (res.status === 200) {
+
+                            } else {
+                                vm.$message.error("轨迹信息修改失败！");
+                            }
+                        },
+                        null, null, params.serviceIp + '/FortressPatrolTrace', 'put', {
+                            id: val.id,
+                            isEffective: val.isEffective
+                        }
+                    );
+
+                },
+                changeSelect: function () {
+                    vm.params.personId = null;
+                    vm.select();
+
+                    if (vm.params.dptId == "") {
+                        vm.fOption = vm.allFOption;
+                    } else {
+                        doApi(
+                            function (res) {
+                                if (res.status === 200) {
+                                    vm.fOption = res.data;
+                                } else {
+                                    vm.fOption = [];
+                                }
+                            }, null, null, params.serviceIp + '/FortressInfo/getListByDptId',
+                            "get", {dptId: vm.params.dptId}
+                        )
+                    }
+                },
+                fillOption: function () {
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.allFOption = res.data;
+                                vm.fOption = res.data;
+                            }
+                        }, null, null, params.serviceIp + '/PoliceInfo/getCurrentUserFortressInfo',
+                        "get"
+                    )
+
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.dptOption = res.data;
+                            }
+                        }, null, null, params.serviceIp + '/PoliceInfo/getCurrentUserPoliceStation',
+                        "get"
+                    )
+                },
+                //分页 初始页pageIndex、控制每页几条
+                handleSizeChange: function (size) {
+                    this.pageSize = size;
+                    this.loadData();
+                },
+                getHour: function (val) {
+                    return Math.floor(val / 60);
+                },
+                getMinute: function (val) {
+                    return Math.floor(val % 60);
+                },
+                select: function () {
+                    var selectHtml = window.parent.document.getElementById("selectHtml").contentWindow;
+                    vm.params.before = selectHtml.vm.patrolTrackS.before;
+                    vm.params.after = selectHtml.vm.patrolTrackS.after;
+
+                    var sh = selectHtml.vm.patrolTrackS.durationStartH;
+                    var sm = selectHtml.vm.patrolTrackS.durationStartM;
+                    var eh = selectHtml.vm.patrolTrackS.durationEndH;
+                    var em = selectHtml.vm.patrolTrackS.durationEndM;
+                    if ((sh != null && sh != "") || (sm != null && sm != "")) {
+                        if (sh == null || sh == "") {
+                            sh = 0;
+                        }
+                        if (sm == null || sm == "") {
+                            sm = 0;
+                        }
+                        //js中加法
+                        vm.params.durationStart = Number(sh * 60) + Number(sm);
+                    } else {
+                        vm.params.durationStart = null;
+                    }
+                    if ((eh != null && eh != "") || (em != null && em != "")) {
+                        if (eh == null || eh == "") {
+                            eh = 0;
+                        }
+                        if (em == null || em == "") {
+                            em = 0;
+                        }
+                        vm.params.durationEnd = Number(eh * 60) + Number(em);
+                    } else {
+                        vm.params.durationEnd = null;
+                    }
+                    vm.params.mileageStart = selectHtml.vm.patrolTrackS.mileageStart ? selectHtml.vm.patrolTrackS.mileageStart * 1000 : selectHtml.vm.patrolTrackS.mileageStart;
+                    vm.params.mileageEnd = selectHtml.vm.patrolTrackS.mileageEnd ? selectHtml.vm.patrolTrackS.mileageEnd * 1000 : selectHtml.vm.patrolTrackS.mileageEnd;
+                    vm.params.isValid = selectHtml.vm.patrolTrackS.isValid;
+                    vm.params.isEffective = selectHtml.vm.patrolTrackS.isEffective;
+
+                    vm.pageIndex = 1;
+                    vm.loadData();
+
+                },
+                // 控制页面的切换
+                handleCurrentChange: function (pageIndex) {
+                    this.pageIndex = pageIndex;
+                    this.loadData();
+                },
+                loadData: function () { //获取点击对象
+                    //获得已完成的历史巡逻轨迹
+                    vm.params.page = vm.pageIndex;
+                    vm.params.limit = vm.pageSize;
+                    vm.params.before = setStartTime(vm.params.before);
+                    vm.params.after = setEndTime(vm.params.after);
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.rows = res.data.rows;
+                                vm.total = res.data.total;
+                            }
+                        }, null, null, params.serviceIp + '/FortressPatrolTrace/listUserDeptAllMission',
+                        "get", vm.params
+                    );
+
+                },
+                displayTrack: function (node) {
+                    //showTrail(idx, id, tracing, type, mileage, durTime) mileage:轨迹里程数 durTime:路程时间
+                    top.showTrail(null, node.row.traceId,undefined,null,node.row.mileage,node.row.duration);
+                }
+            }
+        })
+    })
+</script>
+</html>

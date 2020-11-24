@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="../../alsm/tianditu/ol.js"></script>
+    <link rel="stylesheet" href="../../alsm/tianditu/ol.css">
+</head>
+<style>
+    html,
+    body {
+        margin: 0;
+        height: 100%;
+    }
+
+    #map {
+        position: absolute;
+        top: 30px;
+        bottom: 0;
+        width: 100%;
+    }
+</style>
+<body>
+<div id="status"></div>
+<div id="map" style="z-index: 9999"></div>
+<script>
+    // var fso   =   new   ActiveXObject("Scripting.FileSystemObject");
+    // var offlineMapLayer = new ol.layer.Tile({
+    //     // source: new ol.source.XYZ({
+    //     //     tileUrlFunction: function (coordinate) {
+    //     //         var z = coordinate[0];
+    //     //         var x = coordinate[1];
+    //     //         var y = coordinate[2];
+    //     //         var path = "../../static/gismap/" + z + "/" + x + "/" + y + ".png";
+    //     //         console.log(path);
+    //     //         return path;
+    //     //     },
+    //     //     maxZoom: 18,
+    //     //     minZoom: 18,
+    //     //     projection: 'EPSG:3857'
+    //     // })
+    //     source: new ol.source.XYZ({
+    //         tileUrlFunction: function (coordinate) {
+    //             var z = coordinate[0];
+    //             var x = coordinate[1];
+    //             var y = coordinate[2];
+    //             var path = "../../static/gismap/" + z + "/" + x + "/" + y + ".png";
+    //             console.log(path);
+    //             // if   (fso.FileExists(path))
+    //             // {
+    //             //     return path;
+    //             // }
+    //             // else
+    //             // {
+    //             //     return "";
+    //             // }
+    //             return path;
+    //         },
+    //         maxZoom: 18,
+    //         minZoom: 18,
+    //         projection: 'EPSG:3857'
+    //     })
+    // });
+    var map = new ol.Map({
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.XYZ({
+                    url: "https://mt0.google.cn/vt?lyrs=s&amp&x={x}&y={y}&z={z}"
+                })
+            })
+            // offlineMapLayer
+        ],
+        target: 'map',
+        view: new ol.View({
+            center: [
+                12956634.642942,
+                4851883.963394
+                // 105.6991,38.8388
+                // 11763117,4693118
+            ],
+            // projection: 'EPSG:4326',
+            projection: 'EPSG:3857',
+            zoom: 12
+            // zoom: 18
+        })
+    });
+    var lineCoords = [];
+    var pointA = [];
+    for (var i = 0; i < 10; i++) {
+        let x = Math.random() * 20000 + 12946634.642942;
+        let y = Math.random() * 20000 + 4841883.963394;
+        lineCoords.push([x, y]);
+        pointA.push(
+            new ol.Feature({
+                geometry: new ol.geom.Point([x, y]),
+            })
+        )
+        pointA[i].setStyle(
+            new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    fill: new ol.style.Fill({
+                        color: '#FF0'
+                    })
+                })
+            })
+        )
+    }
+    var vSource = new ol.source.Vector();
+    var vLayer = new ol.layer.Vector({
+        source: vSource,
+        style: new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 5,
+                fill: new ol.style.Fill({
+                    color: '#FF0'
+                })
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#FF0',
+                width: 3
+            })
+        })
+    })
+    var vvSource = new ol.source.Vector();
+    var vvLayer = new ol.layer.Vector({
+        source: vvSource,
+        style: new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 5,
+                fill: new ol.style.Fill({
+                    color: '#FF0'
+                })
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#FF0',
+                width: 3
+            })
+        })
+    })
+    // vSource.addFeature(new ol.Feature({
+    //     geometry: new ol.geom.LineString(lineCoords)
+    // }));
+    vSource.addFeatures((pointA));
+    map.addLayer(vLayer)
+    map.addLayer(vvLayer)
+    var draw = new ol.interaction.Draw({
+        type: 'LineString',
+        source: vvSource,
+        sourceConstrain: vSource,
+        style: new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 8,
+                fill: new ol.style.Fill({
+                    color: '#FF0'
+                })
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#FF0',
+                width: 3
+            })
+        }),
+        condition: function (event) {
+            let flag = 0;
+            let features = map.getFeaturesAtPixel(event.pixel)
+            features.some(element => {
+                if (vSource.hasFeature(element)) {
+                    flag = 1;
+                    return true
+                }
+            });
+            if (flag == 1) return true;
+        }
+    });
+    var snap = new ol.interaction.Snap({
+        source: vSource
+    })
+    map.addInteraction(draw);
+    map.addInteraction(snap);
+
+    let select = null; // ref to currently selected interaction
+
+    // select interaction working on "singleclick"
+    const selectSingleClick = new ol.interaction.Select();
+
+    // select interaction working on "click"
+    const selectClick = new ol.interaction.Select({
+        condition: ol.events.condition.click
+    });
+
+    // select interaction working on "pointermove"
+    const selectPointerMove = new ol.interaction.Select({
+        condition: ol.events.condition.pointerMove
+    });
+
+    const selectAltClick = new ol.interaction.Select({
+        condition: function(mapBrowserEvent) {
+            return ol.events.condition.click(mapBrowserEvent) && ol.events.condition.altKeyOnly(mapBrowserEvent);
+        }
+    });
+
+    select = selectClick;
+    map.addInteraction(select);
+    select.on('select', function(e) {
+        document.getElementById('status').innerHTML = '&nbsp;' +
+            e.target.getFeatures().getLength() +
+            ' selected features (last operation selected ' + e.selected.length +
+            ' and deselected ' + e.deselected.length + ' features)';
+    });
+</script>
+</body>

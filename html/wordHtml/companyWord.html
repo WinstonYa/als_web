@@ -1,0 +1,824 @@
+<html>
+
+<head>
+    <meta http-equiv=Content-Type content="text/html; charset=utf-8">
+    <meta name=Generator content="Microsoft Word 15 (filtered)">
+
+    <link href="../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../alsm/vue/vue.js"></script>
+    <link href="../../css/elui/index.css" rel="stylesheet">
+    <link href="../../css/TbaleIndexCss.css" rel="stylesheet">
+
+
+    <script src="../../alsm/elui/index.js"></script>
+
+    <style>
+        <!--
+        /* Font Definitions */
+        @font-face {
+            font-family: 宋体;
+            panose-1: 2 1 6 0 3 1 1 1 1 1;
+        }
+
+        @font-face {
+            font-family: "Cambria Math";
+            panose-1: 2 4 5 3 5 4 6 3 2 4;
+        }
+
+        @font-face {
+            font-family: 等线;
+            panose-1: 2 1 6 0 3 1 1 1 1 1;
+        }
+
+        @font-face {
+            font-family: "\@宋体";
+            panose-1: 2 1 6 0 3 1 1 1 1 1;
+        }
+
+        @font-face {
+            font-family: "\@等线";
+            panose-1: 2 1 6 0 3 1 1 1 1 1;
+        }
+
+        /* Style Definitions */
+        p.MsoNormal, li.MsoNormal, div.MsoNormal {
+            margin: 0cm;
+            margin-bottom: .0001pt;
+            text-align: justify;
+            text-justify: inter-ideograph;
+            font-size: 10.5pt;
+            font-family: 等线;
+        }
+
+        .MsoChpDefault {
+            font-family: 等线;
+        }
+
+        /* Page Definitions */
+        @page WordSection1 {
+            size: 595.3pt 841.9pt;
+            margin: 72.0pt 90.0pt 72.0pt 90.0pt;
+            layout-grid: 15.6pt;
+        }
+
+        div.WordSection1 {
+            page: WordSection1;
+            height: 540px;
+        }
+        .myInput{
+            width: 100%;
+            height: 100%;
+            border: none;
+            float: left;
+            zoom:1;
+            outline: medium;
+        }
+
+        /*上传多个图片*/
+        /*.uploadImgBtn {
+
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            position: relative;
+            background: url("./../../images/ImageAdd.png") no-repeat;
+            -webkit-background-size: cover;
+            background-size: cover;
+        }
+
+        .uploadImgBtn .uploadImg {
+            position: absolute;
+            right: 0;
+            top:0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        !*!/这是一个用做回显的盒子的样式*!
+          .pic{
+              width: 100px;
+              height: 100px;
+          }
+        .pic img {
+            width: 100%;
+            height: 100%;
+        }*/
+
+
+    </style>
+</head>
+
+<body lang=ZH-CN style='text-justify-trim:punctuation'>
+
+<div id="TempContant">
+
+<div class=WordSection1 style='layout-grid:15.6pt;overflow: auto'>
+
+    <table align="center" class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=643
+           style='width:482.0pt;border-collapse:collapse'>
+        <tr style='height:39.95pt'>
+            <td width=643 colspan=6 style='width:482.0pt;padding:0cm 5.4pt 0cm 5.4pt;
+  height:39.95pt'>
+                <p class=MsoNormal align=center style='text-align:center'><b><span
+                        style='font-size:20.0pt;font-family:宋体'>单位基本情况表</span></b></p>
+            </td>
+        </tr>
+        <tr style='height:35.1pt'>
+            <td width=152 colspan=2 style='width:114.0pt;border:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>单位名称</span></p>
+            </td>
+            <td width=491 colspan=4 style='width:368.0pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+
+<!--                <input class="myInput" v-model="lists.dwmc">-->
+                <input type="text" class="myInput" v-model="lists.dwmc" />
+
+            </td>
+        </tr>
+        <tr style='height:35.1pt'>
+            <td width=152 colspan=2 style='width:114.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>所属部门</span></p>
+            </td>
+            <td width=491 colspan=4 style='width:368.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+
+<input type="text" class="myInput" v-model="lists.ssbm" /></td>
+        </tr>
+        <tr style='height:35.1pt'>
+            <td width=152 colspan=2 style='width:114.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>单位分类</span></p>
+            </td>
+            <td width=491 colspan=4 style='width:368.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+<input type="text" class="myInput" v-model="lists.dwfl" /></td>
+        </tr>
+
+        <tr style='height:35.1pt'>
+            <td width=152 colspan=2 style='width:114.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>单位联系电话</span></p>
+            </td>
+            <td width=491 colspan=4 style='width:368.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <input type="text" class="myInput" v-model="lists.dwlxdh" /></td>
+        </tr>
+
+        <tr style='height:35.1pt'>
+            <td width=152 colspan=2 style='width:114.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>法人联系电话</span></p>
+            </td>
+            <td width=491 colspan=4 style='width:368.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <input type="text" class="myInput" v-model="lists.fddbrlxdh" /></td>
+        </tr>
+
+        <tr style='height:35.1pt'>
+            <td width=152 colspan=2 style='width:114.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>地<span lang=EN-US>&nbsp;&nbsp;&nbsp; </span>址</span></p>
+            </td>
+            <td width=191 colspan=2 style='width:143.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+<input type="text" class="myInput" v-model="lists.dz" /></td>
+            <td width=105 style='width:79.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>单位性质</span></p>
+            </td>
+            <td width=195 style='width:146.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+<input type="text" class="myInput" v-model="lists.dwxz" /></td>
+        </tr>
+        <tr style='height:35.1pt'>
+            <td width=152 colspan=2 style='width:114.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>法定代表人</span></p>
+            </td>
+            <td width=191 colspan=2 style='width:143.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+<input type="text" class="myInput" v-model="lists.fddbr" /></td>
+            <td width=105 style='width:79.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>职工人数</span></p>
+            </td>
+            <td width=195 style='width:146.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+<input type="text" class="myInput" v-model="lists.zgrs" placeholder="请输入整数.." /></td>
+        </tr>
+        <tr style='height:35.1pt'>
+            <td width=152 colspan=2 style='width:114.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>重点要害部位数</span></p>
+            </td>
+            <td width=191 colspan=2 style='width:143.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+<input type="text" class="myInput" v-model="lists.zdyhbws" placeholder="请输入整数.." /></td>
+            <td width=105 style='width:79.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>枪弹库<span lang=EN-US>/</span>民爆库</span></p>
+            </td>
+            <td width=195 style='width:146.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+<input type="text" class="myInput" v-model="lists.mbk" /></td>
+        </tr>
+        <tr style='height:35.1pt'>
+            <td width=152 colspan=2 style='width:114.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>治保、消防组织<span lang=EN-US>&nbsp;&nbsp;&nbsp;
+  </span>负责人</span></p>
+            </td>
+            <td width=191 colspan=2 style='width:143.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+<input type="text" class="myInput" v-model="lists.abzzfzr" /></td>
+            <td width=105 style='width:79.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>治保、消防 组 织 人 数</span></p>
+            </td>
+            <td width=195 style='width:146.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+<input type="text" class="myInput" v-model="lists.abrs" placeholder="请输入整数.." /></td>
+        </tr>
+        <tr style='height:35.1pt'>
+            <td width=152 colspan=2 style='width:114.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>保安人员数</span></p>
+            </td>
+            <td width=491 colspan=4 style='width:368.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:35.1pt'>
+<input type="text" class="myInput" v-model="lists.barys" placeholder="请输入整数.."/></td>
+        </tr>
+        <tr style='height:53.1pt'>
+            <td width=53 rowspan=2 style='width:40.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;layout-flow:vertical-ideographic;
+  height:172.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>防范措施落实情况</span></p>
+            </td>
+
+            <td width=197 colspan=2 style='width:148.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:53.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+                                                                                style='font-size:12.0pt;font-family:宋体'>&nbsp;</span><span
+                        style='font-size:
+  12.0pt;font-family:宋体'>人防措施</span></p>
+            </td>
+            <td width=197 colspan=2 style='width:148.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:53.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>物防措施</span></p>
+            </td>
+            <td width=195 style='width:146.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:53.1pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>技防措施</span></p>
+            </td>
+        </tr>
+        <tr style='height:119.1pt'>
+
+           <!-- <td width=53 rowspan=2 style='width:40.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;layout-flow:vertical-ideographic;
+  height:53.1pt'>
+                <input class="myInput">
+
+            </td>-->
+
+
+            <td width=197 colspan=2 style='width:148.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:119.1pt'>
+
+                <textarea class="myInput" v-model="lists.rfcs"></textarea>
+<!--<input type="text"  /></td>-->
+
+            <td width=197 colspan=2 style='width:148.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:119.1pt'>
+
+<!--<input type="text" class="myInput" v-model="lists.wfcs" />-->
+            <textarea class="myInput" v-model="lists.wfcs"></textarea>
+
+        </td>
+            <td width=195 style='width:146.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:119.1pt'>
+
+<!--<input type="text" class="myInput" v-model="lists.jfcs" />-->
+                <textarea class="myInput" v-model="lists.jfcs"></textarea>
+
+            </td>
+        </tr>
+        <tr style='height:202.5pt'>
+            <td width=53 style='width:40.0pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;layout-flow:vertical-ideographic;height:
+  202.5pt'>
+                <p class=MsoNormal align=center style='text-align:center'><span
+                        style='font-size:12.0pt;font-family:宋体'>设施结构要害部位草图</span></p>
+
+            </td>
+
+            <td colspan=5 style='width:442.0pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:600pt'>
+<!--                              <input class="myInput">-->
+
+
+              <!--  <img :src="photographFile_url" id="show" alt="..." style="max-height: 190px;height: auto;width: 100%">
+
+                <input ref="clearFile" accept="image/png, image/jpeg, image/gif, image/jpg" class="upload" @change='add_img'  type="file">
+-->
+
+                <!--上传多张图片-->
+                <!--<div class="uploadImgBtn" id="uploadImgBtn">
+                    <input class="uploadImg" type="file" name="file" multiple id="file">
+                </div>-->
+
+                <!--上传多张图片-->
+                <div class="hello">
+                    <div class="upload">
+                        <div class="upload_warp">
+                            <div class="upload_warp_left" @click="fileClick">
+                                <img src="./../../images/ImgUpload/upload.png">
+                            </div>
+                            <div class="upload_warp_right" @drop="drop($event)" @dragenter="dragenter($event)" @dragover="dragover($event)">
+                                或者将文件拖到此处
+                            </div>
+                        </div>
+                        <div class="upload_warp_text">
+                            选中{{imgList.length}}张文件，共{{bytesToSize(this.size)}}
+                        </div>
+
+                        <input @change="fileChange($event)" type="file" id="upload_file" multiple style="display: none"/>
+
+                        <div class="upload_warp_img" v-show="imgList.length!=0">
+
+
+                            <!---->
+                            <div class="upload_warp_img_div" v-for="(item,index) of imgList">
+
+                                <div class="upload_warp_img_div_top">
+                                    <div class="upload_warp_img_div_text">
+                                        {{item.name}}
+                                    </div>
+                                    <img src="./../../images/ImgUpload/del.png" class="upload_warp_img_div_del" @click="fileDel(index)">
+                                </div>
+                                <img :src="item.src">
+
+                            </div>
+
+                            <!---->
+
+                        </div>
+                    </div>
+                </div>
+
+<!--                <button @click="test">测试</button>-->
+
+
+            </td>
+        </tr>
+        <tr height=0>
+            <td width=56 style='border:none'></td>
+            <td width=98 style='border:none'></td>
+            <td width=98 style='border:none'></td>
+            <td width=91 style='border:none'></td>
+            <td width=105 style='border:none'></td>
+            <td width=194 style='border:none'></td>
+        </tr>
+    </table>
+
+    <p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+
+</div>
+
+    <div class="t-btns" align="center">
+        <button type="button" class="btn btn-success" @click="submitEdit">提交</button>
+    </div>
+
+<!--    <input type="button" @click="test" value="测试">-->
+
+</div>
+
+
+<script src="../../alsm/api_sub.js" type="text/javascript"></script>
+<script src="../../js/config/config.js"></script>
+
+<script>
+    // var data;
+    var vm;
+
+    function setData(operate,res) {
+        console.log(res);
+        vm.setRes(operate,res);
+    }
+    $(function () {
+        vm = new Vue({
+            el:'#TempContant',
+            data:{
+                lists: {
+                },
+                operated:'',
+                photographFile_url:'#',
+                img1:null,
+
+                //批量添加图片
+                imgList: [],
+                size: 0,
+                reader:{
+                    vue:null,
+                    imgList:[]
+                },
+
+            },
+            mounted: function(){
+                vm = this;
+            },
+            methods: {
+
+                setRes:function(operate,res) {
+                    vm.operated=operate;
+
+                    if (operate=='edit'){
+                        vm.lists=res;
+                        //头像
+                        vm.photographFile_url = vm.lists.photograph;
+                    }else if (operate=='add') {
+                        vm.lists={
+                            dwmc:'',
+                            ssbm:'',
+                            dwfl:'',
+                            dz:'',
+                            dwxz:'',
+                            fddbr:'',
+                            zgrs:'',
+                            zdyhbws:'',
+                            mbk:'',
+                            abzzfzr:'',
+                            abrs:'',
+                            rfcs:'',
+                            wfcs:'',
+                            jfcs:'',
+                            //----------
+                            ssjgyhbwct:'',
+                            xgzzfyj:'',
+                            pmsyt:'',
+                            dwlxdh:'',
+                            fddbrlxdh:'',
+                        };
+
+                        // this.$refs.clearFile.value = ''; // 清空file文件
+
+                        vm.photographFile_url = null;
+                    }
+
+                    console.log(vm.lists)
+                },
+                add_img:function(event) {
+                    let reader = new FileReader();
+
+                    vm.img1 = event.target.files[0];
+
+                    vm.imgList.push(vm.img1);
+
+                    console.log(event);
+
+                    let type1 = event.target.files[0].type;
+
+                    var url = null;
+                    // 下面函数执行的效果是一样的，只是需要针对不同的浏览器执行不同的 js 函数而已
+                    if (window.createObjectURL != undefined) { // basic
+                        url = window.createObjectURL(vm.img1);
+                    } else if (window.URL != undefined) { // mozilla(firefox)
+                        url = window.URL.createObjectURL(vm.img1);
+                    } else if (window.webkitURL != undefined) { // webkit or chrome
+                        url = window.webkitURL.createObjectURL(vm.img1);
+                    }
+                    console.log(url);
+                    document.getElementById('show').src = url;
+
+                },
+                //提交修改
+                submitEdit:function() {
+                    var form = new FormData();
+
+                    /*if (vm.img1){
+                        form.append('photographFile',vm.img1,vm.img1.name);
+                    }*/
+
+                    console.log(vm.imgList);
+                    //设施结构要害部位草图
+                    if (vm.imgList){
+                    for (let i = 0; i < vm.imgList.length; i++) {
+                            form.append('ssjgyhbwctFiles',vm.imgList[i]);
+                      }
+                    }
+
+                    form.append('dwmc',vm.lists.dwmc);
+                    form.append('ssbm',vm.lists.ssbm);
+                    form.append('dwfl',vm.lists.dwfl);
+
+                    form.append('dz',vm.lists.dz);
+
+                    form.append('dwxz',vm.lists.dwxz);
+                    form.append('fddbr',vm.lists.fddbr);
+
+                    form.append('zgrs',vm.lists.zgrs);
+                    form.append('zdyhbws',vm.lists.zdyhbws);
+                    form.append('mbk',vm.lists.mbk);
+
+                    form.append('abzzfzr',vm.lists.abzzfzr);
+                    form.append('abrs',vm.lists.abrs);
+
+                    form.append('rfcs',vm.lists.rfcs);
+                    form.append('wfcs',vm.lists.wfcs);
+                    form.append('jfcs',vm.lists.jfcs);
+
+                    form.append('dwlxdh',vm.lists.dwlxdh);
+                    form.append('fddbrlxdh',vm.lists.fddbrlxdh);
+
+
+                    //来本地日期
+                    // form.append('neighborhood',vm.lists.arrivalTime);
+
+                    // form.append('ssjgyhbwct',vm.lists.ssjgyhbwct);
+                    // form.append('xgzzfyj',vm.lists.xgzzfyj);
+                    // form.append('pmsyt',vm.lists.pmsyt);
+                    // form.append('dwlxdh',vm.lists.dwlxdh);
+                    // form.append('fddbrlxdh',vm.lists.fddbrlxdh);
+
+                    //离开时间
+                    // form.append('aroundThePlace',vm.lists.departureTime);
+                    /*form.append('leaveReason',vm.lists.leaveReason);
+                    form.append('destination',vm.lists.destination);
+                    form.append('remark',vm.lists.remark);*/
+
+                    if (vm.operated=='edit'){
+
+                      /*  doApiByJsonstr(
+                            //成功
+                            function(res) {
+                                parent.vm.loadData();
+                                if (res.status === 200) {
+                                    parent.vm.dialogShow=false;
+                                    parent.vm.showMessage("suc")
+                                }else{
+                                    parent.vm.showMessage("fail")
+                                }
+                            },
+                            //失败
+                            function () {
+                                parent.vm.showMessage("fail")
+                            }, null,params.serviceIp + '/QsydwDwjbqk', 'put',vm.lists
+                        );*/
+
+                       // ================================================
+                        form.append('id',vm.lists.id);
+
+                        doApiByFile(
+                            function(res) {
+                                // vm.photographFile_url = res.data.photograph;
+                                // vm.dialogShow=false;
+                                parent.vm.loadData();
+
+                                if (res.status === 200) {
+                                    parent.vm.dialogShow=false;
+                                    parent.vm.showMessage("suc")
+                                    // alert("成功")
+                                }else{
+                                    parent.vm.showMessage("fail")
+                                }
+                            },
+                            null, null,params.serviceIp + '/QsydwDwjbqk/updateDataAndFile', 'put',form
+                        );
+                    }else if (vm.operated=='add'){
+
+                        /*doApiByJsonstr(
+                            function(res) {
+                                parent.vm.loadData();
+                                if (res.status === 200) {
+                                    parent.vm.dialogShow=false;
+                                    parent.vm.showMessage("suc")
+                                }else{
+                                    parent.vm.showMessage("fail")
+                                }
+                            },
+                            null, null,params.serviceIp + '/QsydwDwjbqk', 'post',vm.lists
+                        );*/
+
+                        doApiByFile(
+                            function(res) {
+                                // vm.photographFile_url = res.data.photograph;
+                                //清空 防止缓存
+                                // vm.lists={};
+                                // vm.dialogShow=false;
+                                parent.vm.dialogShow=false;
+                                parent.vm.loadData();
+
+                                if (res.status === 200) {
+                                    parent.vm.showMessage("suc")
+                                }else{
+                                    parent.vm.showMessage("fail")
+                                }
+                            },
+                            null, null,params.serviceIp + '/QsydwDwjbqk/addDataAndFile', 'post',form
+                        );
+                    }
+                },
+                //---------------------------批量添加图片方法---------------------
+                test:function(){
+                    console.log(vm.imgList)
+                },
+                fileClick:function() {
+                    document.getElementById('upload_file').click()
+                },
+
+                fileChange:function(el) {
+
+                    // if (!el.target.files[0].size) return;
+
+                    this.fileList(el.target);
+                    el.target.value = ''
+                },
+
+                //文件列表 未处理
+                fileList:function(fileList) {
+                    let files = fileList.files;
+                    for (let i = 0; i < files.length; i++) {
+                        //判断是否为文件夹
+                        if (files[i].type != '') {
+
+                            this.fileAdd(files[i]);
+                        } else {
+                            //文件夹处理
+                            this.folders(fileList.items[i]);
+                        }
+                    }
+                },
+                //文件夹处理
+                folders:function(files) {
+                    let _this = this;
+                    //判断是否为原生file
+                    if (files.kind) {
+                        files = files.webkitGetAsEntry();
+                    }
+                    files.createReader().readEntries(function (file) {
+                        for (let i = 0; i < file.length; i++) {
+                            if (file[i].isFile) {
+                                _this.foldersAdd(file[i]);
+                            } else {
+                                _this.folders(file[i]);
+                            }
+                        }
+                    })
+                },
+                foldersAdd:function(entry) {
+                    let _this = this;
+                    entry.file(function (file) {
+                        _this.fileAdd(file)
+                    })
+                },
+
+                //添加图片到div 给imgList赋值
+                fileAdd:function(file) {
+                    //总大小
+                    this.size = this.size + file.size;
+                    //判断是否为图片文件
+                    if (file.type.indexOf('image') == -1) {
+                        //非图片，则显示本地文件图片
+                        file.src = './../../images/ImgUpload/wenjian.png';
+                        /*this.imgList.push({
+                            file
+                        });*/
+                        /*this.imgList.push({
+                            file
+                        });*/
+
+                        /*this.imgList.push([
+                            file
+                        ]);*/
+                        this.imgList=[];
+                        this.imgList.push(file);
+
+                    } else {
+                        reader = new FileReader();
+
+                        //将vue参数赋值给reader.vue
+                        //this指代vue下的data
+                        reader.vue = this;
+
+                        console.log(this);
+
+                        //选择图片文件后即使预览图片
+                        reader.readAsDataURL(file);
+
+                        //给reader的onload添加一个方法
+                        reader.onload = function () {
+                            //this指代FileReader reader
+                            //result是readAsDataURL(file)后的 文件编码
+                            file.src = this.result;
+
+                            console.log(this);
+
+                            //此操作 顺带给vue.imgList赋值
+                            //this指代FileReader reader
+                            /*this.vue.imgList.push({
+                                file
+                            });*/
+
+                            // vm.imgList.push(vm.img1);
+                            // reader.vue.imgList=[];
+
+                            reader.vue.imgList.push(file);
+
+                            console.log(reader)
+
+                        };
+
+                        console.log(this.imgList)
+
+                    }
+                },
+                fileDel:function(index) {
+                    /*this.size = this.size - this.imgList[index].file.size;//总大小
+                    this.imgList.splice(index, 1);*/
+                    console.log(this);
+                    console.log(this.size);
+                    console.log(this.imgList[index].size);
+
+
+                    this.size = this.size - this.imgList[index].size;//总大小
+                    this.imgList.splice(index, 1);
+
+                },
+                bytesToSize:function(bytes) {
+                    if (bytes === 0) return '0 B';
+                    let k = 1000, // or 1024
+                        sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                        i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+                },
+                dragenter:function(el) {
+                    el.stopPropagation();
+                    el.preventDefault();
+                },
+                dragover:function(el) {
+                    el.stopPropagation();
+                    el.preventDefault();
+                },
+
+                //文件拖拽
+                drop:function(el) {
+                    el.stopPropagation();
+                    el.preventDefault();
+                    this.fileList(el.dataTransfer);
+                }
+
+            }
+        });
+
+    });
+
+</script>
+
+</body>
+
+</html>

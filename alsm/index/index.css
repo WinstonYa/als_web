@@ -1,0 +1,54 @@
+.t-data-time {
+  /*position: absolute;*/
+  /*left: 205px;*/
+  /*top: 49px;*/
+}
+
+.t-data-time button {
+  width: 90px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #5882cc;
+  color: #fff;
+  padding: 0;
+  border: 0;
+  border-radius: 3.5px;
+  font-size: 13px;
+  margin: 0 8px;
+  outline: none
+}
+
+.t-data-time button:hover {
+  background-color: #4c78ba;
+
+  color: #fff;
+}
+
+.t-pickerdata {
+  /*position: absolute;*/
+  /*top: -2px;*/
+  /*left: 260px;*/
+}
+
+.el-range-editor.el-input__inner {
+  padding: 1px 10px !important;
+  height: 35px;
+}
+
+.el-date-editor .el-range-separator {
+  padding: 0 0px !important;
+}
+
+.t-sanjiao {
+  position: absolute;
+  top: 8px;
+  right: -38px;
+  transform: rotate(180deg);
+  color: #4c78ba;
+}
+.t-sanjiaoone {
+    position: absolute;
+    top: 8px;
+    right: -418px;
+    color: #4c78ba;
+}

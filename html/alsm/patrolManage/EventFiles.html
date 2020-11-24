@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>事件浏览</title>
+    <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../../alsm/vue/vue.js"></script>
+    <script src="https://unpkg.com/vue-lazyload@1.3.3/vue-lazyload.js"></script>
+
+    <!-- element-ui 导入-->
+    <link href="../../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <script src="../../../alsm/element2.12.0/index.js"></script>
+
+    <script src="../../../js/config/config.js"></script>
+    <script src="../../../alsm/api_sub.js"></script>
+
+    <style>
+        .el-input.is-disabled .el-input__inner, .el-textarea.is-disabled .el-textarea__inner, .el-radio__input.is-disabled + span.el-radio__label {
+            color: #606266;
+        }
+
+        .el-carousel__indicators--outside button {
+            background-color: #000;
+        }
+
+        .fileShow {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+        }
+
+        .fileShow1 {
+            height: 100%;
+        }
+    </style>
+
+</head>
+<body>
+<div id="body1">
+    <el-form :model="formRow" label-width="80px" class="demo-ruleForm" ref="formRow">
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="上报人:" prop="reporterName">
+                    <el-input v-model="formRow.reporterName" :disabled="isReadOnly"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="上报类型:" prop="type">
+                    <el-input v-model="formRow.type" :disabled="isReadOnly"></el-input>
+                </el-form-item>
+            </el-col>
+        </el-row>
+
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="上报时间:" prop="date">
+                    <el-date-picker
+                            :disabled="isReadOnly"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            v-model="formRow.date"
+                            type="datetime"
+                            placeholder="选择日期">
+                    </el-date-picker>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="坐标:">
+                    <span>{{ formRow.longitude }} , {{ formRow.latitude }}</span>
+                </el-form-item>
+            </el-col>
+        </el-row>
+
+        <el-row>
+            <el-col :span="24">
+                <el-form-item label="描述:">
+                    <el-input
+                            :disabled="isReadOnly" admin admin
+                            type="textarea"
+                            :rows="2"
+                            placeholder="没有描述信息"
+                            v-model="formRow.description">
+                    </el-input>
+                </el-form-item>
+            </el-col>
+        </el-row>
+
+        <el-row>
+            <el-col :span="24">
+                <el-form-item label="处理结果:">
+                    <el-input
+                            :disabled="isReadOnly"
+                            type="textarea"
+                            :rows="2"
+                            placeholder="未进行处理"
+                            v-model="formRow.result">
+                    </el-input>
+                </el-form-item>
+            </el-col>
+        </el-row>
+
+        <el-row>
+            <el-col :span="24">
+                <el-form-item label="照片视频:">
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col>
+                <el-carousel
+                        indicator-position="outside"
+                        :autoplay="false"
+                        :initial-index="this.carouselArrIndex"
+                        arrow="always"
+                        v-if="isCarouselShow"
+                        height="400px"
+                >
+                    <el-carousel-item v-for="carousel of carouselArr" :key="carousel.id">
+                        <div style="height: 100%;margin:0 60px;overflow-x: auto;overflow-y: hidden">
+                            <img class="fileShow" v-if="carousel.type=='picture'" ref="carouselIMG"
+                                 v-lazy="getShowUrl(carousel.url,carousel.type)">
+
+                            <div v-if="carousel.type=='video'" class="fileShow">
+                                <video class="fileShow"
+                                       v-if="getShowUrl(carousel.url,carousel.type)!=null"
+                                       controls>
+                                    <source :src="getShowUrl(carousel.url,carousel.type)" type="video/mp4">
+                                </video>
+                                <img class="fileShow" v-else
+                                     v-lazy="loadFailedUrl1">
+                            </div>
+                            <div class="fileShow1" v-if="carousel.type=='audio'">
+                                <audio v-if="getShowUrl(carousel.url,carousel.type)!=null" controls>
+                                    <source :src="getShowUrl(carousel.url,carousel.type)">
+                                </audio>
+                                <img class="fileShow" v-else
+                                     v-lazy="loadFailedUrl2">
+                            </div>
+                            <div class="fileShow1" v-if="carousel.type=='other'">
+                                <el-link v-if="getShowUrl(carousel.url,carousel.type)!=null" type="primary"
+                                         :href="getShowUrl(carousel.url,carousel.type)">{{carousel.name}}
+                                </el-link>
+
+                                <img class="fileShow" v-else
+                                     v-lazy="loadFailedUrl3">
+                            </div>
+                        </div>
+                    </el-carousel-item>
+                </el-carousel>
+            </el-col>
+        </el-row>
+    </el-form>
+</div>
+</body>
+
+<script type="text/javascript">
+    $(function () {
+        Vue.use(VueLazyload)
+        new Vue({
+            el: '#body1',
+            data: {
+                formRow: {},
+                isReadOnly: true,
+                loadFailedUrl1: params.serviceIp + params.videoLoadingFailedUrl,
+                loadFailedUrl2: params.serviceIp + params.audioLoadingFailedUrl,
+                loadFailedUrl3: params.serviceIp + params.otherLoadingFailedUrl,
+                isCarouselShow: false,
+                carouselArr: [],
+                carouselArrIndex: 0
+            },
+            mounted: function () {
+                vm = this;
+                vm.setData(top.currentEventInfo);
+            },
+            methods: {
+                getShowUrl: function (oldUrl, type) {
+                    if (oldUrl) {
+                        //将url的ip换成服务器的ip
+                        var showUrl = urlChangeIp(oldUrl, params.serviceIp);
+                        if (type == "picture") {
+                            //选择展示的url
+                            var url = getThumbnail(showUrl);
+                            if (isExistUrl(url)) {
+                                return url;
+                            } else {
+                                if (isExistUrl(showUrl)) {
+                                    return showUrl;
+                                } else {
+                                    return params.serviceIp + params.pictureLoadingFailedUrl;
+                                }
+                            }
+
+                        } else if (type == "audio") {
+                            if (isExistUrl(showUrl)) {
+                                return showUrl;
+                            }
+                        } else if (type == "video") {
+                            //选择展示的url
+                            var url = getCompressVideo(showUrl);
+                            if (isExistUrl(url)) {
+                                return url;
+                            } else {
+                                if (isExistUrl(showUrl)) {
+                                    return showUrl;
+                                }
+                            }
+
+                        } else if (type == "other") {
+                            if (isExistUrl(showUrl)) {
+                                return showUrl;
+                            }
+                        }
+                    }
+                    return null;
+                },
+                setData: function (data) {
+                    if(top.currentEventInfo) {
+                        vm.formRow = top.currentEventInfo;
+                        vm.carouselArr = top.currentEventInfo.fileRecordInfos;
+                        vm.isCarouselShow = vm.carouselArr.length !== 0;
+                    }
+                }
+            }
+        })
+    })
+
+</script>
+</html>

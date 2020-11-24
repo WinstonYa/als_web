@@ -1,0 +1,44 @@
+//1.国有企业
+//2.国有控股企业
+//3.外资企业
+//4.合资企业
+//5.私营企业(又称民营企业)
+{
+  "recordCount": 1,
+  "pageCount": 1,
+  "data": [
+    {
+      "countPatrol": 2,
+      "id": 1,
+      "name": "国庆期间加强边境巡逻",
+      "type": "重要",
+      "persons": [
+        {
+          "name": "国有企业",
+          "css": "el-tag el-tag--success"
+        },
+        {
+          "name": "国有控股企业",
+          "css": "el-tag el-tag--success"
+        },
+        {
+          "name": "外资企业",
+          "css": "el-tag el-tag--success"
+        },
+        {
+          "name": "合资企业",
+          "css": "el-tag el-tag--success"
+        },
+        {
+          "name": "私营企业",
+          "css": "el-tag el-tag--danger"
+        }
+      ],
+      "start": "2019-10-01 00:00",
+      "end": "2019-10-07 23:59",
+      "remind": "2019-10-01 08:00",
+      "status": "已完成"
+    }
+  ]
+}
+

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>统计分析</title>
+    <link href="../../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="../../../css/bootstrap@3.3.7/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+    <link href="../../../alsm/ttyu.net/file/ttyu/css/ttyu.web.css" rel="stylesheet" type="text/css">
+    <link href="../../../alsm/ttyu.net/file/system/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../alsm/index/index.css">
+    <link rel="stylesheet" href="../../../fonticon/iconfont.css">
+    <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <script src="../../../alsm/ttyu.net/file/system/jq/jquery-ui.js" type="text/javascript"></script>
+    <script src="../../../alsm/ttyu.net/file/system/ztree/js/jquery.ztree.all.min.js"></script>
+    <script src="../../../alsm/bootstrap@3.3.7/bootstrap.min.js" type="text/javascript"></script>
+    <script src="../../../alsm/bootstrap@3.3.7/bootstrap-select.min.js"></script>
+    <script src="../../../alsm/ttyu/ttyu.web2.js" type="text/javascript"></script>
+
+    <link href="../../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <link href="../../../css/elui/index.css" rel="stylesheet">
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../../alsm/vue/vue.js"></script>
+    <script src="../../../alsm/element2.12.0/index.js"></script>
+    <!-- <script src="../../../alsm/elui/index.js"></script> -->
+    <script src="../../../alsm/echarts/echarts.min.js"></script>
+    <script src="../../../alsm/api_sub.js" type="text/javascript"></script>
+    <script src="../../../js/config/config.js"></script>
+    <link href="../../../css/alsCommon.css" rel="stylesheet">
+    <style>
+        .ol-popup {
+            position: absolute;
+            background-color: white;
+            -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+            /*filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));*/
+            filter: drop-shadow(0 1px 4px #FFC125);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #cccccc;
+            bottom: 12px;
+            min-width: 280px;
+        }
+
+        .ol-popup:after, .ol-popup:before {
+            top: 100%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+        }
+
+        .ol-popup-closer {
+            text-decoration: none;
+            position: absolute;
+            top: 2px;
+            right: 8px;
+        }
+
+        .ol-popup-closer:after {
+            content: "✖";
+        }
+
+        table {
+            cellspacing:0 ;
+            *border-collapse: collapse; /* IE7 and lower */
+            border-spacing: 0;
+            width: 100%;
+        }
+
+        .bordered tr:hover {
+            background: #fbf8e9;
+            -o-transition: all 0.1s ease-in-out;
+            -webkit-transition: all 0.1s ease-in-out;
+            -moz-transition: all 0.1s ease-in-out;
+            -ms-transition: all 0.1s ease-in-out;
+            transition: all 0.1s ease-in-out;
+        }
+
+        .bordered th {
+            padding: 7px;
+            text-align: center;
+            cellspacing:0;
+        }
+
+        .bordered td{
+            padding: 7px;
+            text-align: center;
+            cellspacing:0;
+        }
+
+        .bordered th {
+            background-image: -webkit-gradient(linear, left top, left bottom, from(#ebf3fc), to(#dce9f9));
+            background-image: -webkit-linear-gradient(top, #ebf3fc, #dce9f9);
+            background-image:    -moz-linear-gradient(top, #ebf3fc, #dce9f9);
+            background-image:     -ms-linear-gradient(top, #ebf3fc, #dce9f9);
+            background-image:      -o-linear-gradient(top, #ebf3fc, #dce9f9);
+            background-image:         linear-gradient(top, #ebf3fc, #dce9f9);
+        }
+
+        .bordered td:first-child, .bordered th:first-child {
+            border-left: none;
+        }
+
+        .bordered  tr:nth-of-type(2n){background:#FFFFFF;cursor: pointer;}
+        .bordered  tr:nth-of-type(2n+1){background:#F7FAFC;cursor: pointer;}
+
+        .bordered  tbody tr:hover{  background: #fbf8e9;
+            -o-transition: all 0.1s ease-in-out;
+            -webkit-transition: all 0.1s ease-in-out;
+            -moz-transition: all 0.1s ease-in-out;
+            -ms-transition: all 0.1s ease-in-out;
+            transition: all 0.1s ease-in-out;
+        }
+    </style>
+</head>
+
+<body>
+<div id='body1' v-loading.fullscreen.lock="mainDiv"
+    element-loading-text="拼命处理中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.5)">
+    <!-- 查询栏 -->
+    <div class="t-body">
+        <div class="t-find" style="margin-top: 5px">
+            <div class="t-data-time" style="display: inline">
+                <span class="hideZhiDui">支队选择：</span>
+                <el-select  style="width: auto"
+                    class="hideZhiDui"
+                    v-model='selectedZhiDui'
+                    @change='changeSelect01'
+                    placeholder='支队选择'>
+                    <el-option v-for='(item, index) in optionsZhiDui'
+                        :key='index'
+                        :label='item.name'
+                        :value='item.id'>
+                    </el-option>
+                </el-select>
+                <span class="hideDaDui">大队选择：</span>
+                <el-select  style="width: auto"
+                    class="hideDaDui"
+                    v-model='selectedDaDui'
+                    @change='changeSelect02'
+                    placeholder='大队选择'>
+                    <el-option v-for='(item, index) in optionsDaDui'
+                        :key='index'
+                        :label='item.name'
+                        :value='item.id'>
+                    </el-option>
+                </el-select>
+                <span class="hidePaiChuSuo">派出所选择：</span>
+                <el-select  style="width: auto"
+                    class="hidePaiChuSuo"
+                    v-model='selectedPaiChuSuo'
+                    @change='changeSelect03'
+                    placeholder='派出所选择'>
+                    <el-option v-for='(item, index) in optionsPaiChuSuo'
+                        :key='index'
+                        :label='item.name'
+                        :value='item.id'>
+                    </el-option>
+                </el-select>
+                <span>人员选择：</span>
+                <el-select  style="width: auto"
+                    v-model='selectedPerson'
+                    @change='changeSelect04'
+                    placeholder='人员选择'>
+                    <el-option v-for='(item, index) in optionsPerson'
+                        :key='index'
+                        :label='item.name'
+                        :value='item.id'>
+                    </el-option>
+                </el-select>
+            </div>
+
+            <div class="t-btns" style="display: inline">
+                <button title='统计'>
+                    <span class="glyphicon glyphicon-search"></span>
+                    统计
+                </button>
+                <button title='重置'>
+                    <span class="glyphicon glyphicon-repeat"></span>
+                    重置
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- 走访详情表单 -->
+    <el-dialog  v-cloak title="走访详情" center @close="closeDialog" :visible.sync="dialogShow" top="5vh" width="50%" >
+        <el-scrollbar style="height:500px">
+            <el-table :data="tableData.slice((this.page - 1) * this.size, (this.page - 1) * this.size + this.size)" border style="width: 100%">
+                <el-table-column prop="name" label="名称" align="center"></el-table-column>
+                <el-table-column prop="count" label="次数" align="center"></el-table-column>
+            </el-table>
+        </el-scrollbar>
+        <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="page"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="size"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="this.tableData.length"
+            style="margin-top: 15px;">
+        </el-pagination>
+        <span slot="footer" class="dialog-footer">
+            <el-button  type="primary" @click="dialogShow = false">关 闭</el-button>
+        </span>
+    </el-dialog>
+    <!-- echart柱形图 -->
+    <div class="t-btnsDiv" style="border-top: 8px solid rgb(236, 240, 245) !important"></div>
+        <div style="width: 100%;">
+            <div id="chart" class="chart" style="height: 700px; width: 100%"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+    $(function () {
+        new Vue({
+            el: '#body1',
+            data: {
+                chart: null,
+                rows: [],
+                params:{
+                    startTime: null,
+                    dptId: null,
+                    fillPersonId: null
+                },
+                // 数据加载
+                mainDiv: true,
+                // 分页
+                page: 1,
+                size: 10,
+                // 时间栏索引
+                currentIndex: 0,
+                //下拉框
+                optionsZhiDui:[],
+                optionsDaDui:[],
+                optionsPaiChuSuo:[],
+                optionsPerson:[],
+                // 标题
+                title: '边境支队走访次数总览',
+                defaultTitle: '边境支队走访次数总览',
+                selectedZhiDui: null,
+                selectedDaDui: null,
+                selectedPaiChuSuo: null,
+                selectedPerson: null,
+                // 弹窗
+                dialogShow: false,
+                // 数据
+                CzrkArray: [],
+                ZzrkArray: [],
+                SywdArray: [],
+                SbdwArray: [],
+                SydwArray: [],
+                TzhyArray: [],
+                CzfwArray: [],
+                dataTotal: [],
+                tableData: [],
+                monthArray: [],
+                timeData: []
+            },
+            mounted: function () {
+                initButton(this);
+                vm.getYearData();
+                vm.chart = echarts.init(document.getElementById('chart'));
+                // vm.showGraph(vm.title);
+                window.onresize = function() {
+                    vm.chart.resize();
+                }
+                $("#iframeShow").hide();
+                vm.chart.on('click', function (params) {
+                    // console.log(params)
+                    for(var i=0; i<vm.rows.length; i++) {
+                        if(params.name == vm.rows[i].month) {
+                            var dataList = vm.rows[i];
+                        }
+                    }
+                    if(params.componentType=='timeline'){
+                        vm.params.startTime = params.name + '-1-1';
+                        vm.loadData();
+                        vm.currentIndex = params.dataIndex;
+                        vm.showGraph(vm.title);
+                    }else if (params.seriesName=='全部'){
+                        vm.dialogShow = true;
+                        vm.tableData = [
+                            {
+                                name:'常住人口',
+                                count: dataList.CZRK
+                            },
+                            {
+                                name:'暂住人口',
+                                count: dataList.ZZRK
+                            },
+                            {
+                                name:'商业网点',
+                                count: dataList.SYWD
+                            },
+                            {
+                                name:'涉爆单位',
+                                count: dataList.SBDW
+                            },
+                            {
+                                name:'企事业单位',
+                                count: dataList.QSYDW
+                            },
+                            {
+                                name:'特种行业',
+                                count: dataList.TZHY
+                            },
+                            {
+                                name:'出租房屋',
+                                count: dataList.CZFW
+                            },
+                            {
+                                name:'总共',
+                                count: dataList.total
+                            }
+                        ]
+                    }else if (params.seriesName=='常住人口') {
+                        vm.dialogShow = true;
+                        vm.tableData = dataList.CZRKARR;
+                    }else if (params.seriesName=='暂住人口') {
+                        vm.dialogShow = true;
+                        vm.tableData = dataList.ZZRKARR;
+                    }else if (params.seriesName=='商业网点'){
+                        vm.dialogShow = true;
+                        vm.tableData = dataList.SYWDARR;
+                    }else if (params.seriesName=='涉爆单位'){
+                        vm.dialogShow = true;
+                        vm.tableData = dataList.SBDWARR;
+                    }else if (params.seriesName=='企事业单位'){
+                        vm.dialogShow = true;
+                        vm.tableData = dataList.QSYDWARR;
+                    }else if (params.seriesName=='特种行业'){
+                        vm.dialogShow = true;
+                        vm.tableData = dataList.TZHYARR;
+                    }else if (params.seriesName=='出租房屋'){
+                        vm.dialogShow = true;
+                        vm.tableData = dataList.CZFWARR;
+                    }
+                });
+            },
+            created: function () {
+                vm = this;
+                vm.fillOptions();
+            },
+            methods: {
+                // 获取时间
+                getYearData: function() {
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.timeData = [];
+                                var yearLimt = res.data.endYear - res.data.startYear;
+                                var startLimtYear = res.data.startYear;
+                                if(yearLimt > 10) {
+                                    startLimtYear = res.data.startYear + yearLimt - 10;
+                                }
+                                for(var i=startLimtYear; i<=res.data.endYear; i++) {
+                                    vm.timeData.push(i);
+                                }
+                                vm.currentIndex = vm.timeData - 1;
+                                vm.params.startTime = vm.timeData[vm.timeData.length-1] + '-1-1';
+                            } else if(res.data.startYear === 0 || res.data.endYear===0) {
+                                vm.$message.error('未获取到数据!');
+                            }
+                            vm.loadData();
+                        },null,null,params.serviceIp + '/PoliceVisitForm/getUserFillTimeRange',
+                        "get", null, null, true
+                    );
+                },
+                // 分页
+                handleSizeChange:function(val) {
+                    vm.size = val;
+                },
+                handleCurrentChange:function(val) {
+                    vm.page = val;
+                },
+                // 关闭对话框
+                closeDialog: function() {
+                    vm.page = 1;
+                    vm.size = 10;
+                },
+                //下拉框
+                fillOptions:function () {
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                // console.log(res.data)
+                                if(res.data[0].type == '支队') {
+                                    $('.hideZhiDui').css('display', 'none');
+                                    vm.params.dptId = res.data[0].id;
+                                    vm.title = res.data[0].name + '走访次数';
+                                    vm.defaultTitle = res.data[0].name + '走访次数';
+                                    vm.optionsDaDui = res.data[0].children;
+                                } else if(res.data[0].type == '大队') {
+                                    $('.hideZhiDui').css('display', 'none');
+                                    $('.hideDaDui').css('display', 'none');
+                                    vm.params.dptId = res.data[0].id;
+                                    vm.title = res.data[0].name + '走访次数';
+                                    vm.defaultTitle = res.data[0].name + '走访次数';
+                                    vm.optionsPaiChuSuo = res.data[0].children;
+                                } else if(res.data[0].type == '派出所') {
+                                    $('.hideZhiDui').css('display', 'none');
+                                    $('.hideDaDui').css('display', 'none');
+                                    $('.hidePaiChuSuo').css('display', 'none');
+                                    vm.params.dptId = res.data[0].id;
+                                    vm.title = res.data[0].name + '走访次数';
+                                    vm.defaultTitle = res.data[0].name + '走访次数';
+                                    vm.optionsPerson = res.data[0].children;
+                                } else {
+                                    for(var i=0; i<res.data[0].children.length; i++) {
+                                        if(res.data[0].children[i].type == '支队') {
+                                            vm.params.dptId = res.data[0].id;
+                                            vm.optionsZhiDui.push(res.data[0].children[i]);
+                                        }
+                                    }
+                                }
+                            }
+                        },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceInfoTree',
+                        "get", null, null, true
+                    )
+                },
+                //支队
+                changeSelect01:function(val) {
+                    vm.selectedDaDui = null;
+                    vm.selectedPaiChuSuo = null;
+                    vm.selectedPerson = null;
+                    vm.optionsDaDui = [];
+                    vm.optionsPaiChuSuo = [];
+                    vm.optionsPerson = [];
+                    vm.params.dptId = val;
+                    for(var i=0; i<vm.optionsZhiDui.length; i++) {
+                        if(val === vm.optionsZhiDui[i].id) {
+                            vm.optionsDaDui = vm.optionsZhiDui[i].children;
+                            vm.title = vm.optionsZhiDui[i].name + '走访次数';
+                        }
+                    }
+                },
+                //大队
+                changeSelect02:function(val) {
+                    vm.selectedPaiChuSuo = null;
+                    vm.selectedPerson = null;
+                    vm.optionsPaiChuSuo = []
+                    vm.optionsPerson = []
+                    vm.params.dptId = val;
+                    for(var i=0; i<vm.optionsDaDui.length; i++) {
+                        if(val === vm.optionsDaDui[i].id) {
+                            vm.optionsPaiChuSuo = vm.optionsDaDui[i].children;
+                            vm.title = vm.optionsDaDui[i].name + '走访次数';
+                        }
+                    }
+                },
+                //派出所
+                changeSelect03:function(val) {
+                    vm.selectedPerson = null;
+                    vm.optionsPerson = [];
+                    vm.params.dptId = val;
+                    for(var i=0; i<vm.optionsPaiChuSuo.length; i++) {
+                        if(val === vm.optionsPaiChuSuo[i].id) {
+                            vm.optionsPerson = vm.optionsPaiChuSuo[i].children;
+                            vm.title = vm.optionsPaiChuSuo[i].name + '走访次数';
+                        }
+                    }
+                },
+                //人员
+                changeSelect04:function(val) {
+                    vm.params.dptId = null;
+                    for(var i=0; i<vm.optionsPerson.length; i++) {
+                        if(val === vm.optionsPerson[i].id) {
+                            vm.params.fillPersonId = vm.optionsPerson[i].userId;
+                            vm.title = vm.optionsPerson[i].name + '走访次数';
+                        }
+                    }
+                },
+                // 数据加载
+                loadData: function () { //获取点击对象
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.rows = res.data;
+                                vm.CzrkArray = [];
+                                vm.ZzrkArray = [];
+                                vm.SywdArray = [];
+                                vm.SbdwArray = [];
+                                vm.SydwArray = [];
+                                vm.TzhyArray = [];
+                                vm.CzfwArray = [];
+                                vm.TysjArray = [];
+                                vm.dataTotal = [];
+                                vm.monthArray = [];
+                                for(var i=0; i<res.data.length; i++) {
+                                    vm.CzrkArray.push(res.data[i]['CZRK']);
+                                    vm.ZzrkArray.push(res.data[i]['ZZRK']);
+                                    vm.SywdArray.push(res.data[i]['SYWD']);
+                                    vm.SbdwArray.push(res.data[i]['SBDW']);
+                                    vm.SydwArray.push(res.data[i]['QSYDW']);
+                                    vm.TzhyArray.push(res.data[i]['TZHY']);
+                                    vm.CzfwArray.push(res.data[i]['CZFW']);
+                                    vm.dataTotal.push(res.data[i]['total']);
+                                    vm.monthArray.push(res.data[i]['month']);
+                                }
+                            }else {
+                                vm.$message.error('当前部门下无民警!');
+                            }
+                            vm.showGraph(vm.title);
+                        },null,null,params.serviceIp + '/PoliceVisitForm/getStatisticsVisitNumber',
+                        "get",vm.params, null, true
+                    );
+                },
+                // echart绘制
+                showGraph: function (title) { //获取点击对象
+                    opt = {
+                        baseOption: {
+                            timeline: {
+                                axisType: 'category',
+                                // bottom: -20,
+                                // realtime: false,
+                                // loop: false,
+                                // autoPlay: true,
+                                currentIndex: vm.currentIndex,
+                                // playInterval: 1000,
+                                // controlStyle: {
+                                //     position: 'left'
+                                // },
+                                // data: ['2020-1-1', '2020-1-1', '2020-1-1'],
+                                data: vm.timeData,
+                                // lineStyle:false,
+                                lineStyle:{
+                                    color: {
+                                        type: 'linear',
+                                        x: 0,
+                                        y: 0,
+                                        x2: 0,
+                                        y2: 1,
+                                        colorStops: [{
+                                            offset: 0, color: 'red' // 0% 处的颜色
+                                        }, {
+                                            offset: 1, color: 'blue' // 100% 处的颜色
+                                        }],
+                                        globalCoord: false // 缺省为 false
+                                    }
+                                },
+                                checkpointStyle:{
+                                    color:'blue'
+                                },
+                                controlStyle:{
+                                    showPlayBtn: false,
+                                    prevIcon: '',
+                                    nextIcon: ''
+                                }
+                            },
+                            title:{
+                                text: title,
+                                x:'center',
+                                y: '35px'
+                            },
+                            tooltip: {
+                                trigger: 'axis',
+                                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                }
+                            },
+                            toolbox: {
+                                show: true,
+                                itemSize:18,
+                                feature: {
+                                    dataZoom: {
+                                        yAxisIndex: 'none'
+                                    }, //区域缩放，区域缩放还原
+                                    dataView: {
+                                        readOnly: false,
+                                        optionToContent: function(opt) {
+                                            var colName = "序号";
+                                            var typeName = "月份";
+                                            var dataview = opt.toolbox[0].feature.dataView;  //获取dataview
+                                            var table = '<div style="position:absolute;top: 5px;left: 0px;right: 0px;line-height: 1.4em;text-align:center;font-size:14px;">'+dataview.title+'</div>'
+                                            table += getTable(opt,colName,typeName);
+                                            return table;
+                                        }
+                                    }, //数据视图
+                                    magicType: {
+                                        type: ['line', 'bar']
+                                    },  //切换为折线图，切换为柱状图
+                                    restore: {},  //还原
+                                    saveAsImage: {}   //保存为图片
+                                }
+                            },
+                            legend: {
+                                data: ['全部', '常住人口', '暂住人口', '商业网点', '涉爆单位', '企事业单位', '特种行业', '出租房屋'],
+                                    selected:{
+                                    "常住人口":false,  //图例为‘全部’的一项默认置灰
+                                    "暂住人口":false,
+                                    "商业网点":false,
+                                    "涉爆单位":false,
+                                    "企事业单位":false,
+                                    "特种行业":false,
+                                    "出租房屋":false
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                // bottom: '3%',
+                                containLabel: true,
+                                y2:50,
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: vm.monthArray
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    name:'走访次数',
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '常住人口',
+                                    type: 'bar',
+                                    stack: '1',
+                                    barWidth:'25',
+                                    data: vm.CzrkArray,
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'inside'
+                                        }
+                                    },
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#63b6ff'
+                                        }
+                                    }
+                                },
+                                {
+                                    name: '暂住人口',
+                                    type: 'bar',
+                                    stack: '1',
+                                    barWidth:'25',
+                                    data: vm.ZzrkArray,
+                                    /* label: {
+                                        fontSize:'8',
+                                        show: true,
+                                        position: 'inside'
+                                    },*/
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'inside'
+                                        }
+                                    },
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#0e918c'
+                                        }
+                                    }
+                                },
+                                {
+                                    name: '商业网点',
+                                    type: 'bar',
+                                    stack: '1',
+                                    barWidth:'25',
+                                    data: vm.SywdArray,
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'inside'
+                                        }
+                                    },
+                                    itemStyle: {
+                                        color: '#1f3c88'
+                                    },
+                                },
+                                {
+                                    name: '涉爆单位',
+                                    type: 'bar',
+                                    stack: '1',
+                                    barWidth:'25',
+                                    data: vm.SbdwArray,
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'inside'
+                                        }
+                                    },
+                                    itemStyle: {
+                                        color: '#557571'
+                                    },
+                                },
+                                {
+                                    name: '企事业单位',
+                                    type: 'bar',
+                                    stack: '1',
+                                    barWidth:'25',
+                                    data: vm.SydwArray,
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'inside'
+                                        }
+                                    },
+                                    itemStyle: {
+                                        color: '#01f07c'
+                                    }
+                                },
+                                {
+                                    name: '特种行业',
+                                    type: 'bar',
+                                    stack: '1',
+                                    barWidth:'25',
+                                    data: vm.TzhyArray,
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'inside'
+                                        }
+                                    },
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#b8de6f'
+                                        }
+                                    },
+                                },
+                                {
+                                    name: '出租房屋',
+                                    type: 'bar',
+                                    stack: '1',
+                                    barWidth:'25',
+                                    data: vm.CzfwArray,
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'inside'
+                                        }
+                                    },
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#f39233'
+                                        }
+                                    },
+                                },
+                                {
+                                    name: '全部',
+                                    type: 'bar',
+                                    stack: '1',
+                                    barWidth:'25',
+                                    data: vm.dataTotal,
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'inside'
+                                        }
+                                    },
+                                    itemStyle: {
+                                        normal: {
+                                            color: new echarts.graphic.LinearGradient(
+                                                0, 0, 0, 1,   // 0,0,1,0表示从左向右    0,0,0,1表示从右向左
+                                                [
+                                                    {offset: 1, color: '#0fc7f6'},
+                                                    {offset: 0, color: '#4696ff'}
+                                                ]
+                                            )
+                                        }
+                                    },
+                                }
+                            ]
+                        }
+                    };
+                    function getTable(opt,colName,typeName){
+                        var axisData = opt.xAxis[0].data;//获取图形的data数组
+                        var series = opt.series;//获取series
+                        var num = 0;//记录序号
+                        var sum = new Array();//获取合计数组（根据对应的系数生成相应数量的sum）
+                        for(var i=0; i<series.length; i++){
+                            sum[i] = 0;
+                        }
+                        var table = '<table class="bordered"><thead><tr>'
+                            + '<th>'+colName+'</th>'
+                            + '<th>'+typeName+'</th>';
+                        for(var i=0; i<series.length;i++){
+                            table += '<th>'+series[i].name+'</th>'
+                        }
+                        table += '</tr></thead><tbody>';
+                        for (var i = 0, l = axisData.length; i < l; i++) {
+                            num += 1;
+                            for(var n=0;n<series.length;n++){
+                                if(series[n].data[i]){
+                                    sum[n] += Number(series[n].data[i]);
+                                }else{
+                                    sum[n] += Number(0);
+                                }
+                            }
+                            table += '<tr>'
+                                + '<td>' + num + '</td>'
+                                + '<td>' + axisData[i] + '</td>';
+                            for(var j=0; j<series.length;j++){
+                                if(series[j].data[i]){
+                                    table += '<td>' + series[j].data[i] + '</td>';
+                                }else{
+                                    table += '<td>' + 0 + '</td>';
+                                }
+                            }
+                            table += '</tr>';
+                        }
+                        //最后一行加上合计
+                        table += '<tr>'+ '<td>' + (num+1) + '</td>' + '<td>合计</td>';
+                        for(var n=0;n<series.length;n++){
+                            if(String(sum[n]).indexOf(".")>-1)
+                                table += '<td>' + (Number(sum[n])).toFixed(2)  + '</td>';
+                            else
+                                table += '<td>' + Number(sum[n])  + '</td>';
+                        }
+                        table += '</tr></tbody></table>';
+                        return table;
+                    }
+                    vm.chart.setOption(opt, true);
+                    vm.mainDiv = false;
+                }
+            }
+        })
+    })
+</script>
+<script type="text/javascript">
+    function initButton(vm) {
+        $('button').on("click", function (e) {
+            switch (this.innerText.trim()) {
+                case "重置":
+                    var node = $(e.currentTarget).parents('.t-find');
+                    if (node.length == 0) node = $(e.currentTarget).parents('.modal-body');
+                    ttyu.clear(node);
+                    vm.params.dptId = null;
+                    vm.params.fillPersonId = null;
+                    vm.selectedZhiDui = null;
+                    vm.selectedDaDui = null;
+                    vm.selectedPaiChuSuo = null;
+                    vm.selectedPerson = null;
+                    vm.loadData();
+                    vm.showGraph(vm.defaultTitle);
+                    break;
+                case "统计":
+                    vm.loadData();
+                    var title = vm.title;
+                    vm.showGraph(title);
+                    break;
+            }
+        });
+    }
+</script>

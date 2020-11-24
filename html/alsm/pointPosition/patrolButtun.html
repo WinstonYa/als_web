@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>采集下拉框</title>
+    <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <script src="../../../alsm/vue/vue.js"></script>
+
+    <!-- element-ui 导入-->
+    <link href="../../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <script src="../../../alsm/element2.12.0/index.js"></script>
+
+    <script src="../../../alsm/api_sub.js" type="text/javascript"></script>
+    <script src="../../../js/config/config.js"></script>
+
+    <link href="../../../css/alsCommon.css" rel="stylesheet">
+
+    <style>
+        #vue1 {
+            width: 100%;
+            height: 100%;
+        }
+
+
+        .el-table td.el-table_1_column_1 {
+            text-align: left;
+        }
+
+        .el-table td.el-table_1_column_2 {
+            text-align: right;
+        }
+
+        .custom-tree-node {
+            flex: 1;
+            display: flex;
+            font-size: 14px;
+            align-items: center;
+            justify-content: space-between;
+            padding-right: 8px;
+        }
+
+        .linkage {
+            display: flex;
+            width: 99%;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .linkage .el-input__inner {
+            padding: 5px;
+        }
+
+        .linkage .dept {
+            width: 33.3%;
+        }
+
+        .dept .el-select--small {
+            width: 100%;
+        }
+
+        .el-button--mini.is-round {
+            padding: 4px 8px;
+        }
+
+        /*    .el-table td, .el-table th {
+                padding: 2px ;
+                height: 26px;
+            }
+    */
+        .el-table .cell {
+            padding: 1px;
+        }
+
+        .el-table td, .el-table th {
+            padding: 0px 1px;
+        }
+
+        .el-pagination button, .el-pagination {
+            font-size: 5px
+        }
+
+        .el-pager .number, .el-pager .el-icon {
+            display: none;
+        }
+
+        .el-pager .active {
+            display: block;
+        }
+
+        .el-pagination {
+            padding: 0px;
+        }
+
+        .el-pagination__sizes .el-input__inner {
+            height: 100%;
+        }
+
+
+        .el-scrollbar__wrap {
+            overflow: auto;
+        }
+
+        #tp1 span {
+            width: 150px;
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        #treeDiv {
+            overflow: auto;
+        }
+
+        #tableDiv {
+            overflow: auto;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="vue1">
+    <div style="width: 99%;margin-right: auto;margin-left: auto;">
+        <el-select style="width: 100%;" filterable
+                   v-model='selectedObj'
+                   value-key="prefix"
+                   @change='changeSelect'
+                   placeholder=''>
+            <el-option v-for='(item, index) in options'
+                       :key='index'
+                       :label='item.name' :value='item'></el-option>
+        </el-select>
+    </div>
+    <div v-if="divShow1" id="treeDiv" :style="{height: treeHeight}">
+        <el-tree :data="strTree" node-key="id"
+                 :expand-on-click-node="false"
+                 highlight-current default-expand-all>
+          <span class="custom-tree-node" slot-scope="scope">
+              <div id="tp1">
+                 <el-tooltip v-if="isShowTP(scope.node.data.name)" effect="light" :content="scope.node.data.name"
+                             placement="top">
+                    <span>{{ scope.node.data.name }}</span>
+               </el-tooltip>
+                   <span v-if="!isShowTP(scope.node.data.name)">{{ scope.node.data.name }}</span>
+              </div>
+
+              <div>
+       <img v-if="scope.node.data.pointPositionInfo!=null&&scope.node.data.pointPositionInfo.isHide==1"
+            @click="changeIsHide(scope.node.data.pointPositionInfo)" src="../../../images/tools/视域分析.png">
+       <img v-if="scope.node.data.pointPositionInfo!=null&&scope.node.data.pointPositionInfo.isHide!=1"
+            @click="changeIsHide(scope.node.data.pointPositionInfo)" src="../../../images/tools/视域分析 - disable.png">
+
+       <img v-if="scope.node.data.pointPositionInfo==null" @click="collectPoint(scope.node.data)"
+            src="../../../images/tools/选择.png">
+       <img v-if="scope.node.data.pointPositionInfo!=null" @click="collectPoint(scope.node.data)"
+            src="../../../images/tools/视点.png">
+       <img v-if="scope.node.data.pointPositionInfo!=null" @click="delPoint(scope.node.data.pointPositionInfo)"
+            src="../../../images/tools/删除.png">
+              </div>
+             </span>
+        </el-tree>
+
+    </div>
+    <div v-if="divShow2">
+        <div id="selectDiv">
+            <div style="margin-left: auto;margin-right: auto;width: 99%">
+
+                <el-input v-if="selectedObj.formName==options[1].formName" size="small"
+                          placeholder="请输入堡垒户姓名"
+                          v-model="params.name">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="select"></i>
+                </el-input>
+                <el-input v-if="selectedObj.formName==options[2].formName" size="small"
+                          placeholder="请输入企事业单位名称"
+                          v-model="params.dwmc">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="select"></i>
+                </el-input>
+                <el-input v-if="selectedObj.formName==options[3].formName" size="small"
+                          placeholder="请输入涉爆单位名称"
+                          v-model="params.unitp">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="select"></i>
+                </el-input>
+                <el-input v-if="selectedObj.formName==options[4].formName" size="small"
+                          placeholder="请输入特种行业店名"
+                          v-model="params.dm">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="select"></i>
+                </el-input>
+                <el-input v-if="selectedObj.formName==options[5].formName" size="small"
+                          placeholder="请输入商业网点单位名称"
+                          v-model="params.dwmc">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="select"></i>
+                </el-input>
+                <el-input v-if="selectedObj.formName==options[6].formName" size="small"
+                          placeholder="请输入出租房屋出租人姓名"
+                          v-model="params.czr">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="select"></i>
+                </el-input>
+                <el-input v-if="selectedObj.formName==options[7].formName" size="small"
+                          placeholder="请输入常住人口户主姓名"
+                          v-model="params.householder">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="select"></i>
+                </el-input>
+                <el-input v-if="selectedObj.formName==options[8].formName" size="small"
+                          placeholder="请输入暂住人口姓名"
+                          v-model="params.name">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="select"></i>
+                </el-input>
+                <el-input v-if="selectedObj.formName==options[9].formName" size="small"
+                          placeholder="请输入其它场所名称"
+                          v-model="params.name">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="select"></i>
+                </el-input>
+            </div>
+            <div style="width: 99%;margin-right: auto;margin-left: auto;">
+
+                <el-select v-if="selectedObj.formName==options[9].formName"
+                           v-model="params.type" placeholder="请选择类型" size="small" style="width: 100%"
+                           filterable clearable @change="select">
+                    <el-option
+                            v-for="item in CSOptions"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.name">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="linkage" v-if="selectedObj.formName==options[1].formName">
+                <div class="dept">
+                    <el-select v-model="selectDetachment" filterable clearable value-key="id"
+                               size="small" @change="selectDetachmentFun" placeholder="请选择支队">
+                        <el-option :value="item" :label="item.name" v-for="(item, index) in detachmentList"
+                                   :key="index"></el-option>
+                    </el-select>
+                </div>
+                <div class="dept">
+                    <el-select v-model="selectBrigade" filterable clearable value-key="id"
+                               size="small" @change="selectBrigadeFun" placeholder="请选择大队">
+                        <el-option :value="item" :label="item.name" v-for="(item, index) in brigadeList"
+                                   :key="index"></el-option>
+                    </el-select>
+                </div>
+                <div class="dept">
+                    <el-select v-model="selectPoliceStation" filterable clearable value-key="id"
+                               size="small" @change="selectPoliceStationFun" placeholder="请选择派出所">
+                        <el-option :value="item" :label="item.name" v-for="(item, index) in policeStationList"
+                                   :key="index"></el-option>
+                    </el-select>
+                </div>
+            </div>
+        </div>
+
+        <div id="tableDiv" :style="{height: tableHeight}">
+            <el-table :data="rows"
+                      border>
+
+                <el-table-column v-if="selectedObj.formName==options[2].formName" align="center" label="单位名称"
+                                 min-width="9" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.dwmc }}
+                    </template>
+                </el-table-column>
+                <el-table-column v-if="selectedObj.formName==options[7].formName" align="center" label="户主"
+                                 min-width="9" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.householder }}
+                    </template>
+                </el-table-column>
+                <el-table-column v-if="selectedObj.formName==options[3].formName" align="center" label="单位名称"
+                                 min-width="9" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.unitp }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column v-if="selectedObj.formName==options[4].formName" align="center" label="店名"
+                                 min-width="9" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.dm }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column v-if="selectedObj.formName==options[5].formName" align="center" label="单位名称"
+                                 min-width="9" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.dwmc }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column v-if="selectedObj.formName==options[6].formName" align="center" label="出租人"
+                                 min-width="9" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.czr }}
+                    </template>
+                </el-table-column>
+                <el-table-column v-if="selectedObj.formName==options[1].formName" align="center" label="姓名"
+                                 min-width="9" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.name }}
+                    </template>
+                </el-table-column>
+                <el-table-column v-if="selectedObj.formName==options[8].formName" align="center" label="户主"
+                                 min-width="9" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.name }}
+                    </template>
+                </el-table-column>
+                <el-table-column v-if="selectedObj.formName==options[9].formName" align="center" label="名称"
+                                 min-width="6" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.name }}
+                    </template>
+                </el-table-column>
+                <el-table-column v-if="selectedObj.formName==options[9].formName" align="center" label="类型"
+                                 min-width="3" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.type }}
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label=" " min-width="4">
+                    <template slot-scope="scope">
+                        <img v-if="scope.row.pointPositionInfo!=null&&scope.row.pointPositionInfo.isHide==1"
+                             @click="changeIsHide(scope.row.pointPositionInfo)" src="../../../images/tools/视域分析.png">
+                        <img v-if="scope.row.pointPositionInfo!=null&&scope.row.pointPositionInfo.isHide!=1"
+                             @click="changeIsHide(scope.row.pointPositionInfo)"
+                             src="../../../images/tools/视域分析 - disable.png">
+                        <img v-if="scope.row.pointPositionInfo==null" @click="collectPoint(scope.row)"
+                             src="../../../images/tools/选择.png">
+                        <img v-if="scope.row.pointPositionInfo!=null" @click="collectPoint(scope.row)"
+                             src="../../../images/tools/视点.png">
+                        <img v-if="scope.row.pointPositionInfo!=null" @click="delPoint(scope.row.pointPositionInfo)"
+                             src="../../../images/tools/删除.png">
+                    </template>
+                </el-table-column>
+
+            </el-table>
+
+        </div>
+
+        <el-pagination
+                small
+                background
+                @current-change="handleCurrentChange"
+                :current-page="pageIndex"
+                :pager-count="5"
+                :page-sizes="pageRows"
+                :page-size="pageSize"
+                @size-change="handleSizeChange"
+                layout="total,sizes,prev, pager, next"
+                :total="total"
+        ></el-pagination>
+
+    </div>
+
+
+</div>
+</body>
+<script>
+    $(function () {
+        new Vue({
+            el: '#vue1',
+            data: {
+                treeHeight: null,
+                tableHeight: null,
+                options: formNameData,
+                selectedObj: {},
+                divShow1: true,
+                divShow2: false,
+
+                params: {
+                    page: '',
+                    limit: ''
+                },
+                rows: [],
+                row: {},
+
+                total: 0,
+                pageIndex: 1,
+                pageSize: 20,
+                pageRows: [5, 10, 15, 20, 30, 40, 50],
+
+                //部门所有数据
+                strTree: [],
+
+                //所有支队
+                detachmentList: [],
+                // 被选中的大队数据
+                brigadeList: [],
+                // 被选中的派出所数据
+                policeStationList: [],
+                selectDetachment: null,
+                selectBrigade: null,
+                selectPoliceStation: null
+            },
+            created: function () {
+                vm = this;
+                vm.selectedObj = vm.options[0];
+                vm.getTree();
+                vm.fillOptions();
+
+
+                //回车键触发方法
+                document.onkeydown = function (e) {
+                    var key = window.event.keyCode;
+                    if (key == 13) {
+                        vm.select();
+                    }
+                }
+
+                //随浏览器改变改变高度
+                window.onresize = function () {
+                    if (vm != null) {
+                        window.parent.setShowHeight();
+                    }
+                }
+
+            },
+            methods: {
+                setVueHeight: function (h) {
+                    $("#vue1").css("height", h + "px");
+                },
+                //填充下拉框
+                fillOptions: function () {
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.CSOptions = res.data;
+                            }
+                        }, null, null, params.serviceIp + '/DictionaryInfo/getByType',
+                        "get", {type: "其它场所"}
+                    )
+                },
+                isShowTP: function (val) {
+                    if (val.length > 10) {
+                        return true;
+                    }
+                    return false;
+                },
+                changeIsHide: function (val) {
+                    //  console.info(val);
+                    if (val.isHide == 1) {
+                        val.isHide = 0;
+                    } else {
+                        val.isHide = 1;
+                    }
+                    doApiByJsonstr(
+                        function (res) {
+                            if (res.status === 200) {
+                                if (window.refreshPosData) {
+                                    window.refreshPosData();
+                                }
+                                //    vm.$message.info("点位信息修改成功！");
+                            } else {
+                                vm.$message.error("点位信息修改失败！");
+                            }
+                        },
+                        null, null, params.serviceIp + '/PointPositionInfo', 'put', {id: val.id, isHide: val.isHide}
+                    );
+                },
+                //删除点位
+                delPoint: function (val) {
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                if (vm.selectedObj.formName == vm.options[0].formName) {
+                                    vm.getTree();
+                                } else {
+                                    vm.loadData();
+                                }
+                            } else {
+                                vm.$message.error("点位信息删除失败！");
+                            }
+                        }, null, null, params.serviceIp + '/PointPositionInfo/' + val.id,
+                        "delete"
+                    )
+
+                },
+                collectPoint: function (val) {
+                    var name;
+                    var param = {type: vm.selectedObj.formName, name: null};
+                    switch (vm.selectedObj.formName) {
+                        case vm.options[0].formName:
+                            name = val.name;
+                            param.name = val.type;
+                            break;
+                        case vm.options[2].formName:
+                            name = val.dwmc;
+                            param.name = val.dwfl;
+                            break;
+                        case vm.options[7].formName:
+                            name = val.householder;
+                            param.name = vm.options[7].name;
+                            break;
+                        case vm.options[3].formName:
+                            name = val.unitp;
+                            param.name = vm.options[3].name;
+                            break;
+                        case vm.options[4].formName:
+                            name = val.dm;
+                            param.name = val.jylx;
+                            break;
+                        case vm.options[5].formName:
+                            name = val.dwmc;
+                            param.name = vm.options[5].name;
+                            break;
+                        case vm.options[6].formName:
+                            name = val.czr;
+                            param.name = vm.options[6].name;
+                            break;
+                        case vm.options[1].formName:
+                            name = val.name;
+                            param.name = vm.options[1].name;
+                            break;
+                        case vm.options[8].formName:
+                            name = val.name;
+                            param.name = vm.options[8].name;
+                            break;
+                        case vm.options[9].formName:
+                            name = val.name;
+                            param.name = val.type;
+                            break;
+                    }
+
+
+                    //获取原icon
+                    var oldIcon = "";
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                //      console.info(res.data);
+                                oldIcon = res.data.icon;
+                            }
+                            //获取字典数据
+                            doApi(
+                                function (res) {
+                                    if (res.status === 200) {
+                                        //      console.info(res.data);
+                                        var obj = res.data;
+                                        if (obj != null) {
+                                            window.parent.selectPosition2(val.id, vm.selectedObj.formName, name, obj.code, obj.name, oldIcon);
+                                        }
+                                    }
+                                }, null, null, params.serviceIp + '/DictionaryInfo/getOneByTypeAndName',
+                                "get", param
+                            );
+
+                        }, null, null, params.serviceIp + '/PointPositionInfo/getOneByFormIdAndFormName',
+                        "get", {formId: val.id, formName: vm.selectedObj.formName}
+                    );
+
+
+                },
+                select: function () {
+                    this.pageIndex = 1;
+                    vm.loadData();
+                },
+                changeSelect: function () {
+                    window.parent.setShowHeight();
+                    if (vm.selectedObj.formName == vm.options[0].formName) {
+                        vm.divShow1 = true;
+                        vm.divShow2 = false;
+                        vm.getTree();
+                    } else {
+
+                        vm.divShow2 = true;
+                        vm.divShow1 = false;
+
+                        this.pageIndex = 1;
+                        vm.selectDetachment = null;
+                        vm.selectBrigade = null;
+                        vm.selectPoliceStation = null;
+                        vm.params = {page: null, limit: null};
+                        vm.loadData();
+
+
+                    }
+                },
+                //分页 初始页pageIndex、控制每页几条
+                handleSizeChange: function (size) {
+                    this.pageSize = size;
+                    this.loadData();
+                },
+                // 控制页面的切换
+                handleCurrentChange: function (pageIndex) {
+
+                    this.pageIndex = pageIndex;
+                    this.loadData();
+                },
+                getTree: function () { //获取数据
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                if (res.data[0].type == null) {
+                                    vm.strTree = res.data[0].children;
+                                    vm.detachmentList = vm.strTree;
+                                } else if (res.data[0].type == '支队') {
+                                    vm.strTree = res.data;
+                                    vm.detachmentList = vm.strTree;
+                                } else if (res.data[0].type == "大队") {
+                                    vm.strTree = res.data;
+                                    vm.brigadeList = vm.strTree;
+                                } else if (res.data[0].type == "派出所") {
+                                    vm.strTree = res.data;
+                                    vm.policeStationList = vm.strTree;
+                                }
+
+                            } else {
+                                vm.strTree = [];
+                            }
+                        }, null, null, params.serviceIp + '/PoliceInfo/getCurrentUserDptTree',
+                        "get",{existPoint:true}
+                    )
+                },
+                loadData: function () { //获取点击对象
+
+                    vm.params.page = vm.pageIndex;
+                    vm.params.limit = vm.pageSize;
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.rows = res.data.rows;
+                                vm.total = res.data.total;
+                            }
+                        }, null, null, params.serviceIp + '/' + vm.selectedObj.prefix + '/listUserDeptData',
+                        "get", vm.params
+                    );
+
+                },
+                // 支队 大队 派出所联动
+                selectDetachmentFun: function () {
+                    vm.brigadeList = vm.selectDetachment.children
+                    vm.selectBrigade = null;
+                    vm.selectPoliceStation = null;
+                    vm.pageIndex = 1;
+                    vm.params = {page: null, limit: null};
+                },
+                selectBrigadeFun: function () {
+                    vm.policeStationList = vm.selectBrigade.children
+                    vm.selectPoliceStation = null;
+                    vm.pageIndex = 1;
+                    vm.params = {page: null, limit: null};
+                },
+                selectPoliceStationFun: function () {
+                    vm.params = {page: null, limit: null};
+                    vm.params.dptId = vm.selectPoliceStation.id;
+                    vm.select();
+                }
+            }
+        })
+    })
+</script>
+</html>

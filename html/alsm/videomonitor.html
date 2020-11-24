@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>视频监控</title>
+</head>
+
+<body class="header">
+<div class="content-box" id="monitorbox">
+</div>
+<script type="text/javascript">
+    // var sHref = window.location.href;
+    //
+    // //console.log(sHref);
+    // function showHrefData(str) {
+    //     var args = str.split("?");
+    //     if (args[0] == str) {
+    //         return "";
+    //     }
+    //     var arr = args[1].split("&");
+    //     var obj = {};
+    //     for (var i = 0; i < arr.length; i++) {
+    //         var arg = arr[i].split("=");
+    //         obj[arg[0]] = arg[1];
+    //     }
+    //     return obj;
+    // }
+    //
+    // var params = showHrefData(sHref);
+    // var srcText = 'https://open.ys7.com/ezopen/h5/iframe?url=ezopen://open.ys7.com/' + params.id + '/' + params.no;
+    // if (params.ishd != 0) {
+    //     srcText += '.hd';
+    // }
+    // srcText += '.live&autoplay=1&accessToken=' + params.token;
+    //
+    // document.getElementById("monitorbox").innerHTML = '<iframe\n' +
+    //     '    src="'+ srcText + '"\n' +
+    //     '    width="800"\n' +
+    //     '    height="500"\n' +
+    //     '    id="ysOpenDevice.hd"\n' +
+    //     '    allowfullscreen\n' +
+    //     '    >\n' +
+    //     '    </iframe>';
+</script>
+</body>
+
+<script>
+    /* 获取播放器元素 */
+    // var player = document.getElementById('ysOpenDevice').contentWindow;
+    // console.log(player);
+    /* iframe 支持方法 */
+    // player.postMessage("play", "https://open.ys7.com/ezopen/h5/iframe") /* 播放 */
+    // player.postMessage("stop", "https://open.ys7.com/ezopen/h5/iframe") /* 结束 */
+    // player.postMessage("capturePicture", "https://open.ys7.com/ezopen/h5/iframe") /* 截图 */
+    // player.postMessage("openSound", "https://open.ys7.com/ezopen/h5/iframe") /* 开启声音 */
+    // player.postMessage("closeSound", "https://open.ys7.com/ezopen/h5/iframe") /* 关闭声音 */
+    // player.postMessage("startSave", "https://open.ys7.com/ezopen/h5/iframe") /* 开始录制 */
+    // player.postMessage("stopSave", "https://open.ys7.com/ezopen/h5/iframe") /* 结束录制 */
+
+</script>
+</html>

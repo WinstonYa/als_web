@@ -1,0 +1,54 @@
+@charset "utf-8";
+/* CSS Document */
+/*================管理首页布局.开始===================*/
+.header{ position:fixed; top:0; right:0; width:100%; height:42px; z-index:11; }
+.header-box{ margin:0 auto; min-width:780px; }
+.main-sidebar{ position:absolute; top:42px; bottom:0; left:0; width:180px; }
+.sidebar-nav{ position:absolute; top:0px; bottom:0; left:0; width:180px; padding-right:1px; }
+.main-container{ position:absolute; top:42px; right:0; bottom:0; left:181px; }
+.main-container table {border:0; width:100%; height:100% }
+.main-container table td { height:100% }
+.main-container #mainframe{  width:100%; height:100%; }
+.main-container #globeFrame{ width:100%; height:100%; }
+/*================管理首页布局.结束===================*/
+
+
+
+
+
+
+/*================login布局.开始===================*/
+.login-main-left{ position:absolute; top:0; bottom:0; left:0; width:350px;  background-color:#4AB4FE}
+.login-main-wraper{ position:absolute; top:0; right:0; bottom:0; left:351px; }
+.login-main-wraper2{ position:relative;  top:0; left:0; width:100%;}
+.login-main-wraper #wrapper{ width:100%;height:100% }
+.login-main-wraper #wrapper .slider-wrapper{ width:100%;height:100% }
+.login-main-wraper #wrapper .top-banner{background-color: #333; }
+    
+.login-screen{ position:absolute; top:50%; left:0; margin-top:-160px; margin-left:5px; width:340px; text-align:left; margin-right:5px; }
+.login-icon{ float:left; width:96px; height:96px; text-indent:-9999px; background:url(login_logo.png) no-repeat; }
+	.login-icon>h4{ margin-top:4px; color:#fff; font-size:17px; font-weight:200; line-height:34px; opacity:0.95; }
+		.login-icon>h4 small{color:inherit; display:block; font-size:inherit; font-weight:700; }
+.login-form{ float:left; margin-left:0; padding:0; width:340px; background:#ECEFF1; border-radius:6px; text-align:center; -webkit-box-shadow:2px 2px 3px #aaa; -moz-box-shadow:2px 2px 3px #aaa; filter: progid:DXImageTransform.Microsoft.Shadow(Strength=3, Direction=135, Color='#999999'); box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1); }
+	.login-form h1{
+         display:block; margin-left:10px; margin-bottom:20px; border-bottom:1px solid #DFDFDF; 
+         text-align:left; height:40px; line-height:30px; color:#304b65; font-size:21px;
+          font-weight:300; font-family:'Microsoft YaHei'; 
+            }
+	.control-group{ position:relative; margin-bottom:6px; }
+	.login-field{ display:inline-block; padding:11px 0 11px 10px; width:296px; height:20px; line-height:20px; color:#ACB6C0; font-size:17px; background:#fff; border:1px solid #E5E5E5; border-radius:6px 6px 6px 6px; margin-bottom:10px; vertical-align:middle; }
+		.login-field:focus{ border:1px solid #BBD5EA; }
+	.placeholder{ color:#999; }
+	.login-field-icon{ position:absolute; display:block; top:14px; right:13px; width:16px; height:20px; cursor:pointer; background:url(skin_icons.png) no-repeat; }
+		.login-field-icon.user{ background-position:-1px -137px;}
+		.login-field-icon.pwd{ background-position:-28px -137px; }
+	.btn-login{ display:block; margin:0; padding:10px 0; width:100%; color:#fff; border:2px solid #ECEFF1; border-radius:6px 6px 6px 6px;  background:#33B5E5; font-size:16.5px; text-decoration:none; cursor:pointer; *border:0; }
+	.login-tips{ display:block; margin:8px auto 8px auto; height:14px; }
+		.login-tips i{ display:inline-block; margin-right:5px; width:14px; height:14px; background:url(skin_icons.png) -56px -140px no-repeat; text-indent:-9999px; vertical-align:middle; }
+		.login-tips b{
+             display:inline-block;height:14px; line-height:14px; 
+              font-size:12px; font-weight:normal; color:red; 
+              vertical-align:middle; }
+.login-screen .arrow{ position:absolute; display:block; left:116px; top:30px; width:11px; height:22px; text-indent:-9999px; background:url(skin_icons.png) -80px -356px no-repeat; }
+/* =========================登录页样式.结束======================= */
+

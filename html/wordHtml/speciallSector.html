@@ -1,0 +1,675 @@
+<html>
+
+<head>
+    <meta http-equiv=Content-Type content="text/html; charset=utf-8">
+    <meta name=Generator content="Microsoft Word 15 (filtered)">
+    <title>特种行业</title>
+
+    <link href="../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../alsm/vue/vue.js"></script>
+    <link href="../../css/elui/index.css" rel="stylesheet">
+    <script src="../../alsm/elui/index.js"></script>
+
+    <style>
+        <!--
+        /* Font Definitions */
+        @font-face {
+            font-family: 宋体;
+            panose-1: 2 1 6 0 3 1 1 1 1 1;
+        }
+
+        @font-face {
+            font-family: 黑体;
+            panose-1: 2 1 6 9 6 1 1 1 1 1;
+        }
+
+        @font-face {
+            font-family: "Cambria Math";
+            panose-1: 2 4 5 3 5 4 6 3 2 4;
+        }
+
+        @font-face {
+            font-family: "\@宋体";
+            panose-1: 2 1 6 0 3 1 1 1 1 1;
+        }
+
+        @font-face {
+            font-family: 方正小标宋简体;
+        }
+
+        @font-face {
+            font-family: 仿宋_GB2312;
+        }
+
+        @font-face {
+            font-family: "\@黑体";
+            panose-1: 2 1 6 0 3 1 1 1 1 1;
+        }
+
+        @font-face {
+            font-family: "\@方正小标宋简体";
+        }
+
+        @font-face {
+            font-family: "\@仿宋_GB2312";
+        }
+
+        /* Style Definitions */
+        p.MsoNormal, li.MsoNormal, div.MsoNormal {
+            margin: 0cm;
+            margin-bottom: .0001pt;
+            text-align: justify;
+            text-justify: inter-ideograph;
+            font-size: 10.5pt;
+            font-family: "Times New Roman", serif;
+        }
+
+        p.MsoHeader, li.MsoHeader, div.MsoHeader {
+            margin: 0cm;
+            margin-bottom: .0001pt;
+            text-align: center;
+            layout-grid-mode: char;
+            border: none;
+            padding: 0cm;
+            font-size: 9.0pt;
+            font-family: "Times New Roman", serif;
+        }
+
+        p.MsoFooter, li.MsoFooter, div.MsoFooter {
+            margin: 0cm;
+            margin-bottom: .0001pt;
+            layout-grid-mode: char;
+            font-size: 9.0pt;
+            font-family: "Times New Roman", serif;
+        }
+
+        /* Page Definitions */
+        @page WordSection1 {
+            size: 595.3pt 841.9pt;
+            margin: 72.0pt 90.0pt 72.0pt 90.0pt;
+            layout-grid: 15.6pt;
+        }
+
+        div.WordSection1 {
+            page: WordSection1;
+            height: 600px;
+        }
+
+        .myInput{
+            width: 100%;
+            height: 100%;
+            border: none;
+            float: left;
+            zoom:1;
+            outline: medium;
+        }
+        -->
+    </style>
+
+</head>
+
+<body lang=ZH-CN style='text-justify-trim:punctuation'>
+
+<div id="TempContant">
+
+
+<div class=WordSection1 style='layout-grid:15.6pt;overflow: auto'>
+
+    <p class=MsoNormal align=center style='text-align:center'><span
+            style='font-size:22.0pt;font-family:方正小标宋简体'>特种行业登记表</span></p>
+
+    <div align=center>
+
+        <table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=605
+               style='width:453.9pt;border-collapse:collapse'>
+            <tr style='height:26.0pt'>
+                <td width=74 nowrap style='width:55.35pt;border:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>店名</span></b></p>
+                </td>
+                <td width=204 nowrap colspan=2 style='width:152.95pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+
+                   <input type="text" v-model="lists.dm" class="myInput">
+
+                </td>
+                <td width=138 nowrap colspan=2 style='width:103.55pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>地址</span></b></p>
+                </td>
+                <td width=189 nowrap colspan=3 style='width:142.05pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.dz" class="myInput"></td>
+            </tr>
+            <tr style='height:26.0pt'>
+                <td width=74 style='width:55.35pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>法人</span></b></p>
+                </td>
+                <td width=84 style='width:62.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.fr" class="myInput"></td>
+</td>
+                <td width=120 nowrap style='width:90.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>身份证号</span></b></p>
+                </td>
+                <td width=138 nowrap colspan=2 style='width:103.55pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.frsfzh" class="myInput"></td>
+</td>
+                <td width=66 style='width:49.45pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>电话</span></b></p>
+                </td>
+                <td width=123 nowrap colspan=2 style='width:92.6pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.frdh" class="myInput"></td>
+</td>
+            </tr>
+            <tr style='height:24.1pt'>
+                <td width=74 nowrap style='width:55.35pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:24.1pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>房主姓名</span></b></p>
+                </td>
+                <td width=84 nowrap style='width:62.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:24.1pt'>
+<input type="text" v-model="lists.fzxm" class="myInput"></td>
+</td>
+                <td width=120 nowrap style='width:90.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:24.1pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>身份证号</span></b></p>
+                </td>
+                <td width=138 nowrap colspan=2 style='width:103.55pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:24.1pt'>
+<input type="text" v-model="lists.fzsfzh" class="myInput"></td>
+</td>
+                <td width=66 nowrap style='width:49.45pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:24.1pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>电话</span></b></p>
+                </td>
+                <td width=123 nowrap colspan=2 style='width:92.6pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:24.1pt'>
+<input type="text" v-model="lists.fzdh" class="myInput"></td>
+</td>
+            </tr>
+            <tr style='height:26.0pt'>
+                <td width=74 nowrap style='width:55.35pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>负责人</span></b></p>
+                </td>
+                <td width=84 nowrap style='width:62.95pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.fzr" class="myInput"></td>
+</td>
+                <td width=120 nowrap style='width:90.0pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>身份证号</span></b></p>
+                </td>
+                <td width=138 nowrap colspan=2 style='width:103.55pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.fzrsfzh" class="myInput"></td>
+</td>
+                <td width=66 nowrap style='width:49.45pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>电话</span></b></p>
+                </td>
+                <td width=123 nowrap colspan=2 style='width:92.6pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.fzrdh" class="myInput"></td>
+</td>
+            </tr>
+            <tr style='height:26.0pt'>
+                <td width=74 nowrap style='width:55.35pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>经营类型</span></b>
+                    </p>
+                </td>
+                <td width=204 nowrap colspan=2 style='width:152.95pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+
+                    <template>
+                        <el-select v-model="lists.jylx" placeholder="请选择">
+                            <el-option
+                                    v-for="item in options"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </template>
+<!--<input type="text" v-model="lists.jylx" class="myInput">-->
+
+
+</td>
+                <td width=138 nowrap colspan=2 style='width:103.55pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<!--                <input type="text" v-model="lists.fzrdh" class="myInput">-->
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>填写日期</span></b>
+                    </p>
+</td>
+                <td width=189 nowrap colspan=3 style='width:142.05pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                <input placeholder="自动获取当前时间" readonly="true" type="text" v-model="lists.writeTime" class="myInput">
+</td>
+            </tr>
+            <tr style='height:26.0pt'>
+                <td width=74 style='width:55.35pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>工商营业执照号</span></b></p>
+                </td>
+                <td width=204 nowrap colspan=2 style='width:152.95pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.gsyyzzh" class="myInput"></td>
+</td>
+                <td width=138 nowrap colspan=2 style='width:103.55pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>特种行业许可证号</span></b></p>
+                </td>
+                <td width=189 nowrap colspan=3 style='width:142.05pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.tzhyxkzh" class="myInput"></td>
+</td>
+            </tr>
+            <tr style='height:26.0pt'>
+                <td width=74 style='width:55.35pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>娱乐场所经营许可证号</span></b></p>
+                </td>
+                <td width=204 nowrap colspan=2 style='width:152.95pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.ylcsjyxkzh" class="myInput"></td>
+</td>
+                <td width=138 nowrap colspan=2 style='width:103.55pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>组织机构代码证号</span></b></p>
+                </td>
+                <td width=189 nowrap colspan=3 style='width:142.05pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.zzjgdmzh" class="myInput"></td>
+</td>
+            </tr>
+            <tr style='height:26.0pt'>
+                <td width=74 style='width:55.35pt;border:solid windowtext 1.0pt;border-top:
+  none;padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>注册日期</span></b></p>
+                </td>
+                <td width=204 nowrap colspan=2 style='width:152.95pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+
+                    <template>
+                        <el-date-picker
+                                style="width: 145px"
+                                value-format="yyyy-MM-dd"
+                                v-model="lists.zcrq"
+                                type="date"
+                                placeholder="选择日期"
+                                :picker-options="pickerOptions"
+                                size="small">
+                        </el-date-picker>
+
+                    </template>
+<!--<input type="text" v-model="lists.zcrq" class="myInput" placeholder="请填写注册日期">-->
+
+                </td>
+
+
+</td>
+                <td width=138 nowrap colspan=2 style='width:103.55pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+                    <p class=MsoNormal align=center style='text-align:center'><b><span
+                            style='font-size:11.0pt;font-family:宋体'>备注</span></b></p>
+                </td>
+                <td width=189 nowrap colspan=3 style='width:142.05pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0cm 5.4pt 0cm 5.4pt;height:26.0pt'>
+<input type="text" v-model="lists.bz" class="myInput"></td>
+</td>
+            </tr>
+
+
+        </table>
+
+    </div>
+
+    <p class=MsoNormal align=center style='text-align:center'><b><span lang=EN-US
+                                                                       style='font-size:22.0pt;font-family:方正小标宋简体'>&nbsp;</span></b>
+    </p>
+
+    <p class=MsoNormal align=center style='text-align:center'><b><span
+            style='font-size:22.0pt;font-family:方正小标宋简体'>营业执照、许可证复印件</span></b></p>
+
+    <p class=MsoNormal align=center style='text-align:center'><span
+            style='font-size:16.0pt;font-family:仿宋_GB2312;color:black'>（旅馆业、印章刻制业、典当业须经公安机关治安部门审批申办《特种行业经营许可证》）</span>
+    </p>
+
+
+    <img :src="photographFile_url" id="show" alt="..." style="max-height: 400px;height: auto;width: auto">
+
+    <input ref="clearFile" accept="image/png, image/jpeg, image/gif, image/jpg" class="upload" @change='add_img'  type="file">
+
+    <p class=MsoNormal align=center style='text-align:center'><b><span lang=EN-US
+                                                                       style='font-size:22.0pt'>&nbsp;</span></b></p>
+
+
+    <p class=MsoNormal align=center style='text-align:center'><b><span
+            style='font-size:22.0pt;font-family:方正小标宋简体'>法人身份证复印件</span></b></p>
+
+    <img :src="hourseFile_url" id="show02" alt="..." style="max-height: 400px;height: auto;width: auto">
+    <input id="feedbakcImg"  accept="image/png, image/jpeg, image/gif, image/jpg" class="upload" @change='add_hourseImg'  type="file">
+
+<!--    v-model="fileReSet02" 暂时不适用-->
+
+    <p class=MsoNormal align=center style='text-align:center'><b><span lang=EN-US
+                                                                       style='font-size:22.0pt'>&nbsp;</span></b></p>
+
+
+</div>
+
+    <div class="t-btns" align="center">
+        <button type="button" class="btn btn-success" @click="submitEdit">提交</button>
+    </div>
+
+</div>
+
+<script src="../../alsm/api_sub.js" type="text/javascript"></script>
+<script src="../../js/config/config.js"></script>
+
+<script>
+    // var data;
+    var vm;
+
+    function setData(operate,res) {
+        /* console.log(res); */
+        vm.setRes(operate,res);
+    }
+    $(function () {
+        vm = new Vue({
+            el:'#TempContant',
+            data:{
+                lists: {
+                },
+                operated:'',
+                photographFile_url:'#',
+                hourseFile_url:'#',
+                img1:null,
+                img2:null,
+
+                pickerOptions: {},
+
+                options: [{
+                        value: '旅店业',
+                        label: '旅店业'
+                    }, {
+                        value: '废旧金属收购业',
+                        label: '废旧金属收购业'
+                    }],
+            },
+            mounted: function(){
+                vm = this;
+            },
+            methods: {
+                setRes:function(operate,res) {
+                    vm.operated=operate;
+
+                    if (operate=='edit'){
+                        vm.lists=res;
+                        //营业执照、许可证复印件
+                        vm.photographFile_url = vm.lists.yyzzxkzfyj;
+                        //法人身份证复印件
+                        vm.hourseFile_url = vm.lists.frsfzfyj;
+                    }else if (operate=='add') {
+                        vm.lists={
+                            dm:'',
+                            dz:'',
+                            fr:'',
+                            frsfzh:'',
+                            frdh:'',
+                            fzxm:'',
+                            fzsfzh:'',
+                            fzdh:'',
+                            fzr:'',
+                            fzrsfzh:'',
+                            fzrdh:'',
+                            jylx:'',
+                            gsyyzzh:'',
+                            tzhyxkzh:'',
+                            ylcsjyxkzh:'',
+                            zzjgdmzh:'',
+                            zcrq:'',
+                            bz:'',
+                            // yyzzxkzfyj:'',
+                            // frsfzfyj:'',
+                            // writeTime:''
+                        };
+
+                        // this.$refs.clearFile.value = ''; // 清空file文件
+
+                        vm.photographFile_url = null;
+                        vm.hourseFile_url = null;
+
+                    }
+
+                    /* console.log(vm.lists) */
+                },
+                add_img:function(event) {
+                    let reader = new FileReader();
+
+                    vm.img1 = event.target.files[0];
+
+                    let type1 = event.target.files[0].type;
+
+                    var url = null;
+                    // 下面函数执行的效果是一样的，只是需要针对不同的浏览器执行不同的 js 函数而已
+                    if (window.createObjectURL != undefined) { // basic
+                        url = window.createObjectURL(vm.img1);
+                    } else if (window.URL != undefined) { // mozilla(firefox)
+                        url = window.URL.createObjectURL(vm.img1);
+                    } else if (window.webkitURL != undefined) { // webkit or chrome
+                        url = window.webkitURL.createObjectURL(vm.img1);
+                    }
+                    /* console.log(url); */
+                    vm.photographFile_url=url;
+                    document.getElementById('show').src = url;
+
+                },
+                add_hourseImg:function(){
+                    let reader = new FileReader();
+
+                    vm.img2 = event.target.files[0];
+
+                    let type1 = event.target.files[0].type;
+
+                    var url = null;
+                    // 下面函数执行的效果是一样的，只是需要针对不同的浏览器执行不同的 js 函数而已
+                    if (window.createObjectURL != undefined) { // basic
+                        url = window.createObjectURL(vm.img2);
+                    } else if (window.URL != undefined) { // mozilla(firefox)
+                        url = window.URL.createObjectURL(vm.img2);
+                    } else if (window.webkitURL != undefined) { // webkit or chrome
+                        url = window.webkitURL.createObjectURL(vm.img2);
+                    }
+                    /* console.log(url); */
+                    vm.hourseFile_url=url;
+                    document.getElementById('show02').src = url;
+                },
+                //提交修改
+                submitEdit:function() {
+
+                    //接口加入图片上传解除注释
+
+                    var form = new FormData();
+
+                    //营业执照
+                    if (vm.img1){
+                        //营业执照许可证复印件文件
+                        form.append('yyzzxkzfyjFile',vm.img1,vm.img1.name);
+                    }
+                    if (vm.img2){
+                        //法人身份证复印件文件
+                        form.append('frsfzfyjFile',vm.img2,vm.img2.name);
+                    }
+
+                    //店名
+                    form.append('dm',vm.lists.dm);
+                    form.append('dz',vm.lists.dz);
+                    form.append('fr',vm.lists.fr);
+
+                    form.append('frsfzh',vm.lists.frsfzh);
+                    form.append('frdh',vm.lists.frdh);
+                    form.append('fzxm',vm.lists.fzxm);
+
+                    form.append('fzsfzh',vm.lists.fzsfzh);
+                    form.append('fzdh',vm.lists.fzdh);
+                    form.append('fzr',vm.lists.fzr);
+
+                    form.append('fzrsfzh',vm.lists.fzrsfzh);
+                    form.append('fzrdh',vm.lists.fzrdh);
+
+                    form.append('jylx',vm.lists.jylx);
+                    form.append('gsyyzzh',vm.lists.gsyyzzh);
+                    form.append('tzhyxkzh',vm.lists.tzhyxkzh);
+
+                    form.append('ylcsjyxkzh',vm.lists.ylcsjyxkzh);
+                    form.append('zzjgdmzh',vm.lists.zzjgdmzh);
+                    //注册日期 暂时不填
+                    // let date = new Date(vm.lists.zcrq);
+                    // console.log(vm.lists.zcrq.toString())
+                    form.append('zcrq',vm.lists.zcrq);
+
+
+                    form.append('bz',vm.lists.bz);
+                    //填表时间(数据库生成)
+                    // form.append('writeTime',vm.lists.currentOccupation);
+
+
+                    if (vm.operated=='edit'){
+
+                        form.append('id',vm.lists.id);
+                        //接口参数 form 换为 vm.lists
+
+                       /* doApiByJsonstr(
+                            function(res) {
+                                parent.vm.loadData();
+                                if (res.status === 200) {
+                                    parent.vm.dialogShow=false;
+                                    parent.vm.showMessage("suc")
+                                }else{
+                                    parent.vm.showMessage("fail")
+                                }
+                            },
+                            null, null,params.serviceIp + '/TzhyTzhydjb', 'put',vm.lists
+                        );*/
+
+                        doApiByFile(
+                            function(res) {
+                                vm.photographFile_url = res.data.yyzzxkzfyjFile;
+
+
+                                // vm.dialogShow=false;
+                                parent.vm.loadData();
+
+                                if (res.status === 200) {
+                                    parent.vm.dialogShow=false;
+                                    parent.vm.showMessage("suc")
+                                    // alert("成功")
+                                }else{
+                                    parent.vm.showMessage("fail")
+                                }
+                                //现有接口不带文件
+                            },
+                            null, null,params.serviceIp + '/TzhyTzhydjb/updateDataAndFile', 'put',form
+                        );
+                    }else if (vm.operated=='add'){
+
+                     /*   doApiByJsonstr(
+                            function(res) {
+                                parent.vm.loadData();
+                                if (res.status === 200) {
+                                    parent.vm.dialogShow=false;
+                                    parent.vm.showMessage("suc")
+                                }else{
+                                    parent.vm.showMessage("fail")
+                                }
+                            },
+                            null, null,params.serviceIp + '/TzhyTzhydjb', 'post',vm.lists
+                        );*/
+
+                        doApiByFile(
+                            function(res) {
+                                //营业执照
+                                vm.photographFile_url = res.data.yyzzxkzfyjFile;
+
+                                //清空 防止缓存 无效
+                                // vm.lists={};
+                                // vm.dialogShow=false;
+                                parent.vm.dialogShow=false;
+                                parent.vm.loadData();
+
+                                if (res.status === 200) {
+                                    parent.vm.showMessage("suc")
+                                }else{
+                                    parent.vm.showMessage("fail")
+                                }
+                            //现有接口不带文件
+                            },
+                            null, null,params.serviceIp + '/TzhyTzhydjb/addDataAndFile', 'post',form
+                        );
+                    }
+                }
+            }
+        });
+
+    });
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,2213 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>常住人口</title>
+
+    <link href="../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../../css/fonticon/iconfont.css">
+    
+    <!-- <link href="../../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"> -->
+    <link href="../../alsm/ttyu.net/file/ttyu/css/ttyu.web.css" rel="stylesheet" type="text/css">
+    <link href="../../css/TbaleIndexCss.css" rel="stylesheet">
+
+    <script src="../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <script src="../../alsm/ttyu.net/file/system/jq/jquery-ui.js" type="text/javascript"></script>
+
+    <script src="../../alsm/ttyu.net/file/system/bs/bootstrap.min.js" type="text/javascript"></script>
+
+    <script src="../../alsm/ttyu.net/file/system/promise/es6-promise.js"></script>
+    <script src="../../alsm/ttyu.net/file/system/promise/es6-promise.auto.js"></script>
+
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../alsm/vue/vue.js"></script>
+
+    <link href="../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <!-- <link href="../../css/elui/index.css" rel="stylesheet"> -->
+    <!--    高版本ele ui-->
+    <script src="../../alsm/element2.12.0/index.js"></script>
+    <!-- <script src="../../alsm/elui/index.js"></script> -->
+
+    <script src="../../alsm/api_sub.js" type="text/javascript"></script>
+
+    <script src="../../js/config/config.js"></script>
+
+    <style>
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            width:200px
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 150px;
+            height: 200px;
+            line-height: 200px;
+            text-align: center;
+        }
+        .avatar {
+            width: 200px;
+            height: 200px;
+            display: block;
+        }
+
+        .el-col {
+            height: 48px;
+        }
+        .el-form-item__error {
+            top: 50%;
+            width: 80px;
+            transform: translateY(-50%);
+            padding: 0;
+            /* text-align: center; */
+            left: 210px;
+            z-index: 999;
+        }
+        .el-upload__input {
+            display: none !important;
+        }
+        #tableDiv{
+            overflow: auto;
+        }
+
+        .el-table .cell{
+        white-space:nowrap;
+        }
+
+        .demo-table-expand {
+            font-size: 0;
+        }
+        .demo-table-expand label {
+            width: 90px;
+            color: #99a9bf;
+        }
+        .demo-table-expand .el-form-item {
+            margin-right: 0;
+            margin-bottom: 0;
+            width: 50%;
+        }
+
+        /*下拉框左对齐*/
+        /* .el-select{
+            float: left;
+        } */
+        /*.el-dialog__headerbtn .el-dialog__close{
+            display: none;
+        }*/
+
+        .childDialog{
+            width: 100%;overflow: auto;height:580px;box-shadow: 0px 15px 10px -2px rgba(0, 0, 0, .04)
+        }
+
+        [v-cloak]{
+            display:none;
+        }
+
+        .el-image__inner {
+            width: 100%;
+        }
+        .el-input.is-disabled .el-input__inner, .el-textarea.is-disabled .el-textarea__inner, .el-radio__input.is-disabled + span.el-radio__label {
+            color:#606266;
+        }
+        .el-radio__input.is-disabled.is-checked .el-radio__inner {
+            border-color: #409EFF;
+            background: #409EFF;
+        }
+        .el-cascader:hover, .el-cascader-menu:hover {
+            cursor: pointer;
+        }
+
+        .el-image img{
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .upload_warp_img_divList {
+            margin: 5px;
+        }
+        .el-image {
+            display: block;
+        }
+        .el-image__inner--center {
+            top: 0;
+            left: 0;
+            transform: translate(0, 0);
+        }
+    </style>
+
+</head>
+<body>
+    <div id='body1' class="divBody" v-loading.fullscreen.lock="mainDiv"
+        element-loading-text="拼命处理中"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.5)">
+        <div class="t-body">
+            <div id="mainBody" style="display:none;">
+
+            <div>
+                <div class="t-find">
+                    <div class="t-form">
+                        <div>
+                            <span style="margin-right: -25px;">派出所名称：</span>
+                            <el-select v-model="params.dptId" clearable filterable placeholder="请选择派出所">
+                                <el-option
+                                    v-for="item in policeStation"
+                                    :key="item.name"
+                                    :label="item.name"
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <div style="margin-left: 10px;">
+                            <span style="margin-right: -25px;">年龄段：</span>
+                            <el-select v-model="ageRange" clearable style="width: 120px;">
+                                <el-option
+                                    v-for="item in ageOptions"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <div style="margin-left: 10px;">
+                            <span style="margin-right: -25px;">民族：</span>
+                            <el-select v-model="params.nation" clearable filterable style="width: 120px;">
+                                <el-option
+                                    v-for="item in nationOptions"
+                                    :key="item"
+                                    :label="item"
+                                    :value="item">
+                                </el-option>
+                            </el-select>
+                        </div>
+
+                        <div style="margin-left: 10px;">
+                            <span style="margin-right: -10px;">姓名：</span>
+                            <el-input v-model="params.householder" clearable style="width: 140px;" placeholder="请输入"></el-input>
+                        </div>
+                        <div style="margin-left: -5px;">
+                            <span style="margin-right: -5px;">身份证号：</span>
+                            <el-input v-model="params.idNumber" clearable style="width: 210px;" placeholder="请输入"></el-input>
+                        </div>
+                        <div style="margin-left: -5px;">
+                            <span style="margin-right: -10px;">工作单位：</span>
+                            <el-input v-model="params.unit" clearable style="width: 210px;" placeholder="请输入"></el-input>
+                        </div>
+                    </div>
+                    <div class="t-btns">
+                        <button title='查询'>
+                            <span class="glyphicon glyphicon-search" ></span>
+                            查询
+                        </button>
+                        <button title='重置'>
+                            <span class="glyphicon glyphicon-repeat" ></span>
+                            重置
+                        </button>
+
+                        <!--<button>
+                            <span class="el-icon-document">导出</span>
+                        </button>-->
+                        <button
+                            v-loading.fullscreen.lock="fullscreenLoading"
+                            element-loading-text="拼命处理中"
+                            element-loading-spinner="el-icon-loading"
+                            element-loading-background="rgba(0, 0, 0, 0.8)"
+                            @click="exportToExcel()">
+                            <span class="iconfont icondaochu" style="font-size: 15px" >导出</span>
+                        </button>
+                        <!-- <i class="iconfont icondaochu">导出</i> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="t-btnsDiv" style="border-top: 8px solid rgb(236, 240, 245) !important"></div>
+
+            <div class="t-btns" style="background: #ffffff">
+                <button title='新增'>
+                    <span class="glyphicon glyphicon glyphicon-plus"></span>
+                    新增
+                </button>
+                <button @click="deleteList()" >
+                    <span class="glyphicon glyphicon-trash"></span>
+                    删除
+                </button>
+            </div>
+
+            <div id="tableDiv">
+                <el-table :data="rows"
+                    :row-key="rowKey"
+                    ref="myTable"
+                    @select='selectRows'
+                    @select-all="selectRows"
+                    border fit highlight-current-row style="width: 100%;"
+                    :row-style="{height:'5px'}" :cell-style="{padding:'5px 0'}">
+
+                    <el-table-column type="selection" align="center"  :reserve-selection="true">
+                    </el-table-column>
+                    <el-table-column align="center" label="序号" width="60">
+                        <template slot-scope="scope">
+                            {{  (pageIndex - 1) * pageSize +scope.$index+1 }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="操作" width="220">
+                        <template slot-scope="scope">
+                            <el-button size="mini"  icon="el-icon-edit-outline" @click="show(scope.row)" style="display:inline">编辑</el-button>
+                            <el-button size="mini" type="primary" icon="el-icon-download" @click="exportToWord(scope.row.id, scope.row.householder)">导出Word</el-button>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="户主" width="120">
+                        <template slot-scope="scope">
+                            <el-tooltip effect="light" :content="scope.row.householder" placement="top">
+                                <span>{{ scope.row.householder }}</span>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="性别" width="50" min-width="50">
+                        <template slot-scope="scope">
+                            {{ scope.row.sex }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="电话" width="120" min-width="50">
+                        <template slot-scope="scope">
+                            {{ scope.row.phone }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="地址" min-width="150">
+                        <template slot-scope="scope">
+                            <el-tooltip effect="light" :content="scope.row.placeOfAbode" placement="top">
+                                <span>{{ scope.row.placeOfAbode }}</span>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+
+                    <!-- <el-table-column align="center" label="家庭成员" width="230" min-width="50">
+                        <template slot-scope="scope">
+                            <template v-for="person in scope.row.rkglCzrkxxbFamilies">
+                                <el-tag :type="getTagColor(person.id)" @click="editMember(person.id)" style="margin-left: 5px; margin-right: 5px">
+                                    {{person.familyRelation}}
+                                </el-tag>
+                            </template>
+                        </template>
+                    </el-table-column> -->
+
+                    <el-table-column align="center" label="工作单位" min-width="100">
+                        <template slot-scope="scope">
+                            <el-tooltip effect="light" :content="scope.row.unit" placement="top">
+                                <span>{{ scope.row.unit }}</span>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="主要社会关系"  min-width="100">
+                        <template slot-scope="scope">
+                            <el-tooltip effect="light" :content="scope.row.socialRelations" placement="top">
+                                <span>{{ scope.row.socialRelations }}</span>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+
+                    <!-- <el-table-column align="center" label="走访记录" width="100" >
+                        <template slot-scope="scope">
+                            <el-button size="small" type="info" @click="zfqkCheck(scope.row.id)">查看</el-button>
+                        </template>
+                    </el-table-column> -->
+                </el-table>
+            </div>
+
+            <el-pagination
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageIndex"
+                :page-sizes="pageRows"
+                :page-size="pageSize"
+                layout="total,jumper,prev, pager, next,sizes"
+                :total="total"
+                style="margin-bottom: 15px;margin-left: 10px">
+            </el-pagination>
+            </div>
+
+            <el-dialog v-cloak title="户主详情" @close="closeDialog('row')" center :visible.sync="dialogShow" style="height: 100% " :fullscreen="fullscreen" top="3vh" width="952px">
+                <el-form :model="row"  label-width="140px" class="demo-ruleForm" :rules="rules" ref="row">
+                    <div class="childDialog" style="width: 100%;overflow: auto;height: 100%;box-shadow: 0px 15px 10px -2px rgba(0, 0, 0, .04)">
+                        <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
+                            <el-tab-pane name="first">
+                                <span v-cloak slot="label"><i class="el-icon-user-solid"></i>个人信息</span>
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-row>
+                                            <el-col :span="24">
+                                                <el-form-item style="white-space:nowrap" label="户主/姓名:" >
+                                                    <el-input v-model="row.householder" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col :span="24">
+                                                <el-form-item label="性  别:">
+                                                    <el-radio v-model="row.sex" label="男" :disabled="isReadOnly">男</el-radio>
+                                                    <el-radio v-model="row.sex" label="女" :disabled="isReadOnly">女</el-radio>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col :span="24">
+                                                <el-form-item style="white-space:nowrap" label="联系电话:" prop="phone">
+                                                    <el-input v-model="row.phone" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col :span="24">
+                                                <el-form-item  label="民  族:" >
+                                                    <el-select  v-model="row.nation" filterable placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                                        <el-option
+                                                            v-for="item in nationOptions"
+                                                            :key="item"
+                                                            :label="item"
+                                                            :value="item">
+                                                        </el-option>
+                                                    </el-select>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                    </el-col>
+                                    <el-col :span="12" style="height: 210px;">
+                                        <el-form-item label="照片:" >
+                                            <el-upload
+                                                ref='upload' :disabled="isReadOnly"
+                                                class="avatar-uploader"
+                                                :action="updateUrl"
+                                                :http-request="httpRequest"
+                                                :show-file-list="false"
+                                                :on-success="handleAvatarSuccess"
+                                                :before-upload="beforeAvatarUpload" >
+                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                            </el-upload>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="12" >
+                                        <el-form-item label="身份证号:" prop="idNumber">
+                                            <el-input v-model="row.idNumber" style="width: 200px;" @input="idNumTransform(row.idNumber)" :disabled="isReadOnly"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="文化程度:" >
+                                            <el-select v-model="row.education" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                                <el-option
+                                                    v-for="item in cultureOptions"
+                                                    :key="item"
+                                                    :label="item"
+                                                    :value="item">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="出生日期:" prop="birthday">
+                                            <el-date-picker
+                                                style="width: 200px;" :disabled="isReadOnly"
+                                                value-format="yyyy-MM-dd"
+                                                v-model="birthday"
+                                                type="date"
+                                                placeholder="选择日期">
+                                            </el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="兵役情况:" >
+                                            <el-select v-model="row.militaryService" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                                <el-option
+                                                    v-for="item in militaryOptions"
+                                                    :key="item"
+                                                    :label="item"
+                                                    :value="item">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="宗教信仰:" >
+                                            <el-select v-model="row.religion" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                                <el-option
+                                                    v-for="item in religionOptions"
+                                                    :key="item"
+                                                    :label="item"
+                                                    :value="item">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="婚姻状况:" >
+                                            <el-select v-model="row.maritalStatus" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                                <el-option
+                                                    v-for="item in maritalStatusOptions"
+                                                    :key="item"
+                                                    :label="item"
+                                                    :value="item">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="政治面貌 :" >
+                                            <el-select v-model="row.identity" placeholder="请选择" style="width: 200px;">
+                                                <el-option
+                                                    v-for="item in politicsOptions"
+                                                    :key="item"
+                                                    :label="item"
+                                                    :value="item">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="填报民警:" >
+                                            <el-input readonly v-model="policeMan" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="填报时间:" prop="writeTime">
+                                            <el-date-picker
+                                                style="width: 200px;" :disabled="isReadOnly"
+                                                value-format="yyyy-MM-dd HH:mm:ss"
+                                                v-model="row.writeTime"
+                                                type="datetime"
+                                                placeholder="选择日期时间">
+                                            </el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" >
+                                        <el-form-item label="地  址:" >
+                                            <el-cascader
+                                                style="width: 636px;" :disabled="isReadOnly" clearable
+                                                v-model="placeOfAbodeArray"
+                                                size="medium "
+                                                :placeholder="placeOfAbodeString"
+                                                :options="cityList"
+                                                :props="optionProps"
+                                                @change="handleChange">
+                                            </el-cascader>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" >
+                                        <el-form-item label="工作单位:" >
+                                            <el-input v-model="row.unit" style="width: 636px;" :disabled="isReadOnly"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24">
+                                        <el-form-item label="籍  贯:" >
+                                            <!-- <el-input v-model="row.nativePlace" style="width: 636px;" :disabled="isReadOnly"></el-input> -->
+                                            <el-cascader
+                                                style="width: 636px;" :disabled="isReadOnly" clearable
+                                                size="medium"
+                                                v-model="nativePlaceArray"
+                                                :options="nativePlaceList"
+                                                :props="optionNativePlaceProps"
+                                                @change="handleChange02">
+                                            </el-cascader>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" >
+                                        <el-form-item label="所属边境派出所:" >
+                                            <el-input v-model="row.borderPoliceStation" style="width: 636px;" :disabled="isReadOnly"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24">
+                                        <el-form-item label="坐  标:" >
+                                            <el-input v-model="row.coordinate" style="width: 636px;" :disabled="isReadOnly"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-tab-pane>
+                            <el-tab-pane name="second">
+                                <span slot="label"><i class="iconfont iconrichangjianduqingkuang"></i>家庭基本情况</span>
+                                <el-row>
+                                    <el-col :span="24" style="height: 100%;">
+                                        <el-form-item label="家庭主要经济来源和收入情况:" label-width="200px">
+                                            <el-input
+                                                type="textarea" :disabled="isReadOnly"
+                                                :rows="2"
+                                                v-model="row.economy">
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" style="height: 100%;">
+                                        <el-form-item label="家庭史情况:" label-width="200px">
+                                            <el-input
+                                                type="textarea" :disabled="isReadOnly"
+                                                :rows="2"
+                                                v-model="row.familyBackground">
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" style="height: 100%;">
+                                        <el-form-item label="主要社会关系:" label-width="200px">
+                                            <el-input
+                                                type="textarea" :disabled="isReadOnly"
+                                                :rows="2"
+                                                v-model="row.socialRelations">
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" style="height: 100%;">
+                                        <el-form-item label="邻里关系情况:" label-width="200px">
+                                            <el-input
+                                                type="textarea" :disabled="isReadOnly"
+                                                :rows="2"
+                                                v-model="row.neighborhood">
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" style="height: 100%;">
+                                        <el-form-item label="围封禁牧情况:" label-width="200px">
+                                            <el-input
+                                                type="textarea" :disabled="isReadOnly"
+                                                :rows="2"
+                                                v-model="row.waiBanSituation">
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" style="height: 100%;">
+                                        <el-form-item label="家庭成员违法经历:" label-width="200px">
+                                            <el-input
+                                                type="textarea" :disabled="isReadOnly"
+                                                :rows="2"
+                                                v-model="row.illegalExperience">
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" style="height: 100%;">
+                                        <el-form-item label="雇工情况:" label-width="200px">
+                                            <el-input
+                                                type="textarea" :disabled="isReadOnly"
+                                                :rows="2"
+                                                v-model="row.employmentSituation">
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" style="height: 100%;">
+                                        <el-form-item label="周边治安热点及其他情况:" label-width="200px">
+                                            <el-input
+                                                type="textarea" :disabled="isReadOnly"
+                                                :rows="2"
+                                                v-model="row.aroundTheProblem">
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" style="height: 100%;">
+                                        <el-form-item label="周边重点地段及重要场所:" label-width="200px">
+                                            <el-input
+                                                type="textarea" :disabled="isReadOnly"
+                                                :rows="2"
+                                                v-model="row.aroundThePlace">
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+
+                                <el-row>
+                                    <el-col :span="24" style="height: 100%;">
+                                        <el-form-item label="其他情况:" label-width="200px">
+                                            <el-input
+                                                type="textarea" :disabled="isReadOnly"
+                                                :rows="2"
+                                                v-model="row.otherConditions">
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-tab-pane>
+                            <el-tab-pane name="third">
+                                <span slot="label"><i class="el-icon-s-home"></i>房屋信息</span>
+                                <el-row>
+                                    <el-col :span="24" style="height: 100%;">
+                                        <el-form-item label="贵重物品信息:" label-width="100px">
+                                            <el-input
+                                                type="textarea" :disabled="isReadOnly"
+                                                :rows="2"
+                                                v-model="row.itemInformation">
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <div>
+                                    <span class="centerTitle">房屋照片:</span>
+                                    <el-upload
+                                        :action="updateUrl" :disabled="isReadOnly"
+                                        :http-request="httpRequest04"
+                                        list-type="picture-card"
+                                        :on-preview="handlePopulationPreview"
+                                        :on-remove="handlePopulationRemove"
+                                        :before-upload="beforeAvatarUpload"
+                                        :on-change="handleChangePopulationPhoto"
+                                        :file-list="filePopulationLists"
+                                        style="margin-top: 10px;">
+                                        <i class="el-icon-plus"></i>
+                                    </el-upload>
+                                    <el-dialog :visible.sync="dialogPopulationVisible" :append-to-body="true">
+                                        <img width="100%" :src="dialogPopulationImageUrl" alt="" style="padding: 30px;">
+                                    </el-dialog>
+                                </div>
+                    
+                                <div style="width: 100%">
+                                    <div class="upload_warp_img_divList" v-for="(item,index) of populationImgLists">
+                                        <div class="upload_warp_img_div_top" v-show="!isReadOnly">
+                                            <img src="./../../images/ImgUpload/del.png" class="upload_warp_img_div_del" @click="filePopulationDelIdPhoto(index,item.id)">
+                                        </div>
+                                        <el-image :src="getShowUrl(item.url, 'picture')" :preview-src-list="srcList"></el-image>
+                                    </div>
+                                </div>
+                            </el-tab-pane>
+                            <el-tab-pane name="four" :disabled="isTrue">
+                                <span slot="label"><i class="iconfont iconchengyuan1"></i>家庭成员</span>
+                                <el-button size="small" type="primary" icon="el-icon-plus" @click="addMember()">新增</el-button>
+                                <el-table :data="tableData"
+                                    border fit highlight-current-row
+                                    style="width: 100%;margin-top: 10px;"
+                                    :row-style="{height:'5px'}"
+                                    :cell-style="{padding:'5px 0'}">
+                                    <el-table-column align="center" label="序号" width="50">
+                                        <template slot-scope="scope">
+                                            {{  scope.$index+1 }}
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column align="center" label="操作" width="150">
+                                        <template slot-scope="scope">
+                                            <el-button size="mini" type="info" @click="updataMember(scope.row, scope.$index)">编辑</el-button>
+                                            <el-button size="mini" type="danger" @click="deleteFamilyMember(scope.row.id, scope.$index)">删除</el-button>
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column align="center" label="姓名" width="100*">
+                                        <template slot-scope="scope">
+                                            {{ scope.row.familyName }}
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column align="center" label="关系" width="100">
+                                        <template slot-scope="scope">
+                                            {{ scope.row.familyRelation }}
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column align="center" label="联系电话" min-width="200">
+                                        <template slot-scope="scope">
+                                            {{ scope.row.familyPhone }}
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </el-tab-pane>
+                            <el-tab-pane name="fifth" :disabled="isTrue" label="走访记录">
+                                <el-table :data="zfqkCheckTbaleRows"
+                                    border fit
+                                    highlight-current-row
+                                    style="width: 100%;"
+                                    :row-style="{height:'5px'}"
+                                    :cell-style="{padding:'5px 0'}">
+
+                                    <el-table-column align="center" label="序号" width="50">
+                                        <template slot-scope="scope">
+                                            {{  (zfqkCheckPageIndex - 1) * zfqkCheckPageSize +scope.$index+1 }}
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column align="center" label="时间" width="170*">
+                                        <template slot-scope="scope">
+                                            {{ scope.row.writeTime }}
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column align="center" label="走访民警" min-width="10">
+                                        <template slot-scope="scope">
+                                            {{ scope.row.visitPoliceName }}
+                                        </template>
+                                    </el-table-column>
+
+                                    <el-table-column align="center" label="操作" width="150">
+                                        <template slot-scope="scope">
+                                            <el-button size="small" type="info" @click="zfqkShowDetail(scope.row)">查看详情</el-button>
+                                            <!-- <el-button size="small" type="danger" @click="deleteZfqkCheckShowDetail(scope.row.id)">删除</el-button> -->
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+
+                                <el-pagination
+                                    background
+                                    @current-change="zfqkHandleCurrentChange"
+                                    :current-page="zfqkCheckPageIndex"
+                                    :page-size="zfqkCheckPageSize"
+                                    layout="total,jumper,prev, pager, next"
+                                    :total="zfqkChecktotal"
+                                    style="margin-top: 10px">
+                                </el-pagination>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </div>
+                </el-form>
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button :style="{display:visible}" type="info" @click="dialogShow = false">取 消</el-button>
+                    <el-button :style="{display:visible}" type="success" @click="addRowSave('row')">提交</el-button>
+                </span>
+            </el-dialog>
+
+            <el-dialog  v-cloak title="家庭成员" @close="closeMemberDialog('MemberRow')" center :visible.sync="FamilyMemberDialogShow" top="3vh" style="height: 100% " width="952px" >
+                <el-form :model="MemberRow"  label-width="120px" class="demo-ruleForm" :rules="rules" ref="MemberRow">
+                    <div class="childDialog" style="width: 100%;overflow: auto;height: 425px;box-shadow: 0px 15px 10px -2px rgba(0, 0, 0, .04)">
+                        <el-row>
+                            <el-col :span="12">
+                                <el-row>
+                                    <el-col :span="24">
+                                        <el-form-item label="姓名 :" >
+                                            <el-input v-model="MemberRow.familyName" style="width: 200px;"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="24">
+                                        <el-form-item label="关系 :" >
+                                            <el-input v-model="MemberRow.familyRelation" style="width: 200px;"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="24">
+                                        <el-form-item label="民族 :" >
+                                            <el-select  v-model="MemberRow.familyNation" filterable placeholder="请选择" style="width: 200px;">
+                                                <el-option
+                                                    v-for="item in nationOptions"
+                                                    :key="item"
+                                                    :label="item"
+                                                    :value="item">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="24">
+                                        <el-form-item  label="身份证号码 :">
+                                            <el-input v-model="MemberRow.familyIdNumber" style="width: 200px;"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-col>
+                            <el-col :span="12" style="height: 210px;">
+                                <el-form-item  label="照片 :">
+                                    <el-upload
+                                        ref='updateUrlMember'
+                                        class="avatar-uploader"
+                                        :show-file-list="false"
+                                        :action="updateUrl"
+                                        :http-request="httpRequest03"
+                                        :on-success="handleAvatarSuccess03"
+                                        :before-upload="beforeAvatarUpload03" >
+                                        <img v-if="familyPhotographUrl" :src="familyPhotographUrl" class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="居住证号码 :">
+                                    <el-input v-model="MemberRow.residencePermit" style="width: 200px;" placeholder="非本地户籍人员"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="联系电话 :" prop="familyPhone">
+                                    <el-input v-model="MemberRow.familyPhone" style="width: 200px;"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="政治面貌 :" >
+                                    <el-select  v-model="MemberRow.familyIdentity" filterable placeholder="请选择" style="width: 200px;">
+                                        <el-option
+                                            v-for="item in politicsOptions"
+                                            :key="item"
+                                            :label="item"
+                                            :value="item">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="文化程度 :" >
+                                    <el-select  v-model="MemberRow.familyEducation" filterable placeholder="请选择" style="width: 200px;">
+                                        <el-option
+                                            v-for="item in cultureOptions"
+                                            :key="item"
+                                            :label="item"
+                                            :value="item">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <el-row>
+                            <el-col :span="12" >
+                                <el-form-item label="婚姻状况 :" >
+                                    <el-select  v-model="MemberRow.familyMaritalStatus" filterable placeholder="请选择" style="width: 200px;">
+                                        <el-option
+                                            v-for="item in maritalStatusOptions"
+                                            :key="item"
+                                            :label="item"
+                                            :value="item">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="工作单位 :" >
+                                    <el-input v-model="MemberRow.familyUnit" style="width: 648px;"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </div>
+                </el-form>
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button size="small" type="info" @click="FamilyMemberDialogShow = false">关 闭</el-button>
+                    <el-button size="small" type="success"  @click="addFamilyMember('MemberRow')">确 定</el-button>
+                </span>
+            </el-dialog>
+
+            <el-dialog  v-cloak title="走访情况"  center :visible.sync="oneZfqkDialog" :modal='false' top="3vh" :fullscreen="fullscreen" style="height: 100%;" width="952px">
+                <div style="width: 100%;height: 100%;">
+                    <el-form :model="zfqkCheckTbaleRow"  label-width="100px" class="demo-ruleForm">
+                        <el-row>
+                            <!-- <el-col :span="12" >
+                                <el-form-item label="走访对象:">
+                                    <el-input v-model="zfqkCheckTbaleRow.visitObjectName" style="width: 200px;"></el-input>
+                                </el-form-item>
+                            </el-col> -->
+                            <el-col :span="12">
+                                <el-form-item label="时间:">
+                                    <el-date-picker
+                                        readonly
+                                        style="width: 200px;"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
+                                        v-model="zfqkCheckTbaleRow.writeTime"
+                                        type="datetime"
+                                        placeholder="填报时间">
+                                    </el-date-picker>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="走访民警:" >
+                                    <el-input v-model="zfqkCheckTbaleRow.visitPoliceName" style="width: 200px;" readonly></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <!-- <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="监护人:" >
+                                    <el-input v-model="zfqkCheckTbaleRow.guardian" style="width: 200px;"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row> -->
+
+                        <!-- <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="身份证号:">
+                                    <el-input v-model="zfqkCheckTbaleRow.visitObjectIdNumber" style="width: 200px;"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="走访时长:" >
+                                    <el-input v-model="zfqkCheckTbaleRow.duration" style="width: 200px;"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row> -->
+
+                        <el-row>
+                            <el-col :span="24" style="height: 100%;">
+                                <el-form-item label="走访记录:">
+                                    <!--style="width: 50%;-->
+                                    <el-input
+                                        style="width: 649px;"
+                                        readonly
+                                        type="textarea"
+                                        :rows="2"
+                                        placeholder=""
+                                        v-model="zfqkCheckTbaleRow.workWordRecord">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+            </el-dialog>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="../json/nation.js"></script>
+<script type="text/javascript" src="../json/citys.js"></script>
+<script src="../../js/utils/toExcel.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        // 自定义验证规则
+        var validateBirthday = function (rule, value, callback) {
+            if (!value) {
+                return callback(new Error('日期不能为空'));
+            } else {
+                callback();
+            }
+        };
+        var validateIdNumber = function (rule, value, callback) {
+            if (!value) {
+                return callback(new Error('身份证号不能为空'));
+            } else if (!checkIdNumber(value)) {
+                callback(new Error('身份证号码错误!'));
+            } else {
+                callback();
+            }
+        };
+        var validatePhoneNumber = function (rule, value, callback) {
+            if (!value) {
+                return callback(new Error('手机号不能为空'));
+            } else if (!checkPhoneNumber(value)) {
+                callback(new Error('手机号输入不正确!'));
+            } else {
+                callback();
+            }
+        };
+        new Vue({
+            el: '#body1',
+            data: {
+                params:{
+                    page:null,
+                    limit: null,
+                    dptId: null,
+                    nation: null,
+                    householder: null,
+                    idNumber: null,
+                    unit: null,
+                    ageStart: '',
+                    ageEnd: ''
+                },
+                checked: false,
+                selectedArray: [],
+                options:[],
+                dialogShow:false,
+                FamilyMemberDialogShow:false,
+
+                rows: [],
+                row: {},
+                MemberRow: {},
+                saveSelectRows:[],
+
+                total: 0,
+                pageIndex:1,
+                pageSize: 20,
+                pageRows: [5, 10, 20, 30, 40, 50],
+
+                oldMissionPersons:[],
+                operationType:"",
+
+                operated:'',
+                imageUrl:'',
+                // updateUrl: params.serviceIp + '/RkglCzrkxxb/addDataAndFile',
+                updateUrl: '#',
+                // 图片放大预览src列表
+                srcList: [],
+
+                // 房屋照片
+                filePopulationIdPhoto:[],
+                picPopulationListIdPhoto: [],
+                filePopulationLists:[],
+                dialogPopulationImageUrl: '',
+                dialogPopulationVisible: false,
+                populationImgLists: [],
+
+                //-----------------走访登记-------------
+                zfqkCheckTbaleRowID:'',
+                zfqkCheckTbaleRows:[],
+
+                //单个显示
+                zfqkCheckTbaleRow:{},
+                zfqkChecktotal:0,
+                zfqkCheckPageIndex:1,
+                zfqkCheckPageSize:10,
+                zfqkDialog:false,
+                oneZfqkDialog:false,
+
+                //-----------
+                activeName: 'first',
+                sexOptions:[],
+                nationOptions:[],
+                religionOptions:[],
+                maritalStatusOptions:[],
+                militaryOptions:[],
+                cultureOptions: [],
+                politicsOptions: [],
+
+                url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+                imageUrlHourse:'./../../images/tu.png',
+                imageUrlHoursePreview:'',
+                multfileImgHourse:null,
+                optionsPlace: [{
+                    label: '左旗',
+                    children: [{
+                        label: '温都尔勒图镇',
+                        },{
+                        label: '乌斯太镇',
+                        },{
+                        label: '巴润别立镇',
+                    }]
+                }],
+                thsAreaCode:'',
+                cityList:['左旗','温都尔勒图镇'],
+                optionProps: {
+                    value: 'name',
+                    label: 'name',
+                    children: 'child'
+                },
+                optionNativePlaceProps: {
+                    value: 'label',
+                    label: 'label',
+                    children: 'children'
+                },
+                nativePlaceList: [],
+                // 年龄选项
+                ageOptions: [{
+                    value: '0-18',
+                    label: '0-18'
+                },{
+                    value: '19-45',
+                    label: '19-45'
+                },{
+                    value: '45-以上',
+                    label: '45-以上'
+                }],
+                ageRange: '',
+                placeOfAbodeString:'',
+                placeOfAbodeArray:[],
+                nativePlaceArray:[],
+                politicsOptions:[],
+                fullscreenLoading:null,
+                tableData: [],
+
+                //家庭成员照片
+                MemberRowId: '',
+                familyPhotographUrl: '',
+                // updateUrlMember: params.serviceIp + '/RkglCzrkxxbFamily/addDataAndFile',
+
+                //民警名称
+                policeMan:'',
+
+                //对话框满屏
+                fullscreen:false,
+                visible:'none',
+                isReadOnly: true,
+                mainDiv:null,
+
+                // 派出所名单
+                policeStation: [],
+                // 家庭成员是否显示
+                isTrue: true,
+                birthday: '',
+
+                // 验证规则
+                rules: {
+                    // birthday: [{ validator: validateBirthday, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    writeTime: [{ validator: validateBirthday, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    idNumber: [{ validator: validateIdNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    phone: [{ validator: validatePhoneNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    // familyIdNumber: [{ validator: validateIdNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    familyPhone: [{ validator: validatePhoneNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                }
+            },
+            mounted: function () {
+                vm = this;
+                vm.setTableDiv();
+                var tmpMapToId = window.location.search.substring(1);
+                var MapToId = parseInt(tmpMapToId.split('&')[0]);
+                if (tmpMapToId.split('&')[1] === '1'){
+                    vm.mainDiv=true;
+                    vm.loadataOneDialog01(MapToId);
+                }else if (tmpMapToId.split('&')[1] === '2') {
+                    vm.mainDiv=true;
+                    vm.loadataOneDialog02(MapToId);
+                }else {
+                    vm = this;
+                    vm.loadData();
+                    initButton(this);
+                    vm.visible='inline';
+                    vm.isReadOnly = false;
+                    $("#mainBody").css("display","block");
+                    vm.isTrue = false;
+                }
+            },
+            computed: {
+
+            },
+            created: function(){
+                vm = this;
+                //多选框
+                vm.sexOptions=sexOptions;
+                vm.nationOptions = nation;
+                vm.religionOptions = religionOptions;
+                vm.maritalStatusOptions = maritalStatusOptions;
+                vm.militaryOptions = military;
+                vm.cultureOptions = cultureOptions;
+                vm.politicsOptions = politicsOptions;
+                vm.cityList = cityList;
+                vm.nativePlaceList = nativePlaceList;
+
+                vm.loadData02();
+            },
+            methods: {
+                httpRequest: function(data) {
+                    let rd = new FileReader(); // 创建文件读取对象
+                    let file = data.file;
+                    rd.readAsDataURL(file); // 文件读取装换为base64类型
+                    rd.onloadend = function (e) {
+                        vm.imageUrl = this.result; // this指向当前方法onloadend的作用域
+                    };
+                },
+                httpRequest02: function(data) {
+                    let rd = new FileReader(); // 创建文件读取对象
+                    let file = data.file;
+                    rd.readAsDataURL(file); // 文件读取装换为base64类型
+                    rd.onloadend = function (e) {
+                        vm.imageUrlHourse = this.result; // this指向当前方法onloadend的作用域
+                    };
+                },
+                httpRequest03: function(data) {
+                    let rd = new FileReader(); // 创建文件读取对象
+                    let file = data.file;
+                    rd.readAsDataURL(file); // 文件读取装换为base64类型
+                    rd.onloadend = function (e) {
+                        vm.familyPhotographUrl = this.result; // this指向当前方法onloadend的作用域
+                        vm.MemberRow.familyPhotograph = vm.familyPhotographUrl;
+                    };
+                },
+                httpRequest04: function(data) {
+                    let rd = new FileReader(); // 创建文件读取对象
+                    let file = data.file;
+                    rd.readAsDataURL(file); // 文件读取装换为base64类型
+                    rd.onloadend = function (e) {
+                        vm.dialogPopulationImageUrl = this.result; // this指向当前方法onloadend的作用域
+                    };
+                },
+                // 房屋照片
+                handlePopulationPreview:function(file) {
+                    vm.dialogPopulationImageUrl = file.url;
+                    vm.dialogPopulationVisible = true;
+                },
+                handlePopulationRemove:function(file, fileLists) {
+                    for (let i in this.picPopulationListIdPhoto) {
+                        if (this.picPopulationListIdPhoto[i].key === file.uid) {
+                            this.picPopulationListIdPhoto.splice(i, 1)
+                        }
+                    }
+                    vm.filePopulationLists = fileLists;
+                },
+                handleChangePopulationPhoto:function(file, fileList) {
+                    vm.filePopulationLists = fileList
+                },
+                filePopulationDelIdPhoto:function(index,id){
+                    vm.$confirm('此操作将永久删除该图片, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        vm.row.housePhotosDelIds.push(id);
+                        vm.populationImgLists.splice(index,1);
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                //加载单个dialog
+                loadataOneDialog01:function(MapToId){
+                    //隐藏关闭按钮
+                    $(".el-dialog__close").css("display","none");
+                    // $(".childDialog").height(800);
+                    // $(".childDialog").css("height","800px")
+                    doApi(
+                        function (res) {
+                            // console.log(res)
+                            if(res.status === 200) {
+                                vm.fullscreen=true;
+                                vm.dialogShow=true;
+                                vm.row=res.data;
+                                vm.birthday = vm.row.birthday;
+
+                                vm.selectedArray=[];
+                                // vm.row=row;
+                                // console.log(row);
+                                //家庭成员
+                                vm.tableData = vm.row.rkglCzrkxxbFamilies;
+                                // console.log("家庭成员");
+                                // console.log(vm.row.rkglCzrkxxbFamilies);
+                                // console.log(vm.tableData);
+
+                                if (vm.row.placeOfAbode){
+                                    // console.log(vm.row.placeOfAbode);
+                                    vm.placeOfAbodeString = vm.row.placeOfAbode;
+                                    let array = vm.row.placeOfAbode.split(",");
+                                    vm.placeOfAbodeArray = array;
+                                    // console.log(vm.row.placeOfAbode)
+                                }
+                                if (vm.row.nativePlace){
+                                    vm.nativePlaceArray = vm.row.nativePlace.split(",");
+                                }
+                                if (vm.row.photograph){
+                                    vm.imageUrl = vm.getShowUrl(vm.row.photograph, 'picture');
+                                }
+                                if (vm.row.housePhotosList){
+                                    vm.populationImgLists = vm.row.housePhotosList;
+                                    for(var i=0; i<vm.populationImgLists.length; i++) {
+                                        vm.srcList.push(vm.getShowUrl(vm.populationImgLists[i].url, 'picture'));
+                                    }
+                                }
+
+                                //民警名称
+                                if (vm.row.policeVisitForm!=null){
+                                    // console.log(vm.row.policeVisitForm.fillPerson);
+                                    vm.policeMan = vm.row.policeVisitForm.fillPerson;
+                                }
+
+                                vm.operated='edit';
+                                vm.operationType = 'edit';
+                            }
+                        },null,null,params.serviceIp + '/RkglCzrkxxb/'+MapToId,
+                        "get"
+                    );
+                },
+                //加载单个dialog
+                loadataOneDialog02:function(MapToId) {
+                    //隐藏关闭按钮
+                    $(".el-dialog__close").css("display", "none");
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.fullscreen = true;
+                                vm.zfqkCheckTbaleRow = res.data;
+                                // console.log(vm.zfqkCheckTbaleRow)
+                                vm.operated = 'edit';
+                                vm.oneZfqkDialog = true;
+                            }
+                        }, null, null, params.serviceIp + '/TjKeyPersonVisit/' + MapToId,
+                        "get"
+                    );
+                },
+                // 三级地址选择
+                handleAddressFun: function(e,form,thsAreaCode){
+                    // thsAreaCode = this.form.areaCode    // 注意1：获取value值
+                    // console.log(this.$refs)
+                    // vm.thsAreaCode = this.$refs['cascaderAddr'].currentLabels    //注意2： 获取label值
+                    // alert(vm.thsAreaCode)  // 注意3： 最终结果是个一维数组对象
+                },
+                handleChange:function(e) {
+                    // thsAreaCode = this.$refs['cascaderAddr'].currentLabels;   // 注意1：获取value值
+                    // console.log(thsAreaCode);
+                    if (e){
+                        // console.log(e);
+                        let s = e.toString();
+                        // console.log(s);
+                        //地址 级联选择框
+                        vm.row.placeOfAbode = s
+                        // console.log(vm.row.placeOfAbode)
+                    }
+                },
+                handleChange02:function(e) {
+                    if (e){
+                        //地址 级联选择框
+                        vm.row.nativePlace = e.toString();
+                    }
+                },
+                addRowSave:function(formName){
+                    this.$refs[formName].validate(function (valid) {
+                        if (valid) {
+                            vm.row.birthday = vm.birthday;
+                            this.fd = new FormData();
+                            // console.log(vm.row);
+                            for(var key in vm.row){
+                                //key
+                                // console.log(key);
+                                // console.log(vm.row[key]);
+                                //value
+                                let value = vm.row[key];
+                                /* if (key=='birthday'){
+                                    let transDate = new Date(value);
+                                    this.fd.append(key,transDate);
+                                }*/
+                                //剔除异常数据
+                                if(key=='tjNeedyHouseholdsFamilies'){
+                                }
+                                else if(key=='policeVisitForm'){
+                                }
+                                // else if(key=='photograph'){
+                                //     this.fd.append(key,'');
+                                // }
+                                else if (key=='pointPositionInfo'){
+                                }
+                                else if (key=='rkglCzrkxxbFamilies'){
+                                }
+                                else if (key=='housePhotosList'){
+                                }
+                                else {
+                                    if (value != null) {
+                                        this.fd.append(key, value);
+                                    }
+                                }
+                            }
+
+                            var userData = JSON.parse(window.localStorage.getItem('userdata'));
+                            if (vm.policeStation.length ===1 && userData.dptName === vm.policeStation[0].name) {
+                                this.fd.append('fillPersonId', userData.id)
+                                this.fd.append('fillPerson', userData.name)
+                            } else if (vm.row.policeVisitForm) {
+                                this.fd.append('fillPersonId', vm.row.policeVisitForm.fillPersonId)
+                                this.fd.append('fillPerson', vm.row.policeVisitForm.fillPerson)
+                            }
+
+                            //图片
+                            if (vm.multfileImg != null) {
+                                this.fd.append('photographFile', vm.multfileImg)
+                            }
+                            if (vm.multfileImgHourse!=null){
+                                this.fd.append('housePhotosFile', vm.multfileImgHourse)
+                            }
+                            // 房屋照片
+                            if (vm.filePopulationLists){
+                                for (let i = 0; i < vm.filePopulationLists.length; i++) {
+                                    this.fd.append('housePhotosFile',vm.filePopulationLists[i].raw);
+                                }
+                            }
+
+                            if (vm.operated=="add"){
+                                doApiByFile(
+                                    function(res) {
+                                        vm.photographFile_url = res.data.photograph;
+                                        vm.imageUrlHourse = res.data.housePhotos;
+                                        if (res.status === 200) {
+                                            // alert("成功")
+                                            vm.addFamilyMembers(res.data.id)
+                                            vm.dialogShow=false;
+                                            vm.$message.info("新增成功！");
+                                            vm.loadData();
+                                        }else{
+                                            vm.$message.error("新增失败！");
+                                        }
+                                    },
+                                    function (res) {
+                                        vm.$message.error(res.responseJSON.message);
+                                    }, null,params.serviceIp + '/RkglCzrkxxb/addDataAndFile', 'post',this.fd
+                                );
+                            }else if (vm.operated=='edit'){
+                                doApiByFile(
+                                    function(res) {
+                                        if (res.status === 200) {
+                                            vm.loadData();
+                                            vm.dialogShow=false;
+                                            vm.$message.info("修改成功！");
+                                        }else{
+                                            vm.$message.error("修改失败！");
+                                        }
+                                    },
+                                    function (res) {
+                                        vm.$message.error(res.responseJSON.message);
+                                    }, null,params.serviceIp + '/RkglCzrkxxb/updateDataAndFile', 'PUT',this.fd
+                                );
+                            }
+                        } else {
+                            return vm.$message.error("填报信息有缺失或错误！")
+                        }
+                    })
+                },
+                closeDialog:function(formName){
+                    vm.imageUrl='';
+                    vm.imageUrlHourse='';
+                    vm.multfileImg = null;
+                    vm.multfileImgHourse = null;
+                    vm.populationImgLists = [];
+                    vm.filePopulationLists = [];
+                    vm.row={};
+                    vm.placeOfAbodeString='';
+                    vm.policeMan='';
+                    vm.tableData=[];
+                    vm.loadData();
+                    vm.placeOfAbodeArray = [];
+                    vm.nativePlaceArray = [];
+                    vm.activeName = "first";
+                    vm.$refs[formName].clearValidate();
+                    vm.birthday = '';
+                },
+                closeMemberDialog:function(formName){
+                    // vm.MemberRow = {};
+                    vm.familyPhotographUrl = '';
+                    vm.multfileImg02 = null;
+                    vm.$refs[formName].clearValidate();
+                },
+                //------------------标签页
+                handleClick:function(tab, event){
+                    // console.log(tab, event);
+                    if (tab.name === 'four' && vm.row.id) {
+                        vm.loadMember(vm.row.id)
+                    } else if (tab.name === 'fifth') {
+                        vm.zfqkCheck(vm.row.id)
+                    }
+                },
+                //----------------走访情况--------------
+                /*addZfqkSave:function(){
+                    // console.log(vm.zfqkCheckTbaleRow)
+                    var form = new FormData();
+                    //主表ID
+                    form.append('visitObjectId',vm.zfqkCheckTbaleRowID)
+                    //内容
+                    form.append('visitObjectName',vm.zfqkCheckTbaleRow.visitObjectName)
+                    // form.append('visitingTime',vm.zfqkCheckTbaleRow.visitingTime)
+                    form.append('workWordRecord',vm.zfqkCheckTbaleRow.workWordRecord)
+                    form.append('visitPoliceName',vm.zfqkCheckTbaleRow.visitPoliceName)
+                    form.append('guardian',vm.zfqkCheckTbaleRow.guardian)
+
+                    doApiByFile(
+                        function(res) {
+                            if (res.status === 200) {
+                                vm.zfqkCheck(vm.zfqkCheckTbaleRowID);
+                                vm.oneZfqkDialog=false;
+                                parent.vm.showMessage("suc")
+                            }else{
+                                parent.vm.showMessage("fail")
+                            }
+                        },
+                        null, null,params.serviceIp + '/TjKeyPersonVisit/addDataAndFile', 'post',form
+                    );
+                },
+                addZfqk:function(){
+                    vm.oneZfqkDialog=true;
+                },
+                deleteZfqkCheckShowDetail:function(id){
+                    doApi(
+                        function (res) {
+                            console.log(res);
+                            if (res.status === 200){
+                                vm.zfqkCheck(vm.zfqkCheckTbaleRowID);
+                                vm.$message.info("删除成功！");
+                            }else {
+                                vm.$message.error("删除失败！");
+                            }
+                        },null,null,params.serviceIp + '/TjKeyPersonVisit/'+id,
+                        "delete"
+                    );
+                },*/
+                //显示单个表
+                zfqkShowDetail:function(row){
+                    // console.log(row);
+                    vm.zfqkCheckTbaleRow=row;
+                    // vm.zfqkCheckTbaleRow.workPhotograph = vm.getShowUrl(row.workPhotograph, 'picture');
+                    // vm.zfqkCheckTbaleRow.workVideo = vm.getShowUrl(row.workVideo, 'video');
+                    // vm.zfqkCheckTbaleRow.workSoundRecord = vm.getShowUrl(row.workSoundRecord, 'audio');
+                    vm.oneZfqkDialog=true;
+                },
+                //切换页面
+                zfqkHandleCurrentChange:function(zfqkCheckPageIndex){
+                    this.zfqkCheckPageIndex = zfqkCheckPageIndex;
+                    this.zfqkCheck(vm.zfqkCheckTbaleRowID);
+                },
+                //表格 初始化
+                zfqkCheck:function(id){
+                    vm.zfqkCheckTbaleRowID=id;
+                    // console.log(id);
+                    doApi(
+                        function (res) {
+                            // console.log(res);
+                            if(res.status === 200) {
+                                vm.zfqkCheckTbaleRows= res.data.rows;
+                                vm.zfqkChecktotal =res.data.total;
+                                // console.log("赋值完毕")
+                            }
+                        },null,null,params.serviceIp + '/TjKeyPersonVisit/pageByVisitObjectIdAndVisitObjectType',
+                        "get",{
+                            'visitObjectId':vm.zfqkCheckTbaleRowID,
+                            'visitObjectType':'人口管理_常住人口信息',
+                            'page':vm.zfqkCheckPageIndex,
+                            'limit':vm.zfqkCheckPageSize
+                        }
+                    );
+                },
+                //---------------------房屋照片------------------------
+                beforeAvatarUpload: function (file) {
+                    vm.multfileImg = file;
+                    const isJPG = file.type === 'image/jpeg';
+                    const isPng = file.type === 'image/png';
+                    if (!isJPG && !isPng) {
+                        this.$message.error('上传图片格式只能为.jpg或.png!');
+                    }
+                    // const isLt10M = file.size / 1024 / 1024 < 10;
+                    // if (!isLt10M) {
+                    //     this.$message.error('上传头像图片大小不能超过 10MB!');
+                    // }
+                    return isJPG || isPng;
+                },
+                beforeAvatarUpload02: function (file) {
+                    vm.multfileImgHourse = file;
+                    const isJPG = file.type === 'image/jpeg';
+                    const isPng = file.type === 'image/png';
+                    if (!isJPG && !isPng) {
+                        this.$message.error('上传图片格式只能为.jpg或.png!');
+                    }
+                    // const isLt10M = file.size / 1024 / 1024 < 10;
+                    // if (!isLt10M) {
+                    //     this.$message.error('上传头像图片大小不能超过 10MB!');
+                    // }
+                    return isJPG || isPng;
+                },
+                beforeAvatarUpload03: function (file) {
+                    vm.multfileImg02 = file;
+                    vm.MemberRow.multfileImg02 = vm.multfileImg02;
+                    const isJPG = file.type === 'image/jpeg';
+                    const isPng = file.type === 'image/png';
+                    if (!isJPG && !isPng) {
+                        this.$message.error('上传图片格式只能为.jpg或.png!');
+                    }
+                    // const isLt10M = file.size / 1024 / 1024 < 10;
+                    // if (!isLt10M) {
+                    //     this.$message.error('上传头像图片大小不能超过 10MB!');
+                    // }
+                    return isJPG || isPng;
+                },
+                handleAvatarSuccess02:function(res, file) {
+                    vm.imageUrlHourse = URL.createObjectURL(file.raw);
+                    vm.multfileImgHourse = file.raw;
+                },
+                //--------------------户主照片-------------------------
+                handleAvatarSuccess:function(res, file) {
+                    vm.imageUrl = URL.createObjectURL(file.raw);
+                    vm.multfileImg = file.raw;
+                },
+                //--------------------成员照片-----------------------
+                handleAvatarSuccess03:function(res, file) {
+                    vm.familyPhotographUrl = URL.createObjectURL(file.raw);
+                    vm.MemberRow.familyPhotograph = vm.familyPhotographUrl;
+                    vm.multfileImg02 = file.raw;
+                    vm.MemberRow.multfileImg02 = vm.multfileImg02;
+                },
+                //---------------------------------------------
+                //---------------------------------------------
+                rowKey :function(row) {
+                    return row.id;
+                },
+                clearFilter:function () { // 清空全部筛选,必须放到方法中，否则加载失败
+                    this.$refs.myTable.clearSelection();
+                },
+                selectAll:function() {
+                    vm.selectedArray = [];
+                    if (vm.checked) {
+                        for ( var i=0;i<vm.options.length;i++ ){
+                            var item=vm.options[i];
+                            vm.selectedArray.push(item.userId)
+                        }
+                    } else {
+                        vm.selectedArray = [];
+                    }
+                },
+                changeSelect:function(val) {
+                    vm.selectedArray=val;
+                },
+                //将选中行数据存入变量
+                selectRows:function(rows){
+                    vm.saveSelectRows=rows;
+                },
+                //填充下拉框
+                /* fillOptions:function () {
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.options= res.data;
+                            }
+                        },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceInfo',
+                        "get"
+                    )
+                },*/
+                //初始化数据列表
+                loadData: function () {
+                    vm.params.page=vm.pageIndex;
+                    vm.params.limit=vm.pageSize;
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.rows= res.data.rows;
+                                // console.log(vm.rows);
+                                vm.total =res.data.total;
+                            }
+                        },null,null,params.serviceIp + '/RkglCzrkxxb/listUserDeptData',
+                        "get",vm.params
+                    );
+                },
+                setTableDiv:function(){
+                    var height=$(window).height()-200;
+                    $("#tableDiv").css("height",height);
+                },
+                //初始化派出所列表
+                loadData02: function () {
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.policeStation = res.data;
+                                // console.log(vm.policeStation)
+                            }
+                        },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceStation',"get"
+                    );
+                },
+                //分页 初始页pageIndex、控制每页几条
+                handleSizeChange:function(size){
+                    this.pageSize = size;
+                    this.loadData();
+                },
+                // 控制页面的切换
+                handleCurrentChange: function(pageIndex) {
+                    this.pageIndex = pageIndex;
+                    this.loadData();
+                },
+                isProgress:function(startTime,endTime){
+                    if(startTime==null||endTime==null){
+                        return true;
+                    }
+                    var now=new Date();
+                    if(now<new Date(startTime.replace(/-/g,"/"))||now>new Date(endTime.replace(/-/g,"/"))){
+                        return false;
+                    }
+                    return true;
+                },
+                getTagColor: function (score) {
+                    if (score == 1) {
+                        return "success";
+                    } else if(score == 0){
+                        return "danger";
+                    }
+                    return "info";
+                },
+                show: function (row) { //获取点击对象
+                    vm.selectedArray=[];
+                    vm.row=row;
+                    vm.birthday = vm.row.birthday;
+                    // console.log(vm.birthday);
+                    // console.log(row);
+                    //家庭成员
+                    // vm.tableData = row.rkglCzrkxxbFamilies;
+                    // console.log("家庭成员");
+                    // console.log(row.rkglCzrkxxbFamilies);
+                    // console.log(vm.tableData);
+                    vm.row.housePhotosDelIds = [];
+                    vm.srcList = [];
+
+                    if (row.placeOfAbode){
+                        // console.log(row.placeOfAbode)
+                        //数组转string
+                        // let s = row.placeOfAbode.toString();
+                        vm.placeOfAbodeString = row.placeOfAbode;
+                        let array = row.placeOfAbode.split(",");
+                        vm.placeOfAbodeArray = array;
+                        // console.log(vm.row.placeOfAbode)
+                    }
+                    if (row.nativePlace){
+                        vm.nativePlaceArray = row.nativePlace.split(",");
+                    }
+                    if (row.photograph){
+                        vm.imageUrl = vm.getShowUrl(row.photograph, 'picture');
+                    }
+                    if (row.housePhotos){
+                        vm.imageUrlHourse = vm.getShowUrl(row.housePhotos, 'picture');
+                    }
+
+                    if (row.housePhotosList.length!=0){
+                        vm.populationImgLists = row.housePhotosList;
+                        for(var i=0; i<vm.populationImgLists.length; i++) {
+                            vm.srcList.push(vm.getShowUrl(vm.populationImgLists[i].url, 'picture'));
+                        }
+                    }
+
+                    //民警名称
+                    // console.log(vm.row.policeVisitForm.fillPerson);
+                    vm.policeMan = vm.row.policeVisitForm.fillPerson;
+                    vm.operated='edit';
+                    vm.operationType = 'edit';
+                    vm.dialogShow=true;
+                },
+                // 初始化家庭成员列表
+                loadMember: function (id) {
+                    vm.MemberRowId = id
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.tableData= res.data.rows;
+                                // console.log(vm.rows);
+                            }
+                        },null,null,params.serviceIp + '/RkglCzrkxxbFamily/listByParentId',
+                        "get", {'czrkxxbId': id}
+                    );
+                },
+                //显示新增家庭成员
+                addMember: function () { //获取点击对象
+                    vm.imafamilyPhotographUrlgeUrl='';
+                    vm.MemberRow={};
+                    vm.operationType='add';
+                    vm.FamilyMemberDialogShow=true;
+                },
+                // 显示编辑家庭成员
+                updataMember:function(row, index){
+                    vm.MemberRow = row;
+                    vm.propParmsIndex = index
+                    vm.operationType = 'edit';
+
+                    if (row.familyPhotograph && vm.row.id) {
+                        vm.familyPhotographUrl = vm.getShowUrl(row.familyPhotograph, 'picture');
+                    } else {
+                        vm.familyPhotographUrl = row.familyPhotograph;
+                    }
+                    vm.FamilyMemberDialogShow = true;
+                },
+                //新增家庭成员  修改家庭成员
+                addFamilyMember: function (formName) {
+                    this.$refs[formName].validate(function (valid) {
+                        if (valid) {
+                            if (vm.row.id) {
+                                this.fd = new FormData();
+                                for (var key in vm.MemberRow) {
+                                    let value = vm.MemberRow[key];
+                                    if (key == 'tjNeedyHouseholdsFamilies') {
+                                    }
+                                    else if (key == 'policeVisitForm') {
+                                    }
+                                    else if (key == 'photograph') {
+                                        this.fd.append(key, '');
+                                    }
+                                    //不能传 数据库自动生成的时间，否则400
+                                    else if (key == 'writeTime') {
+                                        // this.fd.append(key,transDate2);
+                                    }
+                                    else if (key == 'pointPositionInfo') {
+                                    }
+                                    else if (key == 'rkglCzrkxxbFamilies') {
+                                    }
+                                    else if (key == 'familyPhotograph') {
+                                    }
+                                    else {
+                                        if (value != null) {
+                                            this.fd.append(key, value);
+                                        }
+                                    }
+                                }
+
+                                if (vm.MemberRowId != null) {
+                                    this.fd.append('czrkxxbId', vm.MemberRowId)
+                                }
+                                if (vm.multfileImg02 != null) {
+                                    this.fd.append('photographFile', vm.multfileImg02)
+                                }
+
+                                if (vm.operationType=="add"){
+                                    //常住人口信息表id
+                                    doApiByFile(
+                                        function(res) {
+                                            if (res.status === 200) {
+                                                // alert("成功")
+                                                vm.FamilyMemberDialogShow=false;
+                                                vm.$message.info("新增家庭成员成功！");
+                                                vm.loadMember(vm.row.id);
+                                                vm.loadData();
+                                            }else{
+                                                vm.$message.error("新增失败！");
+                                            }
+                                        },
+                                        null, null,params.serviceIp + '/RkglCzrkxxbFamily/addDataAndFile', 'post',this.fd
+                                    );
+                                } else if (vm.operationType=='edit'){
+                                    doApiByFile(
+                                        function(res) {
+                                            if (res.status === 200) {
+                                                vm.loadData();
+                                                vm.FamilyMemberDialogShow=false;
+                                                vm.$message.info("修改家庭成员成功！");
+                                                vm.loadMember(vm.row.id);
+                                            }else{
+                                                vm.$message.error("修改失败！");
+                                            }
+                                        },
+                                        null, null,params.serviceIp + '/RkglCzrkxxbFamily/updateDataAndFile', 'PUT',this.fd
+                                    );
+                                }
+                            } else if (vm.operationType=="add"){
+                                vm.tableData.push(vm.MemberRow)
+                                vm.FamilyMemberDialogShow = false;
+                                vm.$message.info("新增家庭成员成功！");
+                            } else {
+                                vm.tableData.splice(vm.propParmsIndex, 1, vm.MemberRow);
+                                vm.FamilyMemberDialogShow = false;
+                                vm.$message.info("修改家庭成员成功！");
+                            }
+                        } else {
+                            return vm.$message.error("填报信息有缺失或错误！")
+                        }
+                    })
+                },
+                addFamilyMembers: function (id) {
+                    for(var i=0; i<vm.tableData.length;i++){
+                        this.fd = new FormData();
+                        for (var key in vm.tableData[i]) {
+                            let value = vm.tableData[i][key];
+                            if (key == 'tjNeedyHouseholdsFamilies') {
+                            }
+                            else if (key == 'policeVisitForm') {
+                            }
+                            else if (key == 'photograph') {
+                                this.fd.append(key, '');
+                            }
+                            //不能传 数据库自动生成的时间，否则400
+                            else if (key == 'writeTime') {
+                                // this.fd.append(key,transDate2);
+                            }
+                            else if (key == 'pointPositionInfo') {
+                            }
+                            else if (key == 'rkglCzrkxxbFamilies') {
+                            }
+                            else if (key == 'familyPhotograph') {
+                            }
+                            else if (key == 'multfileImg02') {
+                                this.fd.append('photographFile', vm.tableData[i][key])
+                            }
+                            else {
+                                if (value != null) {
+                                    this.fd.append(key, value);
+                                }
+                            }
+                        }
+
+                        if (id != null){
+                            this.fd.append('czrkxxbId',id);
+                        }
+
+                        doApiByFile(
+                            function(res) {
+                                if (res.status === 200) {
+                                    // alert("成功")
+                                    vm.FamilyMemberDialogShow=false;
+                                    // vm.$message.info("新增家庭成员成功！");
+                                }else{
+                                    vm.$message.error("新增失败！");
+                                }
+                            },
+                            null, null,params.serviceIp + '/RkglCzrkxxbFamily/addDataAndFile', 'post',this.fd
+                        );
+                    }
+                },
+                //删除单个家庭成员
+                deleteFamilyMember:function(id, propParmsIndex){
+                    vm.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        if(vm.row.id) {
+                            // console.log(id)
+                            doApi(
+                                function (res) {
+                                    if(res.status === 200) {
+                                        vm.loadData();
+                                        vm.FamilyMemberDialogShow=false;
+                                        vm.$message.info("删除成功！");
+                                        vm.loadMember(vm.row.id);
+                                        // vm.dialogShow = false;
+                                    }else {
+                                        vm.$message.error("删除失败！");
+                                    }
+                                },null,null,params.serviceIp + '/RkglCzrkxxbFamily/'+id,'delete'
+                            );
+                        } else {
+                            vm.tableData.splice(propParmsIndex, 1)
+                        }
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                //批量删除常住人口表
+                deleteList:function () {
+                    vm.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        var delIds=[];
+                        for ( var i=0;i<vm.saveSelectRows.length;i++ ){
+                            var row=vm.saveSelectRows[i];
+                            delIds.push(row.id);
+                        }
+
+                        doApiByJsonstr(
+                            function(res) {
+                                if (res.status === 200) {
+                                    vm.pageIndex=1;
+                                    vm.loadData();
+                                    vm.dialogShow=false;
+                                    vm.clearFilter();
+                                    vm.$message.info("批量删除成功！");
+                                }else{
+                                    vm.$message.error("批量删除失败！");
+                                }
+                            },
+                            null, null, params.serviceIp + '/RkglCzrkxxb/batchDelete', 'post',delIds
+                        );
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                showMessage:function (status) {
+                    if (status=='suc'){
+                        vm.$message.info("操作成功！");
+                    }if (status=='fail'){
+                        vm.$message.error("操作失败！");
+                    }
+                },
+                // 导出数据
+                exportToExcel:function(){
+                    vm.fullscreenLoading = true;
+                    // vm.loading = true;
+                    // var paramsPage={};
+                    // paramsPage.page=1;
+                    // paramsPage.limit=9999;
+                    vm.params.limit = null;
+
+                    var data3;
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                data3=res.data.rows;
+                                //处理日期
+                                for (let i = 0; i < data3.length; i++) {
+                                    if (data3[i].birthday){
+                                        data3[i].birthday = data3[i].birthday.substring(0,10);
+                                    }
+                                }
+                                // console.log(data3);
+                                //自定义过滤栏（不需要导出的行）
+                                //identity是什么？
+                                var filter=['id','photograph','housePhotos','rkglCzrkxxbFamilies', 'housePhotosDelIds', 'housePhotosList', 'pointPositionInfo', 'policeVisitForm']
+                                let b = Json2Excel(data3,"常住人口信息表",populationManager,filter);
+                                if (b){
+                                    vm.fullscreenLoading = false;
+                                }
+                            }
+                        },null,null,params.serviceIp + '/RkglCzrkxxb/listUserDeptData',
+                        "get", vm.params
+                    );
+                },
+                exportToWord: function(id, name) {
+                    const loading = this.$loading({
+                        lock: true,
+                        text: '下载中...',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    var oReq = new XMLHttpRequest();
+                    //判断是否IE浏览器
+                    var isIE = !!window.ActiveXObject || "ActiveXObject" in window;
+                    //url参数为拿后台数据的接口
+                    var url = params.serviceIp + '/RkglCzrkxxb/exportWord?id=' + id;
+                    oReq.open("get",url, true);
+                    oReq.responseType = "blob";
+                    oReq.onload = function (oEvent) {
+                        var content = oReq.response;
+                        //name为后台返给前端的文件名，后缀名必须加，后台有返回后缀就不用管，不然下载在本地不好打开。
+                        var blob = new Blob([content]);
+                        if(isIE){
+                            window.navigator.msSaveOrOpenBlob(blob, name + '信息' + '.docx');
+                        } else {
+                            var elink = document.createElement('a');
+                            elink.style.display = 'none';
+                            elink.download = name + '信息' + '.docx';
+                            elink.href = URL.createObjectURL(blob);
+                            document.body.appendChild(elink);
+                            elink.click();
+                            document.body.removeChild(elink);
+                        }
+                        loading.close();
+                    };
+                    //请求头里放入用户口令，必须在.open()和.send()之间设置
+                    var token = localStorage.getItem('token');
+                    oReq.setRequestHeader('Authorization', token);
+                    oReq.send();
+                },
+                // 自动根据身份证号码填入出生日期
+                idNumTransform: function(num) {
+                    if (num.length >= 14) {
+                        var date = num.slice(6, 10) + '-' + num.slice(10, 12) + '-' + num.slice(12, 14);
+                        vm.birthday = date;
+                        vm.row.birthday = vm.birthday;
+                    }
+                },
+                // 获取压缩路径图片、音频或视频
+                getShowUrl:function (oldUrl,type) {
+                    if (oldUrl){
+                        //将url的ip换成服务器的ip
+                        var showUrl=urlChangeIp(oldUrl,params.serviceIp);
+                        if(type=="picture"){
+                            //选择展示的url
+                            var url=getThumbnail(showUrl);
+                            if(isExistUrl(url)){
+                                return url;
+                            }else {
+                                if(isExistUrl(showUrl)){
+                                    return showUrl;
+                                }else {
+                                    return params.serviceIp + params.pictureLoadingFailedUrl;
+                                }
+                            }
+                        }else if(type=="audio"){
+                            if(isExistUrl(showUrl)){
+                                return showUrl;
+                            }
+                        }else if (type=="video"){
+                            //选择展示的url
+                            var url=getCompressVideo(showUrl);
+                            if(isExistUrl(url)){
+                                return url;
+                            }else {
+                                if(isExistUrl(showUrl)){
+                                    return showUrl;
+                                }
+                            }
+                        }else if(type=="other"){
+                            if(isExistUrl(showUrl)){
+                                return showUrl;
+                            }
+                        }
+                    }
+                    return null;
+                },
+            }
+        })
+    })
+</script>
+<script type="text/javascript">
+    function initButton(vm) {
+        $('button').on("click", function (e) {
+            switch (this.innerText.trim()) {
+                case "重置":
+                    // vm.params.dptId=null;
+                    vm.ageRange='';
+                    // vm.params.nation=null;
+                    // vm.params.householder=null;
+                    // vm.params.idNumber=null;
+                    // vm.params.unit=null;
+                    vm.params={};
+                    break;
+                case "查询":
+                    vm.pageIndex=1;
+                    vm.params.ageStart = parseInt(vm.ageRange.split('-')[0]) ? parseInt(vm.ageRange.split('-')[0]) : null;
+                    vm.params.ageEnd = parseInt(vm.ageRange.split('-')[1]) ? parseInt(vm.ageRange.split('-')[1]) : null;
+                    // console.log(vm.params.ageEnd)
+                    vm.loadData();
+                    break;
+                case "新增":
+                    // var operate='add';
+                    // var nullDate ='';
+                    // const obj1 = $("#mainIframe")[0].contentWindow;
+                    var userData = JSON.parse(window.localStorage.getItem('userdata'));
+                    vm.policeMan = userData.name;
+                    vm.row.borderPoliceStation = userData.dptName;
+                    vm.operated='add';
+                    // obj1.setData(vm.operated);
+                    vm.dialogShow=true;
+                    break;
+                case "删除":
+                    // vm.deleteList();
+                    // break;
+                case "关闭":
+                    break;
+            }
+        });
+    }
+</script>

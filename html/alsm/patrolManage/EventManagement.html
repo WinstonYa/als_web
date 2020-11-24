@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>事件管理</title>
+    <link href="../../../alsm/ttyu.net/file/ttyu/css/ttyu.web.css" rel="stylesheet" type="text/css">
+    <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../../alsm/vue/vue.js"></script>
+    <script src="https://unpkg.com/vue-lazyload@1.3.3/vue-lazyload.js"></script>
+
+    <!-- element-ui 导入-->
+    <link href="../../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <script src="../../../alsm/element2.12.0/index.js"></script>
+
+    <script src="../../../alsm/api_sub.js" type="text/javascript"></script>
+    <script src="../../../js/config/config.js"></script>
+
+    <link href="../../../css/alsCommon.css" rel="stylesheet">
+    <!-- 适配ie 解决ie中then方法不能调用-->
+    <script src="../../../alsm/ttyu.net/file/system/promise/es6-promise.js"></script>
+    <script src="../../../alsm/ttyu.net/file/system/promise/es6-promise.auto.js"></script>
+
+
+    <style>
+        .t-body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .el-popover {
+            top: 10px !important;
+            left: 100px !important;
+            padding: 0;
+            overflow: auto;
+        }
+
+        #fileDialog .el-dialog {
+            margin-top: 10px !important;
+            width: 80%;
+        }
+
+        #fileDialog .el-dialog__header {
+            display: none;
+        }
+
+        #fileDialog .el-dialog__body {
+            padding: 0;
+        }
+
+        .dialog-file {
+            height: 100%;
+        }
+
+        .el-dialog__body, .el-carousel, .el-carousel__container {
+            height: 100%;
+        }
+
+        .el-carousel__item {
+            text-align: center;
+        }
+
+        .fileShow {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+        }
+
+        .fileShow1 {
+            height: 100%;
+        }
+
+
+        .myClose {
+            z-index: 10;
+        }
+
+        #tableDiv {
+            overflow: auto;
+        }
+
+        #selectDiv {
+            padding: 2px;
+        }
+
+        .el-pagination {
+            padding: 0px;
+        }
+
+        .el-pagination__sizes .el-input__inner {
+            height: 99%;
+        }
+
+        .el-form-item {
+            margin-bottom: 2px;
+        }
+
+        .el-dialog__footer, .el-dialog__header {
+            padding: 8px;
+        }
+
+        .el-button--mini {
+            font-size: 100%;
+            padding: 4px;
+        }
+
+        .el-carousel__indicators--outside button {
+            background-color: #000;
+        }
+    </style>
+</head>
+<body>
+<div id='body1'>
+    <div class="t-body">
+        <div>
+            <div class="t-title">
+                <span>查询条件</span>
+            </div>
+            <div class="t-find">
+                <div id="selectDiv">
+                    <el-cascader style="width: 30%"
+                                 ref="myCascader"
+                                 :options="selectTree" placeholder="请选择部门或上报人"
+                                 clearable filterable
+                                 v-model="selectNode"
+                                 :show-all-levels="false"
+                                 :props="{ checkStrictly: true ,value: 'id', label: 'name'}"
+                    >
+
+                    </el-cascader>
+
+
+                    <el-date-picker style="width: 15%"
+                                    value-format="yyyy-MM-dd"
+                                    v-model="params.before"
+                                    type="date"
+                                    placeholder="选择时间起点">
+                    </el-date-picker>
+                    <el-date-picker style="width: 15%"
+                                    value-format="yyyy-MM-dd"
+                                    v-model="params.after"
+                                    type="date"
+                                    placeholder="选择时间终点">
+                    </el-date-picker>
+
+                    <el-button type="primary" icon="el-icon-search" circle @click="select"></el-button>
+                    <el-button type="primary" icon="el-icon-close" circle @click="clear"></el-button>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="t-title" style="background-color: rgb(64, 152, 186);">
+            <span>事件列表</span>
+        </div>
+
+        <div style="padding: 2px">
+            <el-button type="primary" icon="el-icon-delete" circle @click="deleteList"></el-button>
+        </div>
+        <div id="tableDiv">
+            <el-table :data="rows"
+                      :row-key="rowKey"
+                      ref="myTable"
+                      @select='selectRows'
+                      @select-all="selectRows"
+                      border fit highlight-current-row style="width: 100%;"
+                      :row-style="{height:'5px'}" :cell-style="{padding:'5px 0'}">
+
+                <el-table-column type="selection" align="center" :reserve-selection="true">
+                </el-table-column>
+                <el-table-column align="center" label="序号" width="50">
+                    <template slot-scope="scope">
+                        {{ (pageIndex - 1) * pageSize + scope.$index + 1 }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="操作" width="150">
+                    <template slot-scope="scope">
+                        <el-button size="mini" icon="el-icon-edit-outline"
+                                   v-on:click="show(scope.row)" style="cursor: pointer;">处理
+                        </el-button>
+                        <el-button v-if="scope.row.fileRecordInfos!=null&&scope.row.fileRecordInfos.length!=0"
+                                   size="mini" icon="el-icon-zoom-in"
+                                   v-on:click="showFile(scope.row)" style="cursor: pointer;">文件
+                        </el-button>
+                        <el-button v-else size="mini" type="info" disable icon="el-icon-zoom-in"
+                                   style="cursor: pointer;">文件
+                        </el-button>
+
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="上报人" width="120" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.reporterName }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="上报类型" width="100" :show-overflow-tooltip="true"
+                >
+                    <template slot-scope="scope">
+                        {{ scope.row.type }}
+                    </template>
+                </el-table-column>
+
+
+                <el-table-column align="center" label="描述" min-width="180" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        {{ scope.row.description }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="时间" width="200">
+                    <template slot-scope="scope">
+                        {{ scope.row.date }}
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="坐标" width="200">
+                    <template slot-scope="scope">
+                <span style="color: #0e78c9;cursor: pointer" @click="displayEventPos(scope.row)">
+                        {{ scope.row.longitude }} , {{ scope.row.latitude }}
+                </span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column align="center" label="处理结果" width="80">
+                    <template slot-scope="scope">
+                    <span v-if="isProgress(scope.row.result)" style="color: red">
+                        未处理
+                    </span>
+                        <span v-else style="color: green">
+                        已处理
+                    </span>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+        </div>
+        <el-pagination
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageIndex"
+                :page-sizes="pageRows"
+                :page-size="pageSize"
+                layout="total,jumper,prev, pager, next,sizes"
+                :total="total"
+        ></el-pagination>
+        <!-- 图片弹窗 -->
+        <div id="fileDialog">
+            <el-dialog
+                    :visible.sync="dialogVisible"
+                    :before-close="closeBigPic"
+            >
+                <div class="dialog-file">
+                    <el-carousel
+                            indicator-position="outside"
+                            :autoplay="false"
+                            :initial-index="this.carouselArrIndex"
+                            arrow="always"
+                            v-if="isCarouselShow"
+                            height="96%"
+                    >
+                        <button type="button" aria-label="Close" class="el-dialog__headerbtn myClose"
+                                @Click="closeBigPic">
+                            <i class="el-dialog__close el-icon el-icon-close"></i></button>
+                        <el-carousel-item v-for="carousel of carouselArr" :key="carousel.id">
+                            <div style="height: 100%;margin:0 60px;overflow-x: auto;overflow-y: hidden">
+                                <img class="fileShow" v-if="carousel.type=='picture'" ref="carouselIMG"
+                                     v-lazy="getShowUrl(carousel.url,carousel.type)">
+
+                                <div v-if="carousel.type=='video'" class="fileShow">
+                                    <video class="fileShow"
+                                           v-if="getShowUrl(carousel.url,carousel.type)!=null"
+                                           controls>
+                                        <source :src="getShowUrl(carousel.url,carousel.type)" type="video/mp4">
+                                    </video>
+                                    <img class="fileShow" v-else
+                                         v-lazy="loadFailedUrl1">
+                                </div>
+
+                                <div class="fileShow1" v-if="carousel.type=='audio'">
+                                    <audio v-if="getShowUrl(carousel.url,carousel.type)!=null" controls>
+                                        <source :src="getShowUrl(carousel.url,carousel.type)">
+                                    </audio>
+                                    <img class="fileShow" v-else
+                                         v-lazy="loadFailedUrl2">
+                                </div>
+                                <div class="fileShow1" v-if="carousel.type=='other'">
+                                    <el-link v-if="getShowUrl(carousel.url,carousel.type)!=null" type="primary"
+                                             :href="getShowUrl(carousel.url,carousel.type)">{{carousel.name}}
+                                    </el-link>
+
+                                    <img class="fileShow" v-else
+                                         v-lazy="loadFailedUrl3">
+                                </div>
+
+                            </div>
+
+
+                        </el-carousel-item>
+                    </el-carousel>
+                </div>
+            </el-dialog>
+        </div>
+
+
+        <el-dialog title="事件处理" center :visible.sync="dialogShow" width="70%">
+            <el-form :model="row" label-width="120px"
+                     class="demo-ruleForm">
+                <el-form-item label="处理结果 :">
+                    <el-input
+                            type="textarea"
+                            :rows="2"
+                            placeholder=""
+                            v-model="row.result">
+                    </el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+               <el-button type="primary" @click="submit">确 定</el-button>
+              <el-button type="primary" @click="dialogShow = false">关 闭</el-button>
+          </span>
+        </el-dialog>
+
+
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript">
+    $(function () {
+        Vue.use(VueLazyload)
+        new Vue({
+            el: '#body1',
+            data: {
+                loadFailedUrl1: params.serviceIp + params.videoLoadingFailedUrl,
+                loadFailedUrl2: params.serviceIp + params.audioLoadingFailedUrl,
+                loadFailedUrl3: params.serviceIp + params.otherLoadingFailedUrl,
+                isCarouselShow: false,
+                carouselArr: [],
+                carouselArrIndex: 0,
+                dialogVisible: false,
+
+
+                selectNode: [],
+                selectTree: [],
+
+                params: {
+                    page: '',
+                    limit: '',
+                    after: '',
+                    before: '',
+                    dptId: '',
+                    reporterId: ''
+                },
+                dialogShow: false,
+
+                rows: [],
+                row: {},
+                saveSelectRows: [],
+
+                total: 0,
+                pageIndex: 1,
+                pageSize: 15,
+                pageRows: [5, 10, 15, 20, 30, 40, 50],
+
+            },
+
+            mounted: function () {
+                vm = this;
+                vm.setTableDiv();
+
+                //设置默认时间为前一个月
+                var now = new Date();
+                vm.params.before = formatTimeToStr(now.setMonth(now.getMonth() - 1));
+
+                vm.loadData();
+                vm.fillSelectTree();
+
+                setMyHeight("#tableDiv", 217);
+                setMyHeight("#fileDialog .el-dialog", 20);
+                //回车键触发方法
+                document.onkeydown = function (e) {
+                    var key = window.event.keyCode;
+                    if (key == 13) {
+                        vm.select();
+                    }
+                }
+                //随浏览器改变改变高度
+                window.onresize = function () {
+                    if (vm != null) {
+
+                        setMyHeight("#fileDialog .el-dialog", 20);
+                        setMyHeight("#tableDiv", 217);
+                    }
+                }
+
+            },
+            methods: {
+                closeBigPic: function () {
+                    vm.isCarouselShow = false;
+                    vm.dialogVisible = false;
+                },
+                showFile: function (val) {
+                    // console.info(val);
+                    vm.carouselArr = val.fileRecordInfos;
+
+                    vm.isCarouselShow = true;
+                    vm.dialogVisible = true;
+                },
+                getShowUrl: function (oldUrl, type) {
+                    if (oldUrl) {
+                        //将url的ip换成服务器的ip
+                        var showUrl = urlChangeIp(oldUrl, params.serviceIp);
+                        if (type == "picture") {
+                            //选择展示的url
+                            var url = getThumbnail(showUrl);
+                            if (isExistUrl(url)) {
+                                return url;
+                            } else {
+                                if (isExistUrl(showUrl)) {
+                                    return showUrl;
+                                } else {
+                                    return params.serviceIp + params.pictureLoadingFailedUrl;
+                                }
+                            }
+
+                        } else if (type == "audio") {
+                            if (isExistUrl(showUrl)) {
+                                return showUrl;
+                            }
+                        } else if (type == "video") {
+                            //选择展示的url
+                            var url = getCompressVideo(showUrl);
+                            if (isExistUrl(url)) {
+                                return url;
+                            } else {
+                                if (isExistUrl(showUrl)) {
+                                    return showUrl;
+                                }
+                            }
+
+                        } else if (type == "other") {
+                            if (isExistUrl(showUrl)) {
+                                return showUrl;
+                            }
+                        }
+                    }
+                    return null;
+                },
+                fillSelectTree: function () {
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                vm.selectTree = res.data[0].children;
+                            }
+                        }, null, null, params.serviceIp + '/PoliceInfo/getCurrentUserFortressInfoTree',
+                        "get"
+                    )
+                },
+                setTableDiv: function () {
+                    var height = $(window).height() - 200;
+                    $("#tableDiv").css("height", height);
+                },
+                rowKey: function (row) {
+                    return row.id;
+                },
+                clearFilter: function () { // 清空全部筛选,必须放到方法中，否则加载失败
+                    this.$refs.myTable.clearSelection();
+                },
+                getThumbnail: function (url) {
+                    return getThumbnail(url);
+                },
+                //将选中行数据存入变量
+                selectRows: function (rows) {
+                    vm.saveSelectRows = rows;
+                },
+
+                loadData: function () { //获取点击对象
+                    vm.params.page = vm.pageIndex;
+                    vm.params.limit = vm.pageSize;
+
+                    vm.params.before = setStartTime(vm.params.before);
+                    vm.params.after = setEndTime(vm.params.after);
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+
+                                vm.rows = res.data.rows;
+                                vm.total = res.data.total;
+                            }
+                        }, null, null, params.serviceIp + '/FortressIncidentInfo/listUserDeptAllIncident',
+                        "get", vm.params
+                    )
+
+                },
+                //分页 初始页pageIndex、控制每页几条
+                handleSizeChange: function (size) {
+
+                    this.pageSize = size;
+                    this.loadData();
+                },
+                // 控制页面的切换
+                handleCurrentChange: function (pageIndex) {
+
+                    this.pageIndex = pageIndex;
+                    this.loadData();
+                },
+                isProgress: function (result) {
+                    if (result == null || result == "") {
+                        return true;
+                    }
+                    return false;
+                },
+                getTagColor: function (index) {
+                    if (index % 2 == 0) {
+                        return "success";
+                    } else {
+                        return "danger";
+                    }
+                    return "info";
+                },
+                show: function (row) { //获取点击对象
+                    vm.row = row;
+                    vm.dialogShow = true;
+                },
+                submit: function () {
+                    var param = {
+                        id: vm.row.id,
+                        result: vm.row.result
+                    }
+                    doApiByJsonstr(
+                        function (res) {
+                            vm.loadData();
+                            if (res.status === 200) {
+                                vm.dialogShow = false;
+                                vm.$message.info("事件处理成功！");
+                            } else {
+                                vm.$message.error("事件处理失败！");
+                            }
+                        },
+                        null, null, params.serviceIp + '/FortressIncidentInfo', 'put', param
+                    );
+                },
+                select: function () {
+                    vm.params.dptId = null;
+                    vm.params.reporterId = null;
+                    var node = vm.$refs.myCascader.getCheckedNodes();
+                    if (node != null && node.length >= 1) {
+                        var type = node[0].data.type;
+                        if (type === undefined) {
+                            vm.params.reporterId = node[0].data.userId;
+                        } else {
+                            vm.params.dptId = node[0].data.id;
+                        }
+                    }
+
+                    vm.pageIndex = 1;
+                    vm.loadData();
+                },
+                clear: function () {
+                    vm.params.before = null;
+                    vm.params.after = null;
+                    vm.params.dptId = null;
+                    vm.params.reporterId = null;
+                    vm.selectNode = [];
+
+                },
+                deleteList: function () {
+                    vm.$confirm('是否删除?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        var delIds = [];
+                        for (var i = 0; i < vm.saveSelectRows.length; i++) {
+                            var row = vm.saveSelectRows[i];
+                            if (row.id != null) {
+                                delIds.push(row.id);
+                            }
+                        }
+                        if (delIds.length == 0) {
+                            return;
+                        }
+                        doApiByJsonstr(
+                            function (res) {
+                                if (res.status === 200) {
+                                    vm.pageIndex = 1;
+                                    vm.loadData();
+                                    vm.clearFilter();
+                                    vm.$message.info("上报事件和相应的文件记录批量删除成功！");
+                                } else {
+                                    vm.$message.error("上报事件和相应的文件记录批量删除失败！");
+                                }
+                            },
+                            null, null, params.serviceIp + '/FortressIncidentInfo/batchDelete', 'post', delIds
+                        );
+
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除',
+                            duration: 1000
+                        });
+                    });
+
+
+                },
+                displayEventPos: function (item) {
+                    top.skipDoSomething = function () {
+                        top.showEventPoints([item]);
+                        top.showEventOverlay(item.id);
+                    }
+                    top.backDoSomething = top.hideEventPoints;
+                    top.skip2DMap();
+                }
+            }
+        })
+    })
+</script>
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <meta http-equiv="keywords" content=""/>
+    <meta http-equiv="description" content="农产品质量安全追溯信息系统"/>
+    <title>视频监控</title>
+</head>
+
+<body class="header">
+    <div class="content-box">
+        <iframe
+                src="https://open.ys7.com/ezopen/h5/iframe?url=ezopen://open.ys7.com/814340345/1.hd.live&autoplay=1&accessToken=at.clkh7r784hxlcfkl2bxv3fnb9h1j7lq8-9rhe354pkp-0c9kha5-8wmyclqae"
+                width="800"
+                height="500"
+                id="ysOpenDevice.hd"
+                allowfullscreen
+        >
+        </iframe>
+    </div>
+</body>
+
+<script>
+    /* 获取播放器元素 */
+    var player = document.getElementById('ysOpenDevice').contentWindow;
+    console.log(player);
+    /* iframe 支持方法 */
+    // player.postMessage("play", "https://open.ys7.com/ezopen/h5/iframe") /* 播放 */
+    // player.postMessage("stop", "https://open.ys7.com/ezopen/h5/iframe") /* 结束 */
+    // player.postMessage("capturePicture", "https://open.ys7.com/ezopen/h5/iframe") /* 截图 */
+    // player.postMessage("openSound", "https://open.ys7.com/ezopen/h5/iframe") /* 开启声音 */
+    // player.postMessage("closeSound", "https://open.ys7.com/ezopen/h5/iframe") /* 关闭声音 */
+    // player.postMessage("startSave", "https://open.ys7.com/ezopen/h5/iframe") /* 开始录制 */
+    // player.postMessage("stopSave", "https://open.ys7.com/ezopen/h5/iframe") /* 结束录制 */
+
+</script>
+</html>

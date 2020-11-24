@@ -1,0 +1,332 @@
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.2em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ibps-layout-header-aside-menu-side >>> .collapse-transition {
+    -webkit-transition: 0s height, 0s padding-top, 0s padding-bottom;
+    transition: 0s height, 0s padding-top, 0s padding-bottom
+}
+
+.ibps-layout-header-aside-menu-side >>> .horizontal-collapse-transition {
+    -webkit-transition: 0s width, 0s padding-left, 0s padding-right;
+    transition: 0s width, 0s padding-left, 0s padding-right
+}
+
+.ibps-layout-header-aside-menu-side >>> .horizontal-collapse-transition .el-submenu__title .el-submenu__icon-arrow {
+    -webkit-transition: 0s;
+    transition: 0s;
+    opacity: 0
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+}
+
+html, body, div, span {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    text-decoration: none;
+}
+
+
+.current {
+    display: none;
+}
+
+.all {
+    width: 97%;
+    height: 95%;
+    margin-left: 1.5%;
+    margin-top: 1.6%;
+    border-radius: 5px;
+    box-shadow: rgb(11, 234, 235) 0px 0px 18px inset;
+}
+
+.Department-box {
+    margin-top: 40px;
+    margin-right: auto;
+    margin-left: auto;
+    width: 500px;
+    text-align: center;
+}
+
+.Department-box div button {
+    border-color: #46a6ff;
+}
+
+.Department-box .el-form-item__label {
+    line-height: 40px;
+    padding: 0 0px 0 0;
+}
+
+.Department-box .el-input {
+    width: 85%;
+    margin-right: 15px;
+}
+
+.Department-box .ADDBtninfo {
+    height: 30px;
+    width: 60px;
+    line-height: 30px;
+    padding: 0;
+    font-size: 13px;
+    margin: 15px;
+}
+
+.Department-box .EditBtninfo {
+    height: 30px;
+    width: 60px;
+    line-height: 30px;
+    padding: 0;
+    font-size: 13px;
+    margin-left: 52px;
+    margin-right: 15px
+}
+
+.el-card__body {
+    padding: 0 20px;
+}
+
+.container-box {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.BgcColorRadiu {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    background: #fff;
+}
+
+.el-aside {
+    -webkit-box-shadow: 0 0 6px #75b3e4;
+    -moz-box-shadow: 0 0 6px #75b3e4;
+    box-shadow: 0 0 6px #75b3e4;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-image: -webkit-linear-gradient(#ddd, #000) 30 30;
+    border-image: -moz-linear-gradient(#ddd, #000) 30 30;
+    border-image: linear-gradient(#75b3e4, #85c4f7) 30 30;
+}
+
+.el-card.is-always-shadow,
+.el-card.is-hover-shadow:focus,
+.el-card.is-hover-shadow:hover {
+    box-shadow: 0 0 6px #75b3e4;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-image: -webkit-linear-gradient(#ddd, #000) 30 30;
+    border-image: -moz-linear-gradient(#ddd, #000) 30 30;
+    border-image: linear-gradient(#75b3e4, #85c4f7) 30 30;
+    border-radius: 5px;
+}
+
+    .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+        background-color: #91bff3
+    }
+
+    .el-col-12 {
+        width: 100% !important;
+    }
+
+.el-menu {
+    border-right: 0 !important;
+}
+
+.item-team .el-submenu__title {
+    padding-left: 52px !important;
+}
+
+.csm-table {
+    overflow-x: auto
+}
+
+.Planinfo {
+    text-align: center;
+    font-size: 15px;
+    width: 300px;
+    height: 23px;
+    line-height: 23px;
+    font-weight: lighter;
+    color: #fff;
+    margin: auto;
+    border-top: 1.001px solid #63b0ed;
+    border-bottom: 0;
+    background-color: #82b5de;
+    box-shadow: 0 0 6px #75b3e4;
+}
+
+.Planinfo:after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 1px solid #63b0ed;
+    transform: rotate(45deg);
+    border-right: 0px;
+    border-top: 0;
+    float: left;
+    margin-left: -9px;
+    margin-top: 3px;
+    background-color: #82b5de;
+    box-shadow: 0 0 6px #75b3e4;
+}
+
+.Planinfo:before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 1px solid #63b0ed;
+    transform: rotate(45deg);
+    border-left: 0px;
+    border-bottom: 0;
+    background-color: #82b5de;
+    float: right;
+    margin-top: 3px;
+    margin-right: -8px;
+    box-shadow: 0 0 6px #75b3e4;
+}
+
+    .el-card {
+        /* margin-top: 22px; */
+        height: 90%;
+        position: relative;
+    }
+
+.csm-blue .el-tag--medium {
+    margin: 4px;
+}
+
+.BtnAddExcel.el-button {
+    padding: 0;
+    width: 85px;
+    height: 30px;
+    float: right;
+    margin-bottom: 15px;
+    margin-right: 20px;
+    margin-left: 0px;
+}
+
+.ADDdialog .el-input--suffix .el-input__inner {
+    padding-right: 163px !important;
+}
+
+.block {
+    float: right;
+}
+
+.BtntreeDel {
+    color: #ff1f1f
+}
+
+.el-tree-node__content {
+    line-height: 26px;
+}
+
+.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+    background-color: #91bff3;
+}
+
+.Addtopinfo {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.treezhinfo {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.treesize {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.treepolsize {
+    font-size: 16px;
+}
+
+    .treepolinfo1 {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .treepolinfo2 {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .treepolinfo3 {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+.custom-tree-node-0 {
+    padding-right: 0px;
+}
+
+.custom-tree-node-1 {
+    padding-right: 10px;
+}
+
+.custom-tree-node-2 {
+    padding-right: 27px;
+}
+
+.custom-tree-node {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+span .em-tree-text {
+    width: 100%;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.custom-tree-btn {
+    position: absolute;
+    right: 0px;
+    height: 100%;
+}
+
+.el-button--mini {
+    padding: 0px;
+}
+
+.btnAddInfo {
+    position: absolute;
+    right: 10px;
+    /*line-height: 12px;*/
+    height: 100%;
+}
+
+.Delbtn {
+    position: absolute;
+    right: -5px;
+    /*line-height: 14px;*/
+    height: 100%;
+}

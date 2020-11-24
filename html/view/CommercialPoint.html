@@ -1,0 +1,2261 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>商业网点</title>
+
+    <link href="../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <!--
+    <link href="../../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">-->
+    <link href="../../alsm/ttyu.net/file/ttyu/css/ttyu.web.css" rel="stylesheet" type="text/css">
+    <link href="../../css/TbaleIndexCss.css" rel="stylesheet">
+
+    <script src="../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <script src="../../alsm/ttyu.net/file/system/jq/jquery-ui.js" type="text/javascript"></script>
+
+    <script src="../../alsm/ttyu.net/file/system/bs/bootstrap.min.js" type="text/javascript"></script>
+
+    <script src="../../alsm/ttyu.net/file/system/promise/es6-promise.js"></script>
+    <script src="../../alsm/ttyu.net/file/system/promise/es6-promise.auto.js"></script>
+
+    <!-- 必须先引入vue  后使用element-ui -->
+    <script src="../../alsm/vue/vue.js"></script>
+
+    <link href="../../alsm/element2.12.0/index.css" rel="stylesheet">
+    <!-- <link href="../../css/elui/index.css" rel="stylesheet"> -->
+    <!-- <script src="../../alsm/elui/index.js"></script> -->
+    <script src="../../alsm/element2.12.0/index.js"></script>
+
+    <script src="../../alsm/api_sub.js" type="text/javascript"></script>
+    <script src="../../js/config/config.js"></script>
+
+    <style>
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            width:648px;
+        }
+        .avatar-uploader2 .el-upload {
+            width: 100%;
+            height: 100%;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 150px;
+            height: 250px;
+            line-height: 250px;
+            text-align: center;
+        }
+        .avatar {
+            width: 70%;
+            height: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+        .avatar2 {
+            width: 70%;
+            height: 70%;
+            margin: 0 auto;
+        }
+        [v-cloak]{
+            display:none;
+        }
+
+        .el-col {
+            height: 48px;
+        }
+        .el-form-item__error {
+            top: 50%;
+            width: 80px;
+            transform: translateY(-50%);
+            padding: 0;
+            /* text-align: center; */
+            left: 210px;
+            z-index: 999;
+        }
+        .el-upload__input {
+            display: none !important;
+        }
+        #tableDiv{
+            overflow: auto;
+        }
+        .el-input.is-disabled .el-input__inner, .el-textarea.is-disabled .el-textarea__inner, .el-radio__input.is-disabled + span.el-radio__label {
+            color:#606266;
+        }
+        .el-radio__input.is-disabled.is-checked .el-radio__inner {
+            border-color: #409EFF;
+            background: #409EFF;
+        }
+
+        .el-image img{
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .upload_warp_img_divList {
+            margin: 5px;
+        }
+        .el-image {
+            display: block;
+        }
+        .el-image__inner--center {
+            top: 0;
+            left: 0;
+            transform: translate(0, 0);
+        }
+    </style>
+</head>
+<body>
+<div id='body1' v-loading.fullscreen.lock="mainDiv"
+    element-loading-text="拼命处理中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.5)">
+    <div class="t-body">
+        <div id="mainBody" style="display:none;">
+
+            <div >
+                <div class="t-find">
+                    <div class="t-form">
+                        <div>
+                            <span style="margin-right: -10px;">派出所名称：</span>
+                            <el-select v-model="params.dptId" clearable filterable placeholder="请选择派出所">
+                                <el-option
+                                    v-for="item in policeStation"
+                                    :key="item.name"
+                                    :label="item.name"
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </div>
+
+                        <div style="margin-left: 10px;">
+                            <span>单位名称：</span>
+                            <el-input v-model="params.dwmc" clearable placeholder="请输入单位名称" style="width: 240px;"></el-input>
+                        </div>
+                    </div>
+                    <div class="t-btns">
+                        <button title='查询'>
+                            <span class="glyphicon glyphicon-search" ></span>
+                            查询
+                        </button>
+                        <button title='重置'>
+                            <span class="glyphicon glyphicon-repeat" ></span>
+                            重置
+                        </button>
+
+                        <button
+                            v-loading.fullscreen.lock="fullscreenLoading"
+                            element-loading-text="拼命处理中"
+                            element-loading-spinner="el-icon-loading"
+                            element-loading-background="rgba(0, 0, 0, 0.8)"
+                            @click="exportToExcel()">
+                            <span class="iconfont icondaochu" style="font-size: 15px" >导出</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="t-btnsDiv" style="border-top: 8px solid rgb(236, 240, 245) !important"></div>
+
+            <div class="t-btns" style="background: #ffffff">
+                <button title='新增'>
+                    <span class="glyphicon glyphicon glyphicon-plus"></span>
+                    新增
+                </button>
+                <button @click="deleteList()" >
+                    <span class="glyphicon glyphicon-trash"></span>
+                    删除
+                </button>
+            </div>
+
+            <div id="tableDiv">
+                <el-table :data="rows"
+                    :row-key="rowKey"
+                    ref="myTable"
+                    @select='selectRows'
+                    @select-all="selectRows"
+                    border fit highlight-current-row style="width: 100%;"
+                    :row-style="{height:'5px'}" :cell-style="{padding:'5px 0'}">
+                    <el-table-column type="selection" align="center"  :reserve-selection="true">
+                    </el-table-column>
+                    <el-table-column align="center" label="序号" width="60">
+                        <template slot-scope="scope">
+                            {{  (pageIndex - 1) * pageSize +scope.$index+1 }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="操作" width="220">
+                        <template slot-scope="scope">
+                            <!--                    <span v-on:click="show(scope.row)" style="cursor: pointer;color: #0e78c9">编辑</span>-->
+                            <el-button size="mini"  icon="el-icon-edit" @click="show(scope.row)" style="display:inline">编辑</el-button>
+                            <el-button size="mini" icon="el-icon-search" @click="hotalCheck(scope.row.id)">检查记录</el-button>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="单位名称" width="200*">
+                        <template slot-scope="scope">
+                            {{ scope.row.dwmc }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="主管部门"  min-width="100">
+                        <template slot-scope="scope">
+                            <el-tooltip effect="light" :content="scope.row.zgbm" placement="top">
+                                <span>{{ scope.row.zgbm }}</span>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="经营范围"  min-width="200">
+                        <template slot-scope="scope">
+                            <el-tooltip effect="light" :content="scope.row.jyfw" placement="top">
+                                <span>{{ scope.row.jyfw }}</span>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="是否重点单位" width="120" >
+                        <template slot-scope="scope">
+                            {{ scope.row.sfzddw }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="消防等级" width="100*" min-width="15">
+                        <template slot-scope="scope">
+                            {{ scope.row.xfdj }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="负责人姓名" width="100*" min-width="20">
+                        <template slot-scope="scope">
+                            {{ scope.row.fzrxm }}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column align="center" label="负责人联系电话" width="120*" min-width="15">
+                        <template slot-scope="scope">
+                            {{ scope.row.fzrlxdh }}
+                        </template>
+                    </el-table-column>
+
+                    <!-- <el-table-column align="center" label="从业人员" width="120">
+                        <template slot-scope="scope">
+                            <el-button size="small" type="primary" @click="cyCheck(scope.row.id)">查看</el-button>
+                        </template>
+                    </el-table-column> -->
+
+                    <!-- <el-table-column align="center" label="检查登记记录" width="120" min-width="15">
+                        <template slot-scope="scope">
+                            <el-button size="small" type="primary" @click="hotalCheck(scope.row.id)">查看</el-button>
+                        </template>
+                    </el-table-column> -->
+                </el-table>
+            </div>
+
+            <el-pagination
+                background
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageIndex"
+                :page-sizes="pageRows"
+                :page-size="pageSize"
+                layout="total,jumper,prev, pager, next,sizes"
+                :total="total"
+                style="margin-bottom: 15px">
+            </el-pagination>
+        </div>
+
+        <el-dialog v-cloak title="边境派出所辖区商业网点" @close="closeDialog('row')" :fullscreen="fullscreen" center :visible.sync="dialogShow" style="height: 100%" width="952px" top="3vh">
+            <!--解决了 el-dialog懒加载-->
+            <div slot="footer" class="dialog-footer" style="position:relative;top: -55px;height:530px; display: none;">
+                <iframe style="width: 100%;height: 600px" id="mainIframe" ref="mainIframe" name="mainIframe" src="../wordHtml/CommercialPointWord.html" frameborder="0" scrolling="auto"></iframe>
+            </div>
+
+            <div style="width: 100%;overflow: auto;height:100%;box-shadow: 0px 15px 10px -2px rgba(0, 0, 0, .04)">
+                <el-form :model="row"  label-width="170px" class="demo-ruleForm" :rules="rules" ref="row">
+                    <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
+                        <el-tab-pane name="first" label="基本信息">
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="单位名称:">
+                                        <el-input v-model="row.dwmc" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="主管部门:" >
+                                        <el-input v-model="row.zgbm" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="营业执照号:" >
+                                        <el-input v-model="row.yyzzh" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="经营范围:" >
+                                        <el-input v-model="row.jyfw" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="是否签订治安责任保证书:">
+                                        <el-radio v-model="row.sfqdzrzazrbzs" label="是" :disabled="isReadOnly">是</el-radio>
+                                        <el-radio v-model="row.sfqdzrzazrbzs" label="否" :disabled="isReadOnly">否</el-radio>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="是否重点单位:">
+                                        <el-radio v-model="row.sfzddw" label="是" :disabled="isReadOnly">是</el-radio>
+                                        <el-radio v-model="row.sfzddw" label="否" :disabled="isReadOnly">否</el-radio>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="消防等级:">
+                                        <el-input v-model="row.xfdj" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="安装视频监控:">
+                                        <el-radio v-model="row.azspjk" label="是" :disabled="isReadOnly">是</el-radio>
+                                        <el-radio v-model="row.azspjk" label="否" :disabled="isReadOnly">否</el-radio>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="填表时间:" prop="writeTime">
+                                        <el-date-picker
+                                            style="width: 200px;" :disabled="isReadOnly"
+                                            value-format="yyyy-MM-dd HH:mm"
+                                            v-model="row.writeTime"
+                                            type="datetime"
+                                            placeholder="选择日期时间(必填)">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="24" style="height: 100%;">
+                                    <el-form-item label="商业网点基本情况说明:">
+                                        <el-input
+                                            style="width: 634px;" :disabled="isReadOnly"
+                                            type="textarea"
+                                            :rows="2"
+                                            placeholder="请输入内容"
+                                            v-model="row.sywdjbqksm">
+                                        </el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-tab-pane>
+                        <el-tab-pane name="second" label="法人">
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="姓名:">
+                                        <el-input v-model="row.frxm" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="性别:">
+                                        <el-radio v-model="row.frxb" label="男" :disabled="isReadOnly">男</el-radio>
+                                        <el-radio v-model="row.frxb" label="女" :disabled="isReadOnly">女</el-radio>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="联系电话:" prop="frlxdh">
+                                        <el-input v-model="row.frlxdh" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="民族:">
+                                        <el-select v-model="row.frmz" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in nationOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="身份证号码:" prop="frsfzhm">
+                                        <el-input v-model="row.frsfzhm" style="width: 200px;" @input="idNumTransform(row.frsfzhm, 'frsfzhm')" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="工作单位:">
+                                        <el-input v-model="row.frgzdw" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="出生日期:" prop="frcsrq">
+                                        <el-date-picker v-model="frcsrq"
+                                            style="width: 200px;" :disabled="isReadOnly"
+                                            value-format="yyyy-MM-dd"
+                                            align="right"
+                                            type="date"
+                                            placeholder="选择日期">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="政治面貌:">
+                                        <el-select v-model="row.frzzmm" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in politicsOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="文化程度:">
+                                        <el-select v-model="row.frwhcd" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in cultureOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="婚姻状况:">
+                                        <el-select v-model="row.frhyzk" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in maritalStatusOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="24">
+                                    <el-form-item label="籍贯:">
+                                        <el-input v-model="row.frjg" style="width: 634px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-tab-pane>
+                        <el-tab-pane name="third" label="负责人">
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="姓名:">
+                                        <el-input v-model="row.fzrxm" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="性别:">
+                                        <el-radio v-model="row.fzrxb" label="男" :disabled="isReadOnly">男</el-radio>
+                                        <el-radio v-model="row.fzrxb" label="女" :disabled="isReadOnly">女</el-radio>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="联系电话:" prop="fzrlxdh">
+                                        <el-input v-model="row.fzrlxdh" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="民族:">
+                                        <el-select v-model="row.fzrmz" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in nationOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="身份证号码:" prop="fzrsfzhm">
+                                        <el-input v-model="row.fzrsfzhm" style="width: 200px;" @input="idNumTransform(row.frsfzhm, 'fzrsfzhm')" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="工作单位:">
+                                        <el-input v-model="row.fzrgzdw" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="出生日期:" prop="fzrcsrq">
+                                        <el-date-picker v-model="fzrcsrq"
+                                            style="width: 200px;" :disabled="isReadOnly"
+                                            value-format="yyyy-MM-dd"
+                                            align="right" type="date"
+                                            placeholder="选择日期">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="政治面貌:">
+                                        <el-select v-model="row.fzrzzmm" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in politicsOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="文化程度:">
+                                        <el-select v-model="row.fzrwhcd" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in cultureOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="婚姻状况:">
+                                        <el-select v-model="row.fzrhyzk" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in maritalStatusOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="24">
+                                    <el-form-item label="籍贯:">
+                                        <el-input v-model="row.fzrjg" style="width: 634px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-tab-pane>
+                        <el-tab-pane name="fourth" label="房主">
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="姓名:">
+                                        <el-input v-model="row.fzxm" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="性别:">
+                                        <el-radio v-model="row.fzxb" label="男" :disabled="isReadOnly">男</el-radio>
+                                        <el-radio v-model="row.fzxb" label="女" :disabled="isReadOnly">女</el-radio>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="联系电话:" prop="fzlxdh">
+                                        <el-input v-model="row.fzlxdh" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="民族:">
+                                        <el-select v-model="row.fzmz" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in nationOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="身份证号码:" prop="fzsfzhm">
+                                        <el-input v-model="row.fzsfzhm" style="width: 200px;" @input="idNumTransform(row.frsfzhm, 'fzsfzhm')" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="工作单位:">
+                                        <el-input v-model="row.fzgzdw" style="width: 200px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="出生日期:" prop="fzcsrq">
+                                        <el-date-picker v-model="fzcsrq"
+                                            style="width: 200px;" :disabled="isReadOnly"
+                                            value-format="yyyy-MM-dd"
+                                            align="right" type="date"
+                                            placeholder="选择日期">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="政治面貌:">
+                                        <el-select v-model="row.fzzzmm" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in politicsOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="文化程度:">
+                                        <el-select v-model="row.fzwhcd" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in cultureOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="婚姻状况:">
+                                        <el-select v-model="row.fzhyzk" placeholder="请选择" style="width: 200px;" :disabled="isReadOnly">
+                                            <el-option v-for="item in maritalStatusOptions" :key="item" :label="item" :value="item">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                            <el-row>
+                                <el-col :span="24">
+                                    <el-form-item label="籍贯:">
+                                        <el-input v-model="row.fzjg" style="width: 634px;" :disabled="isReadOnly"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-tab-pane>
+                        <el-tab-pane name="fifth" label="门面照片">
+                            <!-- <el-upload
+                                ref='upload' :disabled="isReadOnly"
+                                class="avatar-uploader avatar-uploader2"
+                                :action="updateUrl"
+                                :http-request="httpRequest02"
+                                :show-file-list="false"
+                                :on-success="handleAvatarSuccess2"
+                                :before-upload="beforeAvatarUpload02">
+                                <img v-if="imageUrl02" :src="imageUrl02" class="avatar avatar2">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload> -->
+                            <div>
+                                <h3>门面照片</h3>
+                                <el-upload
+                                    :action="updateUrl" :disabled="isReadOnly"
+                                    :http-request="httpRequest02"
+                                    list-type="picture-card"
+                                    :on-preview="handleMmzpPreview"
+                                    :on-remove="handleMmzpRemove"
+                                    :before-upload="beforeAvatarUpload"
+                                    :on-change="handleChangeMmzpPhoto"
+                                    :file-list="fileMmzpLists"
+                                    style="margin-top: 10px;">
+                                    <i class="el-icon-plus"></i>
+                                </el-upload>
+                                <el-dialog :visible.sync="dialogMmzpVisible" :append-to-body="true">
+                                    <img width="100%" :src="dialogMmzpImageUrl" alt="" style="padding: 30px;">
+                                </el-dialog>
+                            </div>
+                
+                            <div style="width: 100%">
+                                <div class="upload_warp_img_divList" v-for="(item,index) of mmzpImgLists">
+                                    <div class="upload_warp_img_div_top" v-show="!isReadOnly">
+                                        <img src="./../../images/ImgUpload/del.png" class="upload_warp_img_div_del" @click="fileMmzpDelIdPhoto(index,item.id)">
+                                    </div>
+                                    <el-image :src="getShowUrl(item.url)" :preview-src-list="srcList"></el-image>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane name="sixth" label="内部照片">
+                            <!-- <el-upload
+                                ref='upload' :disabled="isReadOnly"
+                                class="avatar-uploader avatar-uploader2"
+                                :action="updateUrl"
+                                :http-request="httpRequest03"
+                                :show-file-list="false"
+                                :on-success="handleAvatarSuccess3"
+                                :before-upload="beforeAvatarUpload03">
+                                <img v-if="imageUrl03" :src="imageUrl03" class="avatar avatar2">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload> -->
+                            <div>
+                                <h3>内部照片</h3>
+                                <el-upload
+                                    :action="updateUrl" :disabled="isReadOnly"
+                                    :http-request="httpRequest03"
+                                    list-type="picture-card"
+                                    :on-preview="handleNbzpPreview"
+                                    :on-remove="handleNbzpRemove"
+                                    :before-upload="beforeAvatarUpload"
+                                    :on-change="handleChangeNbzpPhoto"
+                                    :file-list="fileNbzpLists"
+                                    style="margin-top: 10px;">
+                                    <i class="el-icon-plus"></i>
+                                </el-upload>
+                                <el-dialog :visible.sync="dialogNbzpVisible" :append-to-body="true">
+                                    <img width="100%" :src="dialogNbzpImageUrl" alt="" style="padding: 30px;">
+                                </el-dialog>
+                            </div>
+                
+                            <div style="width: 100%">
+                                <div class="upload_warp_img_divList" v-for="(item,index) of nbzpImgLists">
+                                    <div class="upload_warp_img_div_top" v-show="!isReadOnly">
+                                        <img src="./../../images/ImgUpload/del.png" class="upload_warp_img_div_del" @click="fileNbzpDelIdPhoto(index,item.id)">
+                                    </div>
+                                    <el-image :src="getShowUrl(item.url)" :preview-src-list="srcList2"></el-image>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane name="seventh" label="营业执照">
+                            <!-- <el-upload
+                                ref='upload' :disabled="isReadOnly"
+                                class="avatar-uploader avatar-uploader2"
+                                :action="updateUrl"
+                                :http-request="httpRequest04"
+                                :show-file-list="false"
+                                :on-success="handleAvatarSuccess4"
+                                :before-upload="beforeAvatarUpload04">
+                                <img v-if="imageUrl04" :src="imageUrl04" class="avatar avatar2">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload> -->
+                            <div>
+                                <h3>营业执照</h3>
+                                <el-upload
+                                    :action="updateUrl" :disabled="isReadOnly"
+                                    :http-request="httpRequest04"
+                                    list-type="picture-card"
+                                    :on-preview="handleYyzzPreview"
+                                    :on-remove="handleYyzzRemove"
+                                    :before-upload="beforeAvatarUpload"
+                                    :on-change="handleChangeYyzzPhoto"
+                                    :file-list="fileYyzzLists"
+                                    style="margin-top: 10px;">
+                                    <i class="el-icon-plus"></i>
+                                </el-upload>
+                                <el-dialog :visible.sync="dialogYyzzVisible" :append-to-body="true">
+                                    <img width="100%" :src="dialogYyzzImageUrl" alt="" style="padding: 30px;">
+                                </el-dialog>
+                            </div>
+                
+                            <div style="width: 100%">
+                                <div class="upload_warp_img_divList" v-for="(item,index) of yyzzImgLists">
+                                    <div class="upload_warp_img_div_top" v-show="!isReadOnly">
+                                        <img src="./../../images/ImgUpload/del.png" class="upload_warp_img_div_del" @click="fileYyzzDelIdPhoto(index,item.id)">
+                                    </div>
+                                    <el-image :src="getShowUrl(item.url)" :preview-src-list="srcList3"></el-image>
+                                </div>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane name="ninth" label="从业人员" :disabled="isTrue">
+                            <el-button size="small" type="primary" @click="addCyRy()">新增</el-button>
+                            <div style="width: 100%;height: 100%;">
+                                <!--  :row-key="SafeCheckrowKey" 多选-->
+                                <el-table :data="cyCheckTbaleRows"
+                                    border fit highlight-current-row style="width: 100%;margin-top: 10px;"
+                                    :row-style="{height:'5px'}" :cell-style="{padding:'5px 0'}">
+            
+                                    <el-table-column align="center" label="序号" width="50">
+                                        <template slot-scope="scope">
+                                            {{  (cyCheckPageIndex - 1) * cyCheckPageSize +scope.$index+1 }}
+                                        </template>
+                                    </el-table-column>
+            
+                                    <el-table-column align="center" label="姓名" width="80">
+                                        <template slot-scope="scope">
+                                            {{ scope.row.cyryxm }}
+                                        </template>
+                                    </el-table-column>
+            
+                                    <el-table-column align="center" label="身份证号" width="180">
+                                        <template slot-scope="scope">
+                                            {{ scope.row.cyrysfzh }}
+                                        </template>
+                                    </el-table-column>
+            
+                                    <el-table-column align="center" label="联系电话" width="120">
+                                        <template slot-scope="scope">
+                                            {{ scope.row.cyrylxdh }}
+                                        </template>
+                                    </el-table-column>
+            
+                                    <el-table-column align="center" label="现住址" min-width="100">
+                                        <template slot-scope="scope">
+                                            <el-tooltip effect="light" :content="scope.row.cyryxzz" placement="top">
+                                                <span>{{ scope.row.cyryxzz }}</span>
+                                            </el-tooltip>
+                                        </template>
+                                    </el-table-column>
+            
+                                    <el-table-column align="center" label="操作" width="220">
+                                        <template slot-scope="scope">
+                                            <el-button size="small" type="info" @click="cyShowDetail(scope.row, scope.$index)">查看详情</el-button>
+                                            <el-button size="small" type="danger" @click="deleteCyCheckShowDetail(scope.row.id, scope.$index)">删除</el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+            
+                                <el-pagination
+                                    background
+                                    @current-change="cyHandleCurrentChange"
+                                    :data="cyCheckTbaleRows"
+                                    :current-page="cyCheckPageIndex"
+                                    :page-size="cyCheckPageSize"
+                                    layout="total,jumper,prev, pager, next"
+                                    :total="cyChecktotal"
+                                    style="margin: 10px 0">
+                                </el-pagination>
+                            </div>
+                        </el-tab-pane>
+                    </el-tabs>
+                </el-form>
+            </div>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button :style="{display:visible}" type="info" @click="dialogShow = false">取 消</el-button>
+                <el-button :style="{display:visible}" type="success" @click="addRowSave('row')">提交</el-button>
+            </span>
+        </el-dialog>
+
+        <el-dialog title="安全检查记录" @close='closeDialogHotalCheck' :fullscreen="fullscreen" center :visible.sync="hotalDialog" style="height: 100%"  width="1100px" top="3vh">
+            <div class="runs-paginator-flex-container">
+                <div style="width: 600px;" v-if="dialogShowOrNo">
+                    <!--  :row-key="SafeCheckrowKey" 多选-->
+                    <el-table :data="safeCheckTbaleRows"
+                        border fit highlight-current-row
+                        style="width: 100%;"
+                        :row-style="{height:'5px'}"
+                        :cell-style="{padding:'5px 0'}">
+
+                        <el-table-column align="center" label="序号" width="50">
+                            <template slot-scope="scope">
+                                {{  (safeCheckPageIndex - 1) * safeCheckPageSize +scope.$index+1 }}
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column align="center" label="时间" width="200">
+                            <template slot-scope="scope">
+                                {{ scope.row.writeTime }}
+                            </template>
+                        </el-table-column>
+
+                        <!-- <el-table-column align="center" label="检查单位" width="100*">
+                            <template slot-scope="scope">
+                                {{ scope.row.jcdw }}
+                            </template>
+                        </el-table-column> -->
+
+                        <el-table-column align="center" label="检查人" min-width="100">
+                            <template slot-scope="scope">
+                                {{ scope.row.jcr }}
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column align="center" label="操作" width="230">
+                            <template slot-scope="scope">
+                                <el-button size="small" type="info" @click="hotalShowDetail(scope.row)">查看详情</el-button>
+                                <el-button size="mini" type="primary" icon="el-icon-download" @click="exportToWord(scope.row.id, scope.row.bjcdw)">导出Word</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                    <el-pagination
+                        background
+                        @current-change="hotalHandleCurrentChange"
+                        :data="safeCheckTbaleRows"
+                        :current-page="safeCheckPageIndex"
+                        :page-size="safeCheckPageSize"
+                        layout="total,jumper,prev, pager, next"
+                        :total="safeChecktotal"
+                        style="margin-top: 10px">
+                    </el-pagination>
+                </div>
+
+                <div style="width: 400px;overflow: auto" v-if="dialogShowOrNo">
+                    <el-form :model="safeCheckTbaleRow"  label-width="140px" class="demo-ruleForm">
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="检查时间:" >
+                                    <el-input v-model="safeCheckTbaleRow.sj" readonly></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="检查人:" >
+                                    <el-input v-model="safeCheckTbaleRow.jcr" readonly></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="检查单位:" >
+                                    <el-input v-model="safeCheckTbaleRow.jcdw" readonly></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <!-- <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="被检查单位(签字):" >
+                                    <el-input v-model="safeCheckTbaleRow.bjcdw"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row> -->
+
+                        <el-row>
+                            <el-col :span="24" style="height: 100%;">
+                                <el-form-item label="检查情况:" >
+                                    <el-input
+                                        type="textarea" readonly
+                                        :rows="2"
+                                        placeholder="请输入内容"
+                                        v-model="safeCheckTbaleRow.jcqk">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+
+                <div style="width: 100%;overflow: auto" v-else>
+                    <el-form :model="safeCheckTbaleRow"  label-width="140px" class="demo-ruleForm">
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="检查时间:" >
+                                    <el-input v-model="safeCheckTbaleRow.sj" readonly></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="检查人:" >
+                                    <el-input v-model="safeCheckTbaleRow.jcr" readonly></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="检查单位:" >
+                                    <el-input v-model="safeCheckTbaleRow.jcdw" readonly></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+
+                        <!-- <el-row>
+                            <el-col :span="24">
+                                <el-form-item label="被检查单位(签字):" >
+                                    <el-input v-model="safeCheckTbaleRow.bjcdw"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row> -->
+
+                        <el-row>
+                            <el-col :span="24" style="height: 100%;">
+                                <el-form-item label="检查情况:" >
+                                    <el-input
+                                        type="textarea" readonly
+                                        :rows="2"
+                                        placeholder="请输入内容"
+                                        v-model="safeCheckTbaleRow.jcqk">
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+            </div>
+        </el-dialog>
+
+        <el-dialog v-cloak title="从业人员新增" @close="closeDialogCyMemberAdd('MemberRow')" center :visible.sync="CyMemberDialogShow" :modal='false' top="3vh" width="952px">
+            <div style="width: 100%;height: 100%;overflow: auto;">
+                <el-form :model="MemberRow"  label-width="120px" class="demo-ruleForm" :rules="rules" ref="MemberRow">
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="姓名:" >
+                                <el-input v-model="MemberRow.cyryxm" style="width: 200px;"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="联系电话:" prop="cyrylxdh">
+                                <el-input v-model="MemberRow.cyrylxdh" style="width: 200px;"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="身份证号:" prop="cyrysfzh">
+                                <el-input v-model="MemberRow.cyrysfzh" style="width: 200px;"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="填表时间:" prop="writeTime">
+                                <el-date-picker
+                                    style="width: 200px;"
+                                    value-format="yyyy-MM-dd HH:mm:ss"
+                                    v-model="MemberRow.writeTime"
+                                    type="datetime"
+                                    placeholder="选择日期时间(必填)">
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="现住址:" >
+                                <el-input v-model="MemberRow.cyryxzz" style="width: 648px;"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <!-- <el-row>
+                        <el-col :span="24" style="height: 100%;">
+                            <el-form-item label="身份证复印件:" >
+                                <el-upload
+                                    ref='upload'
+                                    name="photographFile"
+                                    class="avatar-uploader"
+                                    :action="updateUrl"
+                                    :http-request="httpRequest"
+                                    :show-file-list="false"
+                                    :on-success="handleAvatarSuccess"
+                                    :before-upload="beforeAvatarUpload" >
+                                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                </el-upload>
+                            </el-form-item>
+                        </el-col>
+                    </el-row> -->
+                    <div>
+                        <h3 style="text-align: center;">从业人员身份证复印件</h3>
+                        <el-upload
+                            :action="updateUrl" :disabled="isReadOnly"
+                            :http-request="httpRequest"
+                            list-type="picture-card"
+                            :on-preview="handleCyrrsfzPreview"
+                            :on-remove="handleCyrrsfzRemove"
+                            :before-upload="beforeAvatarUpload"
+                            :on-change="handleChangeCyrrsfzPhoto"
+                            :file-list="fileCyrrsfzLists"
+                            style="margin-top: 10px;">
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                        <el-dialog :visible.sync="dialogCyrrsfzVisible" :append-to-body="true">
+                            <img width="100%" :src="dialogCyrrsfzImageUrl" alt="" style="padding: 30px;">
+                        </el-dialog>
+                    </div>
+        
+                    <div style="width: 100%">
+                        <div class="upload_warp_img_divList" v-for="(item,index) of cyrrsfzImgLists">
+                            <div class="upload_warp_img_div_top" v-show="!isReadOnly">
+                                <img src="./../../images/ImgUpload/del.png" class="upload_warp_img_div_del" @click="fileCyrrsfzDelIdPhoto(index,item.id)">
+                            </div>
+                            <el-image v-if="row.id" :src="getShowUrl(item.url)" :preview-src-list="srcList4"></el-image>
+                            <el-image v-else :src="item.url"></el-image>
+                        </div>
+                    </div>
+                </el-form>
+            </div>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button type="info" @click="CyMemberDialogShow = false">取 消</el-button>
+                <el-button type="success" @click="addMemberRow('MemberRow')">提交</el-button>
+            </span>
+        </el-dialog>
+    </div>
+</div>
+<style scoped>
+
+    /*<style lang="stylus" scoped>*/
+    /*/deep/ .cell{
+        white-space:nowrap;
+    }*/
+
+    .cell{
+        white-space:nowrap;
+    }
+    .el-table .cell{
+        white-space:nowrap;
+    }
+</style>
+
+</body>
+
+</html>
+<script type="text/javascript" src="../json/nation.js"></script>
+<script src="../../js/utils/toExcel.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        // 自定义验证规则
+        var validateBirthday = function (rule, value, callback) {
+            if (!value) {
+                return callback(new Error('日期不能为空'));
+            } else {
+                callback();
+            }
+        };
+        var validateIdNumber = function (rule, value, callback, value2) {
+            if (!value) {
+                return callback(new Error('身份证号不能为空'));
+            } else if (!checkIdNumber(value)) {
+                callback(new Error('身份证号码错误!'));
+            } else {
+                callback();
+            }
+        };
+        var validatePhoneNumber = function (rule, value, callback) {
+            if (!value) {
+                return callback(new Error('手机号不能为空'));
+            } else if (!checkPhoneNumber(value)) {
+                callback(new Error('手机号输入不正确!'));
+            } else {
+                callback();
+            }
+        };
+        new Vue({
+            el: '#body1',
+            data: {
+                params:{
+                    page:null,
+                    limit: null,
+                    dptId:null,
+                    dwmc: null
+                },
+                // 派出所名单
+                policeStation: [],
+
+                checked: false,
+                selectedArray: [],
+                options:[],
+                dialogShow: false,
+
+                rows: [],
+                row: {},
+                saveSelectRows:[],
+
+                total: 0,
+                pageIndex:1,
+                pageSize: 20,
+                pageRows: [5, 10, 20, 30, 40, 50],
+
+                operated:'',
+                operated02:'',
+                activeName: 'first',
+                // 判断是否
+                isOptions: [{
+                    value: '是',
+                    label: '是'
+                }, {
+                    value: '否',
+                    label: '否'
+                }],
+                // 判断民族
+                nationOptions: [],
+                // 婚姻状况
+                maritalStatusOptions: [],
+                // 政治面貌
+                politicsOptions: [],
+                // 文化程度
+                cultureOptions: [],
+
+                //---------------安全检查记录--------
+                safeCheckTbaleRowID:'',
+                safeCheckTbaleRows:[],
+
+                // 其他选项是否显示
+                isTrue: true,
+
+                //单个显示
+                safeCheckTbaleRow:{
+                    //涉爆企业性质
+                    sbqyArray: ['1','2'],
+                    //涉爆项目
+                    sbxmArray: ['1','2'],
+                    //检查情况
+                    // jcqkArray:['1','18'],
+                },
+
+                safeChecktotal:0,
+                safeCheckPageIndex:1,
+                safeCheckPageSize: 5,
+                hotalDialog: false,
+
+                //检查情况
+                jcqkArray:['1','2','3','18'],
+
+                safeCheckArray:[],
+                //-----------从业人员-----------------
+                cyCheckTbaleRows: [],
+                MemberRow: {},
+                cyChecktotal: 0,
+                cyCheckPageIndex: 1,
+                cyCheckPageSize: 5,
+                CyMemberDialogShow: false,
+
+                imageUrl:'',
+                imageUrl02:'',
+                imageUrl03:'',
+                imageUrl04:'',
+                // updateUrl: params.serviceIp + '/SywdSywdcyryxxb/addDataAndFile',
+                updateUrl: '#',
+                // updateUrl02: params.serviceIp + '/SywdSywddjb/addDataAndFile',
+                multfileImg:null,
+                // 图片放大预览src列表
+                srcList: [],
+                srcList2: [],
+                srcList3: [],
+                srcList4: [],
+
+                // 门面照片
+                fileMmzpIdPhoto:[],
+                picMmzpListIdPhoto: [],
+                fileMmzpLists:[],
+                dialogMmzpImageUrl: '',
+                dialogMmzpVisible: false,
+                mmzpImgLists: [],
+
+                // 内部照片
+                fileNbzpIdPhoto:[],
+                picNbzpListIdPhoto: [],
+                fileNbzpLists:[],
+                dialogNbzpImageUrl: '',
+                dialogNbzpVisible: false,
+                nbzpImgLists: [],
+
+                // 营业执照
+                fileYyzzIdPhoto:[],
+                picYyzzListIdPhoto: [],
+                fileYyzzLists:[],
+                dialogYyzzImageUrl: '',
+                dialogYyzzVisible: false,
+                yyzzImgLists: [],
+
+                // 从业人员身份证复印件
+                fileCyrrsfzIdPhoto:[],
+                picCyrrsfzListIdPhoto: [],
+                fileCyrrsfzLists:[],
+                dialogCyrrsfzImageUrl: '',
+                dialogCyrrsfzVisible: false,
+                cyrrsfzImgLists: [],
+
+                //对话框满屏
+                mainDiv:null,
+                visible:'none',
+                isReadOnly: true,
+                fullscreen:false,
+                dialogShowOrNo: true,
+
+                // 导出控制
+                fullscreenLoading: null,
+                frcsrq: '',
+                fzrcsrq: '',
+                fzcsrq: '',
+
+                // 表单验证规则
+                rules: {
+                    writeTime: [{ validator: validateBirthday, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    // frcsrq: [{ validator: validateBirthday, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    frsfzhm: [{ validator: validateIdNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    frlxdh: [{ validator: validatePhoneNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    // fzrcsrq: [{ validator: validateBirthday, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    fzrsfzhm: [{ validator: validateIdNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    fzrlxdh: [{ validator: validatePhoneNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    // fzcsrq: [{ validator: validateBirthday, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    fzsfzhm: [{ validator: validateIdNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    fzlxdh: [{ validator: validatePhoneNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    cyrysfzh: [{ validator: validateIdNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                    cyrylxdh: [{ validator: validatePhoneNumber, trigger: 'blur' }, { required: true, trigger: 'blur' }],
+                },
+            },
+            mounted: function () {
+                vm = this;
+                vm.setTableDiv();
+                var tmpMapToId = window.location.search.substring(1);
+                var MapToId = parseInt(tmpMapToId.split('&')[0]);
+                if (tmpMapToId.split('&')[1] === '1'){
+                    vm.mainDiv=true;
+                    vm.loadataOneDialog01(MapToId);
+                }else if (tmpMapToId.split('&')[1] === '2') {
+                    vm.mainDiv=true;
+                    vm.loadataOneDialog02(MapToId);
+                }else {
+                    vm = this;
+                    vm.loadData();
+                    initButton(this);
+                    vm.visible='inline';
+                    vm.isReadOnly = false;
+                    $("#mainBody").css("display","block");
+                    vm.isTrue = false;
+                }
+
+                vm.nationOptions = nation;
+                vm.maritalStatusOptions = maritalStatusOptions;
+                vm.politicsOptions = politicsOptions;
+                vm.cultureOptions = cultureOptions;
+
+                const obj12 = $("#mainIframe")[0].contentWindow;
+                //    ----------------------
+                vm.loadData02();
+            },
+            computed: {
+
+            },
+            created: function(){
+                vm = this;
+                //多选框
+                vm.nationOptions = nation;
+                vm.maritalStatusOptions = maritalStatusOptions;
+            },
+            methods: {
+                httpRequest: function(data) {
+                    let rd = new FileReader(); // 创建文件读取对象
+                    let file = data.file;
+                    rd.readAsDataURL(file); // 文件读取装换为base64类型
+                    rd.onloadend = function (e) {
+                        vm.dialogCyrrsfzImageUrl = this.result; // this指向当前方法onloadend的作用域
+                        // vm.MemberRow.cyrysfzfyj = vm.imageUrl;
+                    };
+                },
+                httpRequest02: function(data) {
+                    let rd = new FileReader(); // 创建文件读取对象
+                    let file = data.file;
+                    rd.readAsDataURL(file); // 文件读取装换为base64类型
+                    rd.onloadend = function (e) {
+                        vm.dialogMmzpImageUrl = this.result; // this指向当前方法onloadend的作用域
+                    };
+                },
+                httpRequest03: function(data) {
+                    let rd = new FileReader(); // 创建文件读取对象
+                    let file = data.file;
+                    rd.readAsDataURL(file); // 文件读取装换为base64类型
+                    rd.onloadend = function (e) {
+                        vm.dialogNbzpImageUrl = this.result; // this指向当前方法onloadend的作用域
+                    };
+                },
+                httpRequest04: function(data) {
+                    let rd = new FileReader(); // 创建文件读取对象
+                    let file = data.file;
+                    rd.readAsDataURL(file); // 文件读取装换为base64类型
+                    rd.onloadend = function (e) {
+                        vm.dialogYyzzImageUrl = this.result; // this指向当前方法onloadend的作用域
+                    };
+                },
+                // 门面照片
+                handleMmzpPreview:function(file) {
+                    vm.dialogMmzpImageUrl = file.url;
+                    vm.dialogMmzpVisible = true;
+                },
+                handleMmzpRemove:function(file, fileLists) {
+                    for (let i in this.picMmzpListIdPhoto) {
+                        if (this.picMmzpListIdPhoto[i].key === file.uid) {
+                            this.picMmzpListIdPhoto.splice(i, 1)
+                        }
+                    }
+                    vm.fileMmzpLists = fileLists;
+                },
+                handleChangeMmzpPhoto:function(file, fileList) {
+                    vm.fileMmzpLists = fileList
+                },
+                fileMmzpDelIdPhoto:function(index,id){
+                    vm.$confirm('此操作将永久删除该图片, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        vm.row.mmzpDelIds.push(id);
+                        vm.mmzpImgLists.splice(index,1);
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                // 内部照片
+                handleNbzpPreview:function(file) {
+                    vm.dialogNbzpImageUrl = file.url;
+                    vm.dialogNbzpVisible = true;
+                },
+                handleNbzpRemove:function(file, fileLists) {
+                    for (let i in this.picNbzpListIdPhoto) {
+                        if (this.picNbzpListIdPhoto[i].key === file.uid) {
+                            this.picNbzpListIdPhoto.splice(i, 1)
+                        }
+                    }
+                    vm.fileNbzpLists = fileLists;
+                },
+                handleChangeNbzpPhoto:function(file, fileList) {
+                    vm.fileNbzpLists = fileList
+                },
+                fileNbzpDelIdPhoto:function(index,id){
+                    vm.$confirm('此操作将永久删除该图片, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        vm.row.mmzpDelIds.push(id);
+                        vm.nbzpImgLists.splice(index,1);
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                // 营业执照
+                handleYyzzPreview:function(file) {
+                    vm.dialogYyzzImageUrl = file.url;
+                    vm.dialogYyzzVisible = true;
+                },
+                handleYyzzRemove:function(file, fileLists) {
+                    for (let i in this.picYyzzListIdPhoto) {
+                        if (this.picYyzzListIdPhoto[i].key === file.uid) {
+                            this.picYyzzListIdPhoto.splice(i, 1)
+                        }
+                    }
+                    vm.fileYyzzLists = fileLists;
+                },
+                handleChangeYyzzPhoto:function(file, fileList) {
+                    vm.fileYyzzLists = fileList
+                },
+                fileYyzzDelIdPhoto:function(index,id){
+                    vm.$confirm('此操作将永久删除该图片, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        vm.row.mmzpDelIds.push(id);
+                        vm.yyzzImgLists.splice(index,1);
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                // 从业人员身份证复印件
+                handleCyrrsfzPreview:function(file) {
+                    vm.dialogCyrrsfzImageUrl = file.url;
+                    vm.dialogCyrrsfzVisible = true;
+                },
+                handleCyrrsfzRemove:function(file, fileLists) {
+                    for (let i in this.picCyrrsfzListIdPhoto) {
+                        if (this.picPopulationListIdPhoto[i].key === file.uid) {
+                            this.picPopulationListIdPhoto.splice(i, 1)
+                        }
+                    }
+                    vm.fileCyrrsfzLists = fileLists;
+                },
+                handleChangeCyrrsfzPhoto:function(file, fileList) {
+                    vm.fileCyrrsfzLists = fileList;
+                },
+                fileCyrrsfzDelIdPhoto:function(index,id){
+                    // console.log(index,id);
+                    vm.$confirm('此操作将永久删除该图片, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        vm.MemberRow.cyrysfzfyjDelIds.push(id);
+                        vm.cyrrsfzImgLists.splice(index,1);
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                //加载单个dialog
+                loadataOneDialog01:function(MapToId) {
+                    vm.dialogShowOrNo = false;
+                    //隐藏关闭按钮
+                    $(".el-dialog__close").css("display", "none");
+                    // $(".childDialog").height(800);
+                    // $(".childDialog").css("height","800px")
+                    doApi(
+                        function (res) {
+                            // console.log(res)
+                            if (res.status === 200) {
+                                vm.fullscreen = true;
+                                vm.row = res.data;
+
+                                vm.frcsrq = vm.row.frcsrq;
+                                vm.fzrcsrq = vm.row.fzrcsrq;
+                                vm.fzcsrq = vm.row.fzcsrq;
+
+                                if (vm.row.mmzpList) {
+                                    vm.mmzpImgLists = vm.row.mmzpList;
+                                    for(var i=0; i<vm.mmzpImgLists.length; i++) {
+                                        vm.srcList.push(vm.getShowUrl(vm.mmzpImgLists[i].url));
+                                    }
+                                }
+                                if (vm.row.nbzpList) {
+                                    vm.nbzpImgLists = vm.row.nbzpList;
+                                    for(var i=0; i<vm.nbzpImgLists.length; i++) {
+                                        vm.srcList2.push(vm.getShowUrl(vm.nbzpImgLists[i].url));
+                                    }
+                                }
+                                if (vm.row.yyzzList) {
+                                    vm.yyzzImgLists = vm.row.yyzzList;
+                                    for(var i=0; i<vm.yyzzImgLists.length; i++) {
+                                        vm.srcList3.push(vm.getShowUrl(vm.yyzzImgLists[i].url));
+                                    }
+                                }
+
+                                vm.operated = 'edit';
+                                vm.dialogShow = true;
+                            }
+                        }, null, null, params.serviceIp + '/SywdSywddjb/' + MapToId,
+                        "get"
+                    );
+                },
+                loadataOneDialog02:function(MapToId) {
+                    vm.dialogShowOrNo = false;
+                    //隐藏关闭按钮
+                    $(".el-dialog__close").css("display", "none");
+                    // $(".childDialog").height(800);
+                    // $(".childDialog").css("height","800px")
+                    doApi(
+                        function (res) {
+                            // console.log(res)
+                            if (res.status === 200) {
+                                vm.fullscreen = true;
+                                vm.safeCheckTbaleRow = res.data;
+
+                                vm.operated = 'edit';
+                                vm.hotalDialog = true;
+                            }
+                        }, null, null, params.serviceIp + '/SywdJcdj/' + MapToId,
+                        "get"
+                    );
+                },
+                // 切换tab
+                handleClick: function (tab, event) {
+                    if (tab.name == 'ninth' && vm.row.id) {
+                        vm.cyCheck(vm.row.id);
+                    }
+                },
+                // 关闭编辑对话框
+                closeDialog:function(formName){
+                    vm.row = {};
+                    vm.imageUrl02 = '';
+                    vm.imageUrl03 = '';
+                    vm.imageUrl04 = '';
+                    vm.multfileImg02 = null;
+                    vm.multfileImg03 = null;
+                    vm.multfileImg04 = null;
+                    vm.mmzpImgLists = [];
+                    vm.nbzpImgLists = [];
+                    vm.yyzzImgLists = [];
+                    vm.fileMmzpLists = [];
+                    vm.fileNbzpLists = [];
+                    vm.fileYyzzLists = [];
+                    vm.frcsrq = '';
+                    fzrcsrq = '';
+                    fzcsrq = '';
+                    vm.cyCheckTbaleRows = [];
+                    vm.cyChecktotal = 0;
+                    vm.loadData();
+                    vm.activeName = 'first';
+                    vm.$refs[formName].clearValidate();
+                },
+                // 提交表单
+                addRowSave: function (formName) {
+                    this.$refs[formName].validate(function (valid) {
+                        if (valid) {
+                            vm.row.frcsrq = vm.frcsrq;
+                            vm.row.fzrcsrq = vm.fzrcsrq;
+                            vm.row.fzcsrq = vm.fzcsrq;
+                            this.fd = new FormData();
+                            // console.log(this.row)
+                            for (var key in vm.row) {
+                                let value = vm.row[key];
+                                if(key=='tjNeedyHouseholdsFamilies'){
+                                }
+                                else if(key=='policeVisitForm'){
+                                }
+                                else if(key=='photograph'){
+                                    this.fd.append(key,'');
+                                }
+                                //不能传 数据库自动生成的时间，否则400
+                                else if (key=='pointPositionInfo'){
+                                }
+                                else if (key=='rkglCzrkxxbFamilies'){
+                                }
+                                else if (key=='sywdSywdcyryxxbs') {
+                                }
+                                else if (key=='mmzpList') {
+                                }
+                                else if (key=='nbzpList') {
+                                }
+                                else if (key=='yyzzList') {
+                                }
+                                else {
+                                    if(value != null){
+                                        this.fd.append(key, value);
+                                    }
+                                }
+                            }
+
+                            // 门面照片
+                            if (vm.fileMmzpLists){
+                                for (let i = 0; i < vm.fileMmzpLists.length; i++) {
+                                    this.fd.append('mmzpFile',vm.fileMmzpLists[i].raw);
+                                }
+                            }
+                            // 内部照片
+                            if (vm.fileNbzpLists){
+                                for (let i = 0; i < vm.fileNbzpLists.length; i++) {
+                                    this.fd.append('nbzpFile',vm.fileNbzpLists[i].raw);
+                                }
+                            }
+                            // 营业执照
+                            if (vm.fileYyzzLists){
+                                for (let i = 0; i < vm.fileYyzzLists.length; i++) {
+                                    this.fd.append('yyzzFile',vm.fileYyzzLists[i].raw);
+                                }
+                            }
+
+                            var userData = JSON.parse(window.localStorage.getItem('userdata'));
+                            if (vm.policeStation.length ===1 && userData.dptName === vm.policeStation[0].name) {
+                                this.fd.append('fillPersonId', userData.id)
+                                this.fd.append('fillPerson', userData.name)
+                            } else if (vm.row.policeVisitForm) {
+                                this.fd.append('fillPersonId', vm.row.policeVisitForm.fillPersonId)
+                                this.fd.append('fillPerson', vm.row.policeVisitForm.fillPerson)
+                            }
+
+                            if (vm.operated == "add"){
+                                doApiByFile(
+                                    function(res) {
+                                        if (res.status === 200) {
+                                            // alert("成功")
+                                            vm.addMemberRows(res.data.id);
+                                            vm.dialogShow = false;
+                                            vm.$message.info("新增成功！");
+                                            vm.loadData();
+                                        }else{
+                                            vm.$message.error("新增失败！");
+                                        }
+                                    },
+                                    null, null,params.serviceIp + '/SywdSywddjb/addDataAndFile', 'post',this.fd
+                                );
+                            }else if (vm.operated == 'edit'){
+                                doApiByFile(
+                                    function(res) {
+                                        if (res.status === 200) {
+                                            vm.loadData();
+                                            vm.dialogShow = false;
+                                            vm.$message.info("修改成功！");
+                                        }else{
+                                            vm.$message.error("修改失败！");
+                                        }
+                                    },
+                                    null, null,params.serviceIp + '/SywdSywddjb/updateDataAndFile', 'PUT',this.fd
+                                );
+                            }
+                        } else {
+                            return vm.$message.error("填报信息有缺失或错误！")
+                        }
+                    })
+                },
+                beforeAvatarUpload:function(file) {
+                    const isJPG = file.type === 'image/jpeg';
+                    const isPng = file.type === 'image/png';
+                    if (!isJPG && !isPng) {
+                        this.$message.error('上传图片格式只能为.jpg或.png!');
+                    }
+                    // const isLt10M = file.size / 1024 / 1024 < 10;
+                    // if (!isLt10M) {
+                    //     this.$message.error('上传头像图片大小不能超过10MB!');
+                    // }
+                    return isJPG || isPng;
+                },
+                handleAvatarSuccess:function(res, file) {
+                    vm.imageUrl = URL.createObjectURL(file.raw);
+                    vm.multfileImg = file.raw;
+                    vm.MemberRow.cyrysfzfyj = vm.imageUrl;
+                    vm.MemberRow.multfileImg = vm.multfileImg;
+                },
+                handleAvatarSuccess2:function(res, file) {
+                    vm.imageUrl02 = URL.createObjectURL(file.raw);
+                    vm.multfileImg02 = file.raw;
+                },
+                handleAvatarSuccess3:function(res, file) {
+                    vm.imageUrl03 = URL.createObjectURL(file.raw);
+                    vm.multfileImg03 = file.raw;
+                },
+                handleAvatarSuccess4:function(res, file) {
+                    vm.imageUrl04 = URL.createObjectURL(file.raw);
+                    vm.multfileImg04 = file.raw;
+                },
+                //--------------从业人员--BEGIN--
+                //显示单个检查表
+                cyShowDetail:function(row, index){
+                    vm.MemberRow = row;
+                    vm.operated02 = 'edit';
+                    vm.cyIndex = index;
+                    vm.MemberRow.cyrysfzfyjDelIds = [];
+                    vm.srcList4 = [];
+                    if (row.cyrysfzfyjList) {
+                        vm.cyrrsfzImgLists = row.cyrysfzfyjList;
+                        for(var i=0; i<vm.cyrrsfzImgLists.length; i++) {
+                            vm.srcList4.push(vm.getShowUrl(vm.cyrrsfzImgLists[i].url));
+                        }
+                    }
+                    vm.CyMemberDialogShow = true;
+                },
+                //新增从业人员
+                addCyRy:function(){
+                    vm.operated02 = 'add';
+                    vm.CyMemberDialogShow = true;
+                },
+                closeDialogCyMemberAdd:function(formName){
+                    vm.imageUrl='';
+                    vm.multfileImg = null;
+                    vm.MemberRow = {};
+                    vm.cyrrsfzImgLists = [];
+                    vm.fileCyrrsfzLists = [];
+                    if (vm.row.id) {
+                        vm.cyCheck(vm.row.id);
+                    }
+                    vm.$refs[formName].clearValidate();
+                },
+                deleteCyCheckShowDetail:function(id, index){
+                    vm.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        if (vm.row.id) {
+                            doApi(
+                                function (res) {
+                                    // console.log(res);
+                                    if (res.status === 200){
+                                        vm.$message.info("删除人员成功！");
+                                        vm.cyCheck(vm.row.id);
+                                        vm.SFZsrc=''
+                                    }else {
+                                        vm.$message.error("删除人员失败！");
+                                    }
+                                },null,null,params.serviceIp + '/SywdSywdcyryxxb/'+id,
+                                "delete"
+                            );
+                        } else {
+                            vm.cyCheckTbaleRows.splice(index, 1);
+                            vm.cyChecktotal = vm.cyCheckTbaleRows.length;
+                        }
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                addMemberRow:function(formName){
+                    this.$refs[formName].validate(function (valid) {
+                        if (valid) {
+                            if (vm.row.id) {
+                                this.memberFormData = new FormData();
+                                for (let key in vm.MemberRow){
+                                    let value = vm.MemberRow[key];
+                                    if (key == 'cyrysfzfyjList') {
+                                    } 
+                                    else if (key == 'multfileImg') {
+                                    } 
+                                    else {
+                                        if (value != null) {
+                                            this.memberFormData.append(key,value);
+                                        }
+                                    }
+                                }
+
+                                if (vm.row.id != null) {
+                                    this.memberFormData.append('sywdSywddjbId',vm.row.id);
+                                }
+                                // 从业人员身份证复印件
+                                if (vm.fileCyrrsfzLists){
+                                    for (let i = 0; i < vm.fileCyrrsfzLists.length; i++) {
+                                        this.memberFormData.append('cyrysfzfyjFile',vm.fileCyrrsfzLists[i].raw);
+                                    }
+                                }
+
+                                if (vm.operated02 == 'add') {
+                                    doApiByFile(
+                                        function(res) {
+                                            if (res.status === 200) {
+                                                // vm.dialogShow=false;
+                                                vm.$message.info("新增成功！");
+                                                vm.CyMemberDialogShow = false;
+                                                vm.cyCheck(vm.row.id);
+                                            }else{
+                                                vm.$message.error("新增失败！");
+                                            }
+                                        },
+                                        null, null,params.serviceIp + '/SywdSywdcyryxxb/addDataAndFile', 'post',this.memberFormData
+                                    );
+                                } else if (vm.operated02 == 'edit') {
+                                    doApiByFile(
+                                        function(res) {
+                                            if (res.status === 200) {
+                                                // vm.dialogShow=false;
+                                                vm.$message.info("修改成功！");
+                                                vm.CyMemberDialogShow = false;
+                                                vm.cyCheck(vm.row.id);
+                                            }else{
+                                                vm.$message.error("修改失败！");
+                                            }
+                                        },
+                                        null, null,params.serviceIp + '/SywdSywdcyryxxb/updateDataAndFile', 'PUT',this.memberFormData
+                                    );
+                                }
+                            } else if (vm.operated02 == 'add') {
+                                vm.MemberRow.cyrysfzfyjList = vm.fileCyrrsfzLists;
+                                vm.cyCheckTbaleRows.push(vm.MemberRow);
+                                vm.CyMemberDialogShow = false;
+                                vm.cyChecktotal = vm.cyCheckTbaleRows.length;
+                                vm.$message.info("新增从业人员成功！");
+                            } else {
+                                for(var i=0; i<vm.fileCyrrsfzLists.length; i++) {
+                                    vm.MemberRow.cyrysfzfyjList.push(vm.fileCyrrsfzLists[i]);
+                                }
+                                vm.cyCheckTbaleRows.splice(vm.cyIndex, 1, vm.MemberRow);
+                                vm.CyMemberDialogShow = false;
+                                vm.$message.info("修改从业人员成功！");
+                            }
+                        } else {
+                            return vm.$message.error("填报信息有缺失或错误！")
+                        }
+                    })
+                },
+                addMemberRows: function (id) {
+                    for (var i=0; i<vm.cyCheckTbaleRows.length; i++) {
+                        this.memberFormData = new FormData();
+                        for (let key in vm.cyCheckTbaleRows[i]){
+                            let value = vm.cyCheckTbaleRows[i][key];
+                            if (key == 'cyrysfzfyj') {
+                            } 
+                            else if (key == 'cyrysfzfyjList') {
+                                for (let j = 0; j < vm.cyCheckTbaleRows[i][key].length; j++) {
+                                    this.memberFormData.append('cyrysfzfyjFile',vm.cyCheckTbaleRows[i][key][j].raw);
+                                }
+                                // this.memberFormData.append('cyrysfzfyjFile', vm.cyCheckTbaleRows[i][key]);
+                            } 
+                            else {
+                                if (value != null) {
+                                    this.memberFormData.append(key,value);
+                                }
+                            }
+                        }
+
+                        if (id != null) {
+                            this.memberFormData.append('sywdSywddjbId', id);
+                        }
+
+                        doApiByFile(
+                            function(res) {
+                                if (res.status === 200) {
+                                    // vm.dialogShow=false;
+                                    // vm.$message.info("新增成功！");
+                                    vm.CyMemberDialogShow = false;
+                                }else{
+                                    vm.$message.error("新增失败！");
+                                }
+                            },
+                            null, null,params.serviceIp + '/SywdSywdcyryxxb/addDataAndFile', 'post',this.memberFormData
+                        );
+                    }
+                },
+                //切换页面
+                cyHandleCurrentChange:function(cyCheckPageIndex){
+                    vm.cyCheckPageIndex = cyCheckPageIndex;
+                    vm.hotalCheck(vm.cyCheckTbaleRowID);
+                },
+                //表格 初始化
+                cyCheck:function(id){
+                    doApi(
+                        function (res) {
+                            // console.log(res);
+                            if(res.status === 200) {
+                                vm.cyCheckTbaleRows= res.data.rows;
+                                vm.cyChecktotal =res.data.total;
+                            }
+                        },null,null,params.serviceIp + '/SywdSywdcyryxxb/listByParentId',
+                        "get",{
+                            'sywdSywddjbId': id,
+                            'page':vm.cyCheckPageIndex,
+                            'limit':vm.cyCheckPageSize
+                        }
+                    );
+                },
+                //--------------从业人员--END----
+
+                //--------------检查登记表--BEGIN--
+                //显示单个检查表
+                hotalShowDetail:function(row){
+                    // console.log(row);
+                    vm.safeCheckTbaleRow=row;
+                    //涉爆企业性质    qyxz
+                    // vm.safeCheckTbaleRow.sbqyArray=row.qyxz.split(',');
+                    //涉爆项目        sbxm
+                    // vm.safeCheckTbaleRow.sbxmArray=row.sbxm.split(',');
+                    //检查情况
+                    // vm.jcqkArray = row.jcqk.split(',');
+                },
+                //切换页面
+                hotalHandleCurrentChange:function(safeCheckPageIndex){
+                    this.safeCheckPageIndex = safeCheckPageIndex;
+                    this.hotalCheck(vm.hotalCheckTbaleRowID);
+                },
+                //关闭事件
+                closeDialogHotalCheck:function(){
+                    vm.safeCheckTbaleRow={}
+                    vm.safeCheckArray=[]
+                },
+                //表格 初始化
+                hotalCheck:function(id){
+                    vm.hotalCheckTbaleRowID=id;
+
+                    // console.log(id);
+                    doApi(
+                        function (res) {
+                            // console.log(res);
+                            if(res.status === 200) {
+                                vm.safeCheckTbaleRows= res.data.rows;
+                                vm.safeChecktotal =res.data.total;
+                                // console.log("赋值完毕")
+                            }
+                        },null,null,params.serviceIp + '/SywdJcdj/page',
+                        "get",{
+                            'sywdSywddjbId':vm.hotalCheckTbaleRowID,
+                            'page':vm.safeCheckPageIndex,
+                            'limit':vm.safeCheckPageSize
+                        }
+                    );
+                    vm.hotalDialog=true;
+                },
+                //--------------检查登记表--END----
+
+                rowKey :function(row) {
+                    return row.id;
+                },
+                clearFilter:function () { // 清空全部筛选,必须放到方法中，否则加载失败
+                    this.$refs.myTable.clearSelection();
+                },
+                selectAll:function() {
+                    vm.selectedArray = [];
+                    if (vm.checked) {
+                        for ( var i=0;i<vm.options.length;i++ ){
+                            var item=vm.options[i];
+                            vm.selectedArray.push(item.userId)
+                        }
+                    } else {
+                        vm.selectedArray = [];
+                    }
+                },
+                changeSelect:function(val) {
+                    vm.selectedArray=val;
+                },
+                //将选中行数据存入变量
+                selectRows:function(rows){
+                    vm.saveSelectRows=rows;
+                },
+                //填充下拉框
+                /* fillOptions:function () {
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.options= res.data;
+                            }
+                        },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceInfo',
+                        "get"
+                    )
+                },*/
+                //初始化数据列表
+                loadData: function () {
+                    vm.params.page=vm.pageIndex;
+                    vm.params.limit=vm.pageSize;
+                    doApi(
+                        function (res) {
+                            // console.log(res);
+                            if(res.status === 200) {
+                                vm.rows= res.data.rows;
+                                vm.total =res.data.total;
+                            }
+                        },null,null,params.serviceIp + '/SywdSywddjb/listUserDeptData',
+                        "get",vm.params
+                    );
+                },
+                setTableDiv:function(){
+                    var height=$(window).height()-200;
+                    $("#tableDiv").css("height",height);
+                },
+                //初始化派出所列表
+                loadData02: function () {
+                    doApi(
+                        function (res) {
+                            if(res.status === 200) {
+                                vm.policeStation = res.data;
+                            }
+                        },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceStation',"get"
+                    );
+                },
+                //分页 初始页pageIndex、控制每页几条
+                handleSizeChange:function(size){
+                    this.pageSize = size;
+                    this.loadData();
+                },
+                // 控制页面的切换
+                handleCurrentChange: function(pageIndex) {
+                    this.pageIndex = pageIndex;
+                    this.loadData();
+                },
+                isProgress:function(startTime,endTime){
+                    if(startTime==null||endTime==null){
+                        return true;
+                    }
+                    var now=new Date();
+                    if(now<new Date(startTime.replace(/-/g,"/"))||now>new Date(endTime.replace(/-/g,"/"))){
+                        return false;
+                    }
+                    return true;
+                },
+                getTagColor: function (score) {
+                    if (score == 1) {
+                        return "success";
+                    } else if(score == 0){
+                        return "danger";
+                    }
+                    return "info";
+                },
+                show: function (row) { //获取点击对象
+                    // console.log(row)
+                    vm.selectedArray=[];
+                    vm.row=row;
+                    vm.frcsrq = vm.row.frcsrq;
+                    vm.fzrcsrq = vm.row.fzrcsrq;
+                    vm.fzcsrq = vm.row.fzcsrq;
+                    vm.row.mmzpDelIds = [];
+                    vm.srcList = [];
+                    vm.srcList2 = [];
+                    vm.srcList3 = [];
+
+                    if (row.mmzpList) {
+                        vm.mmzpImgLists = row.mmzpList;
+                        for(var i=0; i<vm.mmzpImgLists.length; i++) {
+                            vm.srcList.push(vm.getShowUrl(vm.mmzpImgLists[i].url));
+                        }
+                    }
+                    if (row.nbzpList) {
+                        vm.nbzpImgLists = row.nbzpList;
+                        for(var i=0; i<vm.nbzpImgLists.length; i++) {
+                            vm.srcList2.push(vm.getShowUrl(vm.nbzpImgLists[i].url));
+                        }
+                    }
+                    if (row.yyzzList) {
+                        vm.yyzzImgLists = row.yyzzList;
+                        for(var i=0; i<vm.yyzzImgLists.length; i++) {
+                            vm.srcList3.push(vm.getShowUrl(vm.yyzzImgLists[i].url));
+                        }
+                    }
+
+                    vm.operated='edit';
+                    vm.dialogShow=true;
+                },
+                deleteList:function () {
+                    vm.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        var delIds=[];
+                        for ( var i=0;i<vm.saveSelectRows.length;i++ ){
+                            var row=vm.saveSelectRows[i];
+                            delIds.push(row.id);
+                        }
+
+                        doApiByJsonstr(
+                            function(res) {
+                                if (res.status === 200) {
+                                    vm.pageIndex=1;
+                                    vm.loadData();
+                                    // vm.dialogShow=false;
+                                    vm.clearFilter();
+                                    vm.$message.info("批量删除成功！");
+                                }else{
+                                    vm.$message.error("批量删除失败！");
+                                }
+                            },
+                            null, null, params.serviceIp + '/SywdSywddjb/batchDelete', 'post',delIds
+                        );
+                    }).catch(function () {
+                        vm.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                showMessage:function (status) {
+                    if (status=='suc'){
+                        vm.$message.info("操作成功！");
+                    }if (status=='fail'){
+                        vm.$message.error("操作失败！");
+                    }
+                },
+                // 导出表单
+                exportToExcel: function () {
+                    vm.fullscreenLoading = true;
+                    vm.params.limit = null;
+                    var data3;
+                    doApi(
+                        function (res) {
+                            if (res.status === 200) {
+                                data3 = res.data.rows;
+                                // 处理日期
+                                for (let i = 0; i < data3.length; i++) {
+                                    if (data3[i].frcsrq){
+                                        data3[i].frcsrq = data3[i].frcsrq.substring(0,10);
+                                    }
+                                    if (data3[i].fzrcsrq){
+                                        data3[i].fzrcsrq = data3[i].fzrcsrq.substring(0,10);
+                                    }
+                                    if (data3[i].fzcsrq){
+                                        data3[i].fzcsrq = data3[i].fzcsrq.substring(0,10);
+                                    }
+                                }
+                                // console.log(data3);
+
+                                var filter = ['id', 'mmzp', 'nbzp', 'yyzz', 'mmzpDelIds', 'mmzpList', 'nbzpList', 'pointPositionInfo', 'policeVisitForm', 'sywdSywdcyryxxbs', 'yyzzList'];
+                                let b = Json2Excel(data3, "商业网点表", commercialPoint, filter);
+
+                                if (b) {
+                                    vm.fullscreenLoading = false;
+                                }
+                            }
+                        }, null, null, params.serviceIp + '/SywdSywddjb/listUserDeptData', "get", vm.params
+                    );
+                },
+                exportToWord: function(id, name) {
+                    var loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                    var oReq = new XMLHttpRequest();
+                    //判断是否IE浏览器
+                    var isIE = !!window.ActiveXObject || "ActiveXObject" in window;
+                    //url参数为拿后台数据的接口
+                    var url = params.serviceIp + '/SywdJcdj/exportWord?id=' + id;
+                    oReq.open("get",url, true);
+                    oReq.responseType = "blob";
+                    oReq.onload = function (oEvent) {
+                        var content = oReq.response;
+                        //name为后台返给前端的文件名，后缀名必须加，后台有返回后缀就不用管，不然下载在本地不好打开。
+                        var blob = new Blob([content]);
+                        if(isIE){
+                            window.navigator.msSaveOrOpenBlob(blob, name + '检查登记信息' + '.docx');
+                        } else {
+                            var elink = document.createElement('a');
+                            elink.style.display = 'none';
+                            elink.download = name + '检查登记信息' + '.docx';
+                            elink.href = URL.createObjectURL(blob);
+                            document.body.appendChild(elink);
+                            elink.click();
+                            document.body.removeChild(elink);
+                        }
+                        loading.close();
+                    };
+                    //请求头里放入用户口令，必须在.open()和.send()之间设置
+                    var token = localStorage.getItem('token');
+                    oReq.setRequestHeader('Authorization', token);
+                    oReq.send();
+                },
+                // 自动根据身份证号码填入出生日期
+                idNumTransform: function(num, name) {
+                    if (num.length >= 14) {
+                        var date = num.slice(6, 10) + '-' + num.slice(10, 12) + '-' + num.slice(12, 14);
+                        if (name === 'frsfzhm') {
+                            vm.frcsrq = date;
+                            vm.row.frcsrq = vm.frcsrq;
+                        } else if (name === 'fzrsfzhm') {
+                            vm.fzrcsrq = date;
+                            vm.row.fzrcsrq = vm.fzrcsrq;
+                        } else if (name === 'fzsfzhm') {
+                            vm.fzcsrq = date;
+                            vm.row.fzcsrq = vm.fzcsrq;
+                        }
+                    }
+                },
+                // 获取压缩路径图片、音频或视频
+                getShowUrl:function (oldUrl) {
+                    if (oldUrl){
+                        //将url的ip换成服务器的ip
+                        var showUrl=urlChangeIp(oldUrl,params.serviceIp);
+                        //选择展示的url
+                        var url=getThumbnail(showUrl);
+                        if(isExistUrl(url)){
+                            return url;
+                        } else {
+                            if(isExistUrl(showUrl)){
+                                return showUrl;
+                            }else {
+                                return params.serviceIp + params.pictureLoadingFailedUrl;
+                            }
+                        }
+                    }
+                    return null;
+                },
+            }
+        })
+    })
+</script>
+<script type="text/javascript">
+    function initButton(vm) {
+        $('button').on("click", function (e) {
+            switch (this.innerText.trim()) {
+                case "重置":
+                    // vm.params.dwmc=null;
+                    // vm.params.dptId=null;
+                    vm.params={};
+                    break;
+                case "查询":
+                    vm.pageIndex=1;
+                    vm.loadData();
+                    break;
+                case "新增":
+                    // var nullDate ='';
+                    const obj1 = $("#mainIframe")[0].contentWindow;
+                    vm.operated='add';
+                    obj1.setData(vm.operated);
+                    vm.dialogShow=true;
+                    break;
+                case "关闭":
+
+                    break;
+            }
+        });
+    }
+</script>

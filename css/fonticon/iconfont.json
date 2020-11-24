@@ -1,0 +1,72 @@
+{
+  "id": "1906435",
+  "name": "icon'List",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "508760",
+      "name": "日常监督情况",
+      "font_class": "richangjianduqingkuang",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "1025525",
+      "name": "成员",
+      "font_class": "chengyuan",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "5050193",
+      "name": "成员-添加",
+      "font_class": "chengyuan-tianjia",
+      "unicode": "e7f7",
+      "unicode_decimal": 59383
+    },
+    {
+      "icon_id": "6517472",
+      "name": "名称-完成情况",
+      "font_class": "mc-wcqk",
+      "unicode": "e715",
+      "unicode_decimal": 59157
+    },
+    {
+      "icon_id": "12290473",
+      "name": "成员1",
+      "font_class": "chengyuan1",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "584833",
+      "name": "导出",
+      "font_class": "daochu",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "6805502",
+      "name": "Excel",
+      "font_class": "Excel",
+      "unicode": "e998",
+      "unicode_decimal": 59800
+    },
+    {
+      "icon_id": "14145126",
+      "name": "导出",
+      "font_class": "daochu1",
+      "unicode": "e741",
+      "unicode_decimal": 59201
+    },
+    {
+      "icon_id": "2191547",
+      "name": "excel",
+      "font_class": "web-icon-",
+      "unicode": "e6df",
+      "unicode_decimal": 59103
+    }
+  ]
+}

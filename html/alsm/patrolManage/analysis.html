@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+<head lang="en">
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <title>统计分析</title>
+  <link href="../../../css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="../../../css/bootstrap@3.3.7/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+  <link href="../../../alsm/ttyu.net/file/ttyu/css/ttyu.web.css" rel="stylesheet" type="text/css">
+  <link href="../../../alsm/ttyu.net/file/system/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../../alsm/index/index.css">
+  <link rel="stylesheet" href="../../../fonticon/iconfont.css">
+  <script src="../../../alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+  <script src="../../../alsm/ttyu.net/file/system/jq/jquery-ui.js" type="text/javascript"></script>
+  <script src="../../../alsm/ttyu.net/file/system/ztree/js/jquery.ztree.all.min.js"></script>
+  <script src="../../../alsm/bootstrap@3.3.7/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../../../alsm/bootstrap@3.3.7/bootstrap-select.min.js"></script>
+  <script src="../../../alsm/ttyu/ttyu.web2.js" type="text/javascript"></script>
+
+  <link href="../../../css/elui/index.css" rel="stylesheet">
+  <!-- 必须先引入vue  后使用element-ui -->
+  <script src="../../../alsm/vue/vue.js"></script>
+  <script src="../../../alsm/elui/index.js"></script>
+  <script src="../../../alsm/echarts/echarts.min.js"></script>
+
+  <script src="../../../alsm/api_sub.js" type="text/javascript"></script>
+  <script src="../../../js/config/config.js"></script>
+
+  <link href="../../../css/alsCommon.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id='body1'>
+    <div class="t-body">
+      <!-- <div> -->
+        <!--<div class="t-title">
+          <span>统计条件</span>
+        </div>-->
+        <div class="t-find" style="margin-top: 5px">
+            <div style="display: inline">
+              <span>统计类别</span>
+              <el-select ref="dragSelect" v-model="anaTypeCom" style="width: 120px">
+                <el-option v-for="item in anaTypes" :key="item" :label="item" :value="item" />
+              </el-select>
+
+              <div class="t-data-time" style="display: inline">
+                  <!-- <button>最近一周</button> -->
+                  <!-- <button>最近一月</button> -->
+                  <!-- <span class=" t-sanjiaoone   iconfont icon-sanjiao"></span> -->
+                  <!-- <span class=" t-sanjiao   iconfont icon-sanjiao"></span> -->
+                <el-select style="width: auto"
+                  clearable
+                  v-model='selectedObj'
+                  @change='changeSelect'
+                  placeholder='请选择部门'>
+                  <!-- <el-option label="所有部门" ></el-option> -->
+                  <el-option v-for='(item, index) in options'
+                    :key='index'
+                    :label='item.name'
+                    :value='item.name'>
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
+
+          <div class="t-pickerdata" style="display: inline">
+            <el-date-picker
+              value-format="yyyy-MM-dd HH:mm:ss"
+              v-model="value2"
+              type="daterange"
+              align="right"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
+            </el-date-picker>
+          </div>
+
+          <div class="t-btns" style="display: inline">
+            <button title='统计'>
+              <span class="glyphicon glyphicon-search"></span>
+              统计
+            </button>
+            <button title='重置'>
+              <span class="glyphicon glyphicon-repeat"></span>
+              重置
+            </button>
+            <el-select ref="dragSelect" v-model="exportType" style="width: 120px" size="small">
+              <el-option v-for="item in exportTypes" :key="item" :label="item" :value="item" />
+            </el-select>
+            <button
+              v-loading.fullscreen.lock="fullscreenLoading"
+              element-loading-text="拼命处理中"
+              element-loading-spinner="el-icon-loading"
+              element-loading-background="rgba(0, 0, 0, 0.8)"
+              @click="exportToExcel()">
+              <span class="iconfont icondaochu" style="font-size: 15px" >导出</span>
+            </button>
+          </div>
+        </div>
+
+      <div class="t-btnsDiv" style="border-top: 8px solid rgb(236, 240, 245) !important"></div>
+
+      <!-- </div> -->
+      <!-- <div class="t-title" style="background-color: rgb(64, 152, 186);">
+        <span>统计图</span>
+      </div> -->
+
+      <div style="width: 100%;">
+        <div id="chart" class="chart" style="height: 700px;width: 100%;"></div>
+      </div>
+
+      <div style="width: 100%;">
+        <div id="Piechart01" class="chart" style="height: 1200px; width: 100%;"></div>
+      </div>
+
+      <div style="width: 100%;">
+        <div id="Piechart02" class="chart" style="height: 1200px; width: 100%;"></div>
+      </div>
+
+      <div style="width: 100%;">
+        <div id="Piechart03" class="chart" style="height: 1200px; width: 100%;"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+<script src="../../json/nation.js" type="text/javascript"></script>
+<script src="../../../js/utils/toExcel.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        new Vue({
+            el: '#body1',
+            data: {
+              value2:"",
+              chart: null,
+              Piechartchart:null,
+              anaType: '总里程',
+              anaTypes: ['总里程', '任务次数', '事件个数'],
+              rows: [],
+              b:[],
+              paramsData:{},
+              fullscreenLoading:null,
+
+              //下拉框
+              selectedObj:null,
+              allDeptIds:null,
+              options:[],
+
+              // 导出选项
+              exportType: '导出全部',
+              exportTypes: ['导出全部', '导出总里程', '导出任务次数', '导出事件个数'],
+            },
+            mounted: function () {
+              vm = this;
+              vm.loadData();
+              initButton(this);
+              vm.chart = echarts.init(document.getElementById('chart'));
+              // vm.showGraph();
+
+              //初始化饼图
+              vm.Piechartchart = echarts.init(document.getElementById('Piechart01'));
+              vm.Piechartchart02 = echarts.init(document.getElementById('Piechart02'));
+              vm.Piechartchart03 = echarts.init(document.getElementById('Piechart03'));
+            },
+            computed: {
+              anaTypeCom: {
+                get: function () {
+                  return this.anaType;
+                },
+                set: function (val) {
+                  this.anaType = val;
+                }
+              }
+            },
+            created: function () {
+              vm = this;
+              vm.fillOptions();
+            },
+            methods: {
+              changeSelect:function(val) {
+                // console.log(val);
+                vm.selectOption = val;
+              },
+              fillOptions:function () {
+                doApi(
+                  function (res) {
+                    if(res.status === 200) {
+                      // console.log(res)
+                      vm.options= res.data;
+                      /*if(vm.options!=null&&vm.options.length>0){
+                        var deptIds="";
+                        for ( var i=0;i<vm.options.length;i++ ){
+                          var deptId=vm.options[i].id;
+                          deptIds+=deptId+",";
+                        }
+                        vm.allDeptIds=deptIds.substring(0,deptIds.length-1);
+                        vm.selectedObj="allDeptIds";
+                        vm.params.deptIds=vm.allDeptIds;
+                        // vm.loadData();
+                      }*/
+                    }else {
+                      vm.$message.error('当前部门下无民警!');
+                    }
+                  },null,null,params.serviceIp + '/PoliceInfo/getCurrentUserPoliceStation',
+                  "get"
+                )
+              },
+              //获取点击对象
+              loadData: function () {
+                var paras = {
+                  where: this.where,
+                  pageSize: this.pageSize,
+                  pageIndex: this.pageIndex - 1
+                };
+
+                if (vm.value2!=null){
+                  vm.paramsData.before=vm.value2[0];
+                  vm.paramsData.after=vm.value2[1];
+                }
+
+                if (vm.selectOption!=null){
+                  vm.paramsData.dptName=vm.selectOption;
+                }
+                //只统计有效轨迹
+                vm.paramsData.isEffective=1;
+                // console.log(vm.paramsData)
+
+                doApi(
+                  function (res) {
+                    // console.log(res);
+                    if(res.status === 200) {
+                      //去掉小数位数
+                      for (let i = 0; i < res.data.length; i++) {
+                        res.data[i].length = Math.round(parseInt(res.data[i].length)/1000);
+                      }
+                      this.rows=res.data
+                      vm.b = res.data
+                      // console.log(this.rows)
+                      vm.showGraph(vm.b);
+                      vm.showPieGraph(vm.b);
+                    }else {
+                      vm.$message.error('当前部门下无民警!');
+                    }
+                  },null,null,params.serviceIp + '/PoliceInfo/getStatisticsAllFI',
+                  "get",vm.paramsData
+                );
+              },
+              //获取点击对象
+              showGraph: function (b) {
+                this.rows = b;
+                var texts = [];
+                var lengthvals = [];
+                var taskvals = [];
+                var eventvals = [];
+                var i;
+                var propname;
+                if (this.anaType == '总里程'){
+                  propname = 'length';
+                } else if (this.anaType == '任务次数') {
+                  propname = 'task';
+                } else if (this.anaType == '事件个数') {
+                  propname = 'event';
+                }
+                // console.log(this.rows);
+                if (propname!=null){
+                  this.insertionSort(this.rows, propname);
+                }
+
+                for (i = 0; i < this.rows.length; i++) {
+                  texts.push(this.rows[i].name);
+                  lengthvals.push(this.rows[i].length);
+                  taskvals.push(this.rows[i].task);
+                  eventvals.push(this.rows[i].event);
+                }
+
+                var end = 15;
+                if (b.length<50&&b.length>10){
+                  end = 80;
+                }
+                if (b.length<15){
+                  end = 100;
+                }else {
+                  end = 20;
+                }
+
+                var opt = {
+                  // backgroundColor: '#344b58',
+                  dataZoom: [{
+                    type: 'slider',
+                    show: true,
+                    xAxisIndex: [0],
+                    // left: '9%',
+                    bottom: -5,//组件离容器下侧的距离,'20%'
+                    start: 0,   //数据窗口范围的起始百分比,表示30%
+                    end: end  //初始化滚动条//数据窗口范围的结束百分比,表示70%
+                  }],
+                  tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                      textStyle: {
+                        // color: '#fff'
+                      }
+                    }
+                  },
+                  title: {
+                    text: '巡逻统计分析',
+                    x: 'center',
+                    y: 15,
+                    textStyle: {
+                      color: '#21280f',
+                      fontSize:18,
+                      fontWeight: 'normal',
+                    },
+                  },
+                  grid: {
+                    /*borderWidth: 0,
+                    top: '20%',
+                    bottom: 95,
+                    textStyle: {
+                      // color: '#fff'
+                    }*/
+                    left: '3%',
+                    right: '4%',
+                    // bottom: '3%',
+                    containLabel: true,
+                    y2:50,
+                  },
+                  legend: {
+                    x: '5%',
+                    // top: '10%',
+                    textStyle: {
+                      // color: '#90979c'
+                    },
+                    data: this.anaTypes
+                  },
+                  calculable: true,
+                  xAxis: [{
+                    type: 'category',
+                    axisLine: {
+                      lineStyle: {
+                        // color: '#90979c'
+                      }
+                    },
+                    splitLine: {
+                      show: false
+                    },
+                    axisTick: {
+                      show: false
+                    },
+                    splitArea: {
+                      show: false
+                    },
+                    axisLabel: {
+                      interval: 0,
+                      textStyle: {
+                        fontSize: '15',
+                        // color: '#fffffb'
+                      },
+                      rotate:-40
+                    },
+                    data: texts
+                  }],
+                  yAxis: [{
+                    type: 'value',
+                    splitLine: {
+                      show: false
+                    },
+                    axisLine: {
+                      lineStyle: {
+                        // color: '#90979c'
+                      }
+                    },
+                    axisTick: {
+                      show: false
+                    },
+                    axisLabel: {
+                      interval: 0
+                    },
+                    splitArea: {
+                      show: false
+                    }
+                  }],
+                  series: [{
+                    name: '总里程',
+                    type: 'bar',
+                    barMaxWidth: 35,
+                    barGap: '2',
+                    barCategoryGap: '10',
+                    itemStyle: {
+                      normal: {
+                        color: new echarts.graphic.LinearGradient(
+                          0, 0, 0, 1,   // 0,0,1,0表示从左向右    0,0,0,1表示从右向左
+                          [
+                            {offset: 1, color: '#83bff6'},
+                            {offset: 0, color: '#2898f0'}
+                          ]
+                        )
+                      }
+                    },
+                    data: lengthvals
+                  }, {
+                    name: '任务次数',
+                    type: 'bar',
+                    barMaxWidth: 35,
+                    barGap: '5%',
+                    itemStyle: {
+                      normal: {
+                        color: new echarts.graphic.LinearGradient(
+                          0, 0, 0, 1,   // 0,0,1,0表示从左向右    0,0,0,1表示从右向左
+                          [
+                            {offset: 1, color: '#17fdff'},
+                            {offset: 0, color: '#4df6d0'}
+                          ]
+                        )
+                      }
+                    },
+                    data: taskvals
+                  }, {
+                    name: '事件个数',
+                    type: 'bar',
+                    barMaxWidth: 35,
+                    barGap: '5%',
+                    itemStyle: {
+                      normal: {
+                        color: new echarts.graphic.LinearGradient(
+                          0, 0, 0, 1,   // 0,0,1,0表示从左向右    0,0,0,1表示从右向左
+                          [
+                            {offset: 1, color: '#17fdff'},
+                            {offset: 0, color: '#3734ff'}
+                          ]
+                        ),
+                        // label: {
+                        //   show: true,
+                        //   textStyle: {
+                        //     color: '#fff'
+                        //   },
+                        //   position: 'top',
+                        //   formatter: function(p) {
+                        //     return p.value > 0 ? p.value : ''
+                        //   }
+                        // }
+                      }
+                    },
+                    data: eventvals
+                  }]
+                };
+                this.chart.setOption(opt);
+              },
+              //饼图
+              //获取点击对象
+              showPieGraph: function (b) {
+                // 饼图宽度 动态变化
+                // var width02;
+                //   if (!width){
+                //     width02="55%"
+                //   }else {
+                //     width02 = 80-180/width*100;
+                //   }
+                //里程 任务 事件
+
+                //名称
+                var texts = [];
+                //里程长度
+                var lengthvals = [];
+                //任务次数
+                var taskvals = [];
+                //事件个数
+                var eventvals = [];
+
+                var i;
+                var propname;
+
+                if (this.anaType == '事件个数'){
+                  propname = 'event';
+                }
+                else if (this.anaType == '总里程') {
+                  propname = 'length';
+                }
+                else if (this.anaType == '任务次数') {
+                  propname = 'task';
+                }
+
+                if (propname!=null){
+                  var rows = this.insertionSort(this.rows, propname,'pieType');
+                }
+                // this.insertionSort(this.rows, propname);
+                for (i = 0; i < rows.length; i++) {
+                  // lengthvalsData.value=this.rows[i].length;
+                  texts.push(rows[i].name);
+                  lengthvals.push(rows[i].length);
+                  taskvals.push(rows[i].task);
+                  eventvals.push(rows[i].event);
+                }
+
+                //自定义 json 路程
+                var  params = [];
+                for(var i = 0; i < texts.length; i++){
+                  params.push({"value":lengthvals[i],"name":texts[i]});
+                }
+
+                //任务次数
+                var  taskvalsData = [];
+                for(var j = 0; j < taskvals.length; j++){
+                  taskvalsData.push({"value":taskvals[j],"name":texts[j]});
+                }
+
+                //事件次数
+                var  eventvalsData = [];
+                for(var k = 0; k < taskvals.length; k++){
+                  eventvalsData.push({"value":eventvals[k],"name":texts[k]});
+                }
+
+                optPie = {
+                  tooltip: {
+                    trigger: 'item',
+                    formatter: " {b}：{c}km "
+                  },
+                  color:['#3734ff','#33f8ff','#2898f0'],   //环形颜色
+                  graphic:{       //图形中间文字
+                    type:"text",
+                    left:"center",
+                    top:"center",
+                    style:{
+                      text:"总里程",
+                      textAlign:"center",
+                      fill:"#21280f",
+                      fontSize:30
+                    }
+                  },
+                  legend: {
+                    x : '85%',
+                    y : '25%',
+                    orient: 'vertical',
+                    align: 'left',
+
+                    /* x : '10',
+                    y : '1',*/
+                    itemWidth: 18,
+                    itemHeight: 18,
+                    textStyle:{//图例文字的样式
+                      // color:'#551216',
+                      fontSize:20
+                    },
+                    data:texts
+                  },
+                  series: [
+                    {
+                      name: '面积模式',
+                      type: 'pie',
+                      radius: ['10%', '25%'],       //饼图大小
+                      // roseType : 'area',
+
+                      labelLine: {    //图形外文字线
+                        normal: {
+                          length: 50,
+                          length2:100
+                        }
+                      },
+                      label: {
+                        normal: {
+                          formatter: ' {c|{c}km}  \n  {b|{b}} ({d}%)\n\n',       //图形外文字上下显示
+                          borderWidth: 10,
+                          borderRadius: 4,
+                          padding: [0, -80],          //文字和图的边距
+                          rich: {
+                            a: {
+                              color: '#333',
+                              fontSize: 20,
+                              lineHeight: 20
+                            },
+                            b: {                        //name 文字样式
+                              fontSize: 18,
+                              lineHeight: 20,
+                              color: '#21280f'
+                            },
+                            c: {                   //value 文字样式
+                              fontSize: 15,
+                              lineHeight: 20,
+                              color: '#551216',
+                              align:"center"
+                            },
+                            d: {                   //value 文字样式
+                              fontSize: 15,
+                              lineHeight: 23,
+                              color: '#551216',
+                              align:"center"
+                            }
+                          }
+                        }
+                      },
+                      // data: eventvals
+                      data:params
+                    }
+                  ]
+                };
+
+                //第二饼图
+                optPie02 = {
+                  tooltip: {
+                    trigger: 'item',
+                    formatter: " {b}：{c}次 "
+                  },
+                  color:['#96f43b','#3734ff','#33f8ff'],   //环形颜色
+                    graphic:{       //图形中间文字
+                      type:"text",
+                      left:"center",
+                      top:"center",
+                      style:{
+                        text:"任务次数",
+                        textAlign:"center",
+                        fill:"#21280f",
+                        fontSize:30
+                      }
+                    },
+                  legend: {
+                    x : '85%',
+                    y : '25%',
+                    orient: 'vertical',
+                    align: 'left',
+                    itemWidth: 18,
+                    itemHeight: 18,
+                    textStyle:{//图例文字的样式
+                      // color:'#551216',
+                      fontSize:20
+                    },
+                    data:texts
+                  },
+                  series: [
+                    {
+                      name: '面积模式',
+                      type: 'pie',
+                      radius: ['10%', '25%'],       //饼图大小
+                      // roseType : 'area',
+
+                      labelLine: {    //图形外文字线
+                        normal: {
+                          length: 40,
+                          length2:120
+                        }
+
+                      },
+                      label: {
+                        normal: {
+                          formatter: ' {c|{c}次}  \n  {b|{b}} ({d}%) \n\n',       //图形外文字上下显示
+                          borderWidth: 20,
+                          borderRadius: 4,
+                          padding: [0, -80],          //文字和图的边距
+                          rich: {
+                            a: {
+                              color: '#333',
+                              fontSize: 33,
+                              lineHeight: 20
+                            },
+                            b: {                        //name 文字样式
+                              fontSize: 18,
+                              lineHeight: 20,
+                              color: '#21280f'
+                            },
+                            c: {                   //value 文字样式
+                              fontSize: 15,
+                              lineHeight: 20,
+                              color: '#21280f',
+                              align:"center"
+                            }
+                          }
+                        }
+                      },
+                      // data: eventvals
+                      data:taskvalsData
+                    }
+                  ]
+                };
+
+                //第三饼图
+                optPie03 = {
+                  tooltip: {
+                    trigger: 'item',
+                    formatter: " {b}：{c}个 "
+                  },
+                  color:['#3734ff','#4bc1ff','#03f403'],   //环形颜色
+                    graphic:{       //图形中间文字
+                      type:"text",
+                      left:"center",
+                      top:"center",
+                      style:{
+                        text:"事件个数",
+                        textAlign:"center",
+                        fill:"#21280f",
+                        fontSize:30
+                      }
+                    },
+                  legend: {
+                    x : '85%',
+                    y : '25%',
+                    orient: 'vertical',
+                    align: 'left',
+                    itemWidth: 18,
+                    itemHeight: 18,
+                    textStyle:{//图例文字的样式
+                      // color:'#551216',
+                      fontSize:22
+                    },
+                    data:texts
+                  },
+                  series: [
+                    {
+                      name: '面积模式',
+                      type: 'pie',
+                      radius: ['10%', '25%'],       //饼图大小
+                      // roseType : 'area',
+
+                      labelLine: {    //图形外文字线
+                        normal: {
+                          length: 80,
+                          length2:150
+                        }
+                      },
+
+                      // labelLine: {
+                      //   normal: {
+                      //     lineStyle: {
+                      //       color: 'rgba(255, 255, 255, 0.3)'
+                      //     },
+                      //     smooth: 0.2,
+                      //     length: this.standSize / 50,
+                      //     length2: this.standSize / 100,
+                      //   }
+                      // },
+
+                      label: {  //圖上的文字
+                        normal: {
+                          formatter: ' {c|{c}个}  \n  {b|{b}} ({d}%) \n\n',       //图形外文字上下显示
+                          borderWidth: 20,
+                          borderRadius: 4,
+                          padding: [0, -80],          //文字和图的边距
+                          rich: {
+                            a: {
+                              color: '#333',
+                              fontSize: 15,
+                              lineHeight: 20
+                            },
+                            b: {                        //name 文字样式
+                              fontSize: 18,
+                              lineHeight: 20,
+                              color: '#21280f'
+                            },
+                            c: {                   //value 文字样式
+                              fontSize: 15,
+                              lineHeight: 20,
+                              color: '#21280f',
+                              align:"center"
+                            }
+                          }
+                        }
+                      },
+
+                      // data: eventvals
+                      data:eventvalsData,
+                    /*  itemStyle: {
+                        emphasis: {
+                          shadowBlur: 10,
+                          shadowOffsetX: 0,
+                          shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                      }*/
+                    }
+                  ]
+                };
+
+                this.Piechartchart.setOption(optPie);
+                this.Piechartchart02.setOption(optPie02);
+                this.Piechartchart03.setOption(optPie03);
+              },
+              insertionSort: function (arr, propname,type) {
+                var len = arr.length;
+                var preIndex, current;
+                for (var i = 1; i < len; i++) {
+                  preIndex = i - 1;
+                  current = arr[i];
+                  while (preIndex >= 0 && arr[preIndex][propname] < current[propname]) {
+                    arr[preIndex + 1] = arr[preIndex];
+                    preIndex--;
+                  }
+                  arr[preIndex + 1] = current;
+                }
+                if (type){
+                  return arr.slice(0,15);
+                }
+                return arr;
+              },
+              // 导出数据
+              exportToExcel:function(){
+                vm.fullscreenLoading = true;
+                // vm.loading = true;
+                // var paramsPage={};
+                // paramsPage.page=1;
+                // paramsPage.limit=9999;
+                // vm.params.limit = null;
+
+                var data3;
+                doApi(
+                  function (res) {
+                    if(res.status === 200) {
+                      data3=res.data;
+                      // console.log(data3);
+                      //自定义过滤栏（不需要导出的行）
+                      //identity是什么？
+                      // console.log(vm.exportType)
+                      if (vm.exportType == '导出全部'){
+                        var filter = [];
+                        var b = Json2Excel(data3, "居边护边统计分析信息表", ['姓名', '总里程(m)', '事件个数', '任务次数'], filter);
+                      } else if (vm.exportType == '导出总里程') {
+                        var filter = ['event', 'task'];
+                        var b = Json2Excel(data3, "居边护边统计分析信息表", ['姓名', '总里程(m)'], filter);
+                      } else if (vm.exportType == '导出任务次数') {
+                        var filter = ['event', 'length',];
+                        var b = Json2Excel(data3, "居边护边统计分析信息表", ['姓名', '任务次数'], filter);
+                      } else if (vm.exportType == '导出事件个数') {
+                        var filter = ['length', 'task'];
+                        var b = Json2Excel(data3, "居边护边统计分析信息表", ['姓名', '事件个数'], filter);
+                      }
+                      if (b) {
+                        vm.fullscreenLoading = false;
+                      }
+                    }
+                  },null,null,params.serviceIp + '/PoliceInfo/getStatisticsAllFI',
+                  "get", vm.paramsData
+                );
+              },
+            }
+        })
+    })
+
+    // <!--监听浏览器可视区域-->
+    // $(window).resize(function() {
+    //   var width = $(this).width();
+    //   var height = $(this).height();
+    //   // alert('width'+width+'-height'+height);
+    //
+    //   // $("#DB_ul").width(width*0.5);
+    //
+    //   // alert(1);
+    //   vm.showPieGraph();
+    //   // this.Piechartchart03.setOption(optPie03);
+    //
+    // });
+</script>
+<script type="text/javascript">
+  function initButton(vm) {
+    $('button').on("click", function (e) {
+      switch (this.innerText.trim()) {
+        case "重置":
+          var node = $(e.currentTarget).parents('.t-find');
+          if (node.length == 0) node = $(e.currentTarget).parents('.modal-body');
+          ttyu.clear(node);
+          break;
+        case "统计":
+          // console.log(vm.value2)
+          // vm.showGraph(vm.b);
+          vm.loadData();
+          break;
+        case "新增":
+          var newRow;
+          if (vm.rows == null || vm.rows.length == 0) {
+            vm.rows = [];
+            newRow = {};
+          } else {
+            var newRow = vm.rows[0];
+            newRow = ttyu.json.clone(newRow);
+          }
+          for (var item in newRow) {
+            newRow[item] = "";
+          }
+          newRow.id = 0;
+          vm.row = newRow;
+          $($('.modal')[0]).show();
+          break;
+        case "保存":
+          if (!ttyu.validate.validates(vm.rows, vm.row, $('#form1'))) return false;
+          var eveaName = ttyu.user.getUserName();
+          vm.row.eveaName = eveaName;
+
+          vm.row.uid = vm.row.id;
+          vm.row.score = $("#score").val();
+          $($('.modal')[0]).hide();
+          /* ttyu.server.doApi("getEveaScoreByUserID", {
+            where: 'uid=' + vm.row.id,
+            projectId: 1
+          }, function(res) {
+            if (res.length == 0) {
+              vm.row.id = 0;
+            } else {
+              vm.row.id = res[0].id;
+            }
+            ttyu.server.doApi("saveEveaScore", {
+              data: vm.row
+            }, function(data) {
+              if (data > 0) {
+                if (vm.row.id == 0) {
+                  vm.row.id = data;
+                  vm.rows.push(vm.row);
+                }
+                alert("保存成功!");
+                $('.modal').hide();
+                vm.find();
+              } else alert("保存失败!");
+            });
+          });*/
+          break;
+        case "删除":
+          ttyu.server.doApi("delUser", {
+            data: vm.selected
+          }, function (data) {
+            if (data > 0) {
+              vm.find();
+              alert("删除成功!");
+            }
+          });
+          return false;
+          break;
+      }
+    });
+  }
+
+
+
+</script>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="keywords" content="多终端开发云平台,PaaS开发,SaaS,无编码，一站式开发，原型设计，数据库管理，app开发,开发云平台,H5自适应,java、.net多语言,全静态页">
+    <meta name="description" content="天宇联科技,原型设计，数据库管理，T语言、PaaS开发、开发云平台,多终端开发,app开发,H5自适应">
+
+    <title>边境管理业务系统</title>
+    <link href="css/bootstrap@3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="alsm/ttyu/ttyu.web.css" rel="stylesheet" type="text/css">
+    <link href="js/plugins/zTreeStyle/zTreeStyle.css" rel="stylesheet" >
+    <script src="alsm/ttyu.net/file/system/jq/jquery.min.js" type="text/javascript"></script>
+    <script src="alsm/ttyu.net/file/system/jq/jquery-ui.js" type="text/javascript"></script>
+    <script src="alsm/ttyu.net/file/system/ztree/js/jquery.ztree.all.min.js"></script>
+	<script src="alsm/bootstrap@3.3.7/bootstrap.min.js" type="text/javascript"></script>
+    <script src="alsm/ttyu/ttyu.web.js" type="text/javascript"></script>
+    <script src="alsm/ttyu.net/file/system/vue/vue2.5.16.js" type="text/javascript"></script>
+	<script src="./alsm/api.js"></script>
+	<script src="./js/config/config.js"></script>
+	<style>
+		.b {
+			height: 30px;
+			/*border-bottom: 1px solid #fff;*/
+			border-radius: 0 0 5px 5px;
+			background: #38403987;
+			clear: both;
+			width: 900px;
+			margin: 0 auto;
+			text-align: center;
+			line-height: 30px;
+			color: #33f8ff;
+		}
+	</style>
+</head>
+<body id='body' style='text-align:center' onkeydown="keyLogin()">
+	<div id='body1'>
+		<link href="alsm/ttyu/login.css" rel="stylesheet">
+		<div class="t-border tborder1"  style=" height:100%; background-image:url(images/background.png);background-size:100% 100%;">
+			<div class="t-border loginStyle">
+				<!-- <div class="t-border" style="max-width:500px!important"></div> -->
+                <!-- <img src="ttyu/head.png" /> -->
+                <!-- <img src="ttyu/login.png" style=" margin-left:100px;  width:300px; height:300px;" /> -->
+                <!-- <span class="t-span">阿拉善盟居边护边堡垒户巡逻系统</span> -->
+			</div>
+			<div class="t-border tborder2" style="left:29%;top:12%;">
+				<!-- <span class="t-span h3Style">用户登录</span> -->
+				<div style="height: 140px;background: #00a0ff;border-radius: 20px 20px 0px 0px;">
+					<img src="images/GuoHui.png" style="color: white;vertical-align:middle;height:150px;position: relative;"/>
+					<span style="position: relative;right: 41px;color: white;font-size: 25px;line-height: 20px">阿拉善盟智慧边境一张图管理平台</span>
+					<!-- <p></p> -->
+				</div>
+
+
+				<input class="t-input num" id="UserName" autofocus="autofocus" v-model='row.LoginName' error='登录名?NoNull' placeholder="请输入登录名" style="padding-left: 50px;">
+				<input class="t-input pw" v-model='row.psd' error='密码?NoNull' type="password" placeholder="请输入密码" style="padding-left: 50px;">
+				<button class="t-btn" id="Enter">登录</button>
+
+                <!-- <iframe id='iframe11' src="reports/login.html" style=" display:none1"></iframe> -->
+                <span onclick='downApp()' style="left:50%;top:450px;transform: translateX(-50%); font-size:13px; color:#a1a0bd; position:absolute; cursor:pointer">APP系统下载链接</span>
+                <!-- <a onclick='downApp()' class='downApp' style="left:190px;top:450px; font-size:13px; color:#a1a0bd; position:absolute; cursor:pointer">APP系统下载链接</a> -->
+			</div>
+
+			<div class="b" style="position: relative;top: 95%;">
+				<span>
+					&copy; &nbsp; 版权所有 Copyright©2020
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<!-- 北京数研遥感科技有限公司 -->
+					武汉中迪联创科技有限公司
+				</span>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
+<script type='text/javascript'>
+	function keyLogin() {
+		if (event.keyCode==13)  //回车键的键值为13
+			$("button").trigger("click");
+	}
+
+    function downApp() {
+        // window.open("http://ttyu.net:8080/patrol/db/patrol.apk");
+    }
+
+    $(function () {
+    	//账号框自动聚焦 兼容ie
+		setTimeout(function() { document.getElementById('UserName').focus(); }, 10);
+
+		var oWidth = document.documentElement.clientWidth;
+        $('.tborder2').css("left", (oWidth-541)/2);
+        new Vue({
+            el: '.tborder2',
+            data: { row: { LoginName: '', psd: ''} },
+            mounted: function () {
+                vm = this;
+                $('button').click(function () {
+                    if (!ttyu.validate.validates([], vm.row, $('.tborder2'))) return false;
+					var NmaeVal= vm.row.LoginName;
+					var PassWordVal= vm.row.psd;
+					doApiByJsonstr(
+							function (res) {
+								if (res.status === 200) {
+									sessionStorage.setItem('token', res.data);
+									localStorage.setItem('token', res.data);
+									doApiByJsonstr(
+											function (res) {
+												if (res.status === 200) {
+													if (res.data.type === "2") {
+														localStorage.setItem('userdata', JSON.stringify(res.data))
+														window.location.href = "index.html";
+													} else {
+														alert('用户名或密码错误');
+														sessionStorage.removeItem('token');
+													}
+												} else {
+													alert(res.message);
+													sessionStorage.removeItem('token');
+												}
+											},
+											function (err) {
+												alert(err.toString());
+												sessionStorage.removeItem('token');
+											}, null, params.serviceIp + '/getCurrentUser', 'get'
+									);
+								} else {
+									alert(res.message);
+								}
+							},
+							function (err) {}, null, params.serviceIp + '/login/user', 'post', {
+								username: NmaeVal,
+								password: PassWordVal
+							}
+					);
+                });
+            }
+        })
+    })
+</script>;
